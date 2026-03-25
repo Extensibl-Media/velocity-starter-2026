@@ -1,0 +1,38 @@
+---
+import { getCollection } from "astro:content";
+import { createFAQSchema } from "@/lib/schema";
+import JsonLd from "@/components/seo/JsonLD.astro";
+
+interface Props {
+  heading?: string;
+  service?: string;
+}
+
+const { heading = "Frequently Asked Questions", service } = Astro.props;
+
+const allFaqs = await getCollection("faqs");
+const faqs = allFaqs
+  .filter((f) => !service || !f.data.service || f.data.service === service)
+  .sort((a, b) => a.data.order - b.data.order);
+
+const faqSchema =
+  faqs.length > 0
+    ? createFAQSchema(
+        faqs.map((f) => ({ question: f.data.question, answer: f.data.answer }))
+      )
+    : null;
+---
+
+{faqSchema && <JsonLd schema={faqSchema} />}
+
+<section class="faqs">
+  <h2>{heading}</h2>
+  {
+    faqs.map((faq) => (
+      <div class="faq-item">
+        <h3>{faq.data.question}</h3>
+        <p>{faq.data.answer}</p>
+      </div>
+    ))
+  }
+</section>

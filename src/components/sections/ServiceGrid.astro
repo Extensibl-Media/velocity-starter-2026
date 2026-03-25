@@ -1,0 +1,23 @@
+---
+interface Props {
+  heading: string;
+  items: Array<{ heading: string; body: string; icon?: string }>;
+}
+
+const { heading, items } = Astro.props;
+---
+
+<section class="services-grid">
+  <h2>{heading}</h2>
+  <ul>
+    {
+      items.map((item) => (
+        <li>
+          {item.icon && <span class="icon">{item.icon}</span>}
+          <h3>{item.heading}</h3>
+          <p>{item.body}</p>
+        </li>
+      ))
+    }
+  </ul>
+</section>

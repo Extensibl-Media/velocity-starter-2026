@@ -1,0 +1,26 @@
+---
+import { getBusinessData } from "@/lib/utils";
+
+const business = await getBusinessData();
+---
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="logo">
+      {business.businessName}
+    </a>
+
+    <nav class="nav">
+      <a href="/">Home</a>
+      <a href="/services">Services</a>
+      <a href="/contact">Contact</a>
+    </nav>
+
+    <div class="header-cta">
+      <a href={`tel:${business.phone}`} class="phone">
+        {business.phone}
+      </a>
+      <a href="/contact" class="btn-primary"> Get a Free Quote </a>
+    </div>
+  </div>
+</header>

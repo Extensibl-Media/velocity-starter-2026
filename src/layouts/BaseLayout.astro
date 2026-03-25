@@ -1,0 +1,103 @@
+---
+import "@/styles/global.css";
+import SEO from "@/components/seo/SEO.astro";
+import JsonLd from "@/components/seo/JsonLD.astro";
+import { ClientRouter } from "astro:transitions";
+import { createWebsiteSchema, createLocalBusinessSchema } from "@/lib/schema";
+import type { WithContext, WebSite, LocalBusiness } from "schema-dts";
+import siteConfig from "@/config/site.config";
+import { getBusinessData, getSiteData } from "@/lib/utils";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  imageAlt?: string;
+  article?: {
+    publishedTime?: Date;
+    modifiedTime?: Date;
+    authors?: string[];
+    tags?: string[];
+  };
+  noindex?: boolean;
+  nofollow?: boolean;
+  includeLocalBusinessSchema?: boolean;
+  businessType?: string;
+  openingHours?: string[];
+  areaServed?: string[];
+}
+
+const {
+  title,
+  description,
+  image,
+  imageAlt,
+  article,
+  noindex = false,
+  nofollow = false,
+  includeLocalBusinessSchema = false,
+  businessType,
+  openingHours,
+  areaServed,
+} = Astro.props;
+
+const business = await getBusinessData();
+const site = getSiteData();
+
+const schemas: WithContext<WebSite | LocalBusiness>[] = [
+  createWebsiteSchema(business, site),
+];
+
+if (includeLocalBusinessSchema) {
+  schemas.push(
+    createLocalBusinessSchema(business, site, {
+      businessType,
+      openingHours,
+      areaServed,
+    })
+  );
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href={siteConfig.branding.favicon.svg}
+    />
+    <meta name="theme-color" content={siteConfig.branding.colors.themeColor} />
+
+    <SEO
+      title={title}
+      description={description ?? business.tagline}
+      image={image}
+      imageAlt={imageAlt}
+      article={article}
+      noindex={noindex}
+      nofollow={nofollow}
+      businessName={business.businessName}
+    />
+
+    <JsonLd schema={schemas} />
+
+    <ClientRouter />
+  </head>
+
+  <body>
+    <a href="#main-content" class="sr-only"> Skip to content </a>
+
+    <slot name="header" />
+
+    <main id="main-content">
+      <slot />
+    </main>
+
+    <slot name="footer" />
+  </body>
+</html>

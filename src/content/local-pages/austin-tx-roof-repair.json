@@ -1,0 +1,76 @@
+{
+  "area": "austin-tx",
+  "service": "roof-repair",
+  "title": "Roof Repair in Austin TX",
+  "metaTitle": "Roof Repair in Austin TX | Demo Contractor",
+  "metaDescription": "Professional roof repair services in Austin TX. Fast response, licensed and insured. Call us today for a free estimate.",
+  "featured": true,
+  "draft": false,
+  "sections": [
+    {
+      "type": "hero",
+      "heading": "Trusted Roof Repair in Austin, TX",
+      "subheading": "Fast response times, licensed and insured, serving Austin homeowners since 2005.",
+      "cta": {
+        "label": "Call Now",
+        "href": "tel:5125551234"
+      }
+    },
+    {
+      "type": "services-grid",
+      "heading": "What We Fix",
+      "items": [
+        {
+          "heading": "Leak Repair",
+          "body": "Fast detection and repair of roof leaks before they cause interior damage.",
+          "icon": "leak"
+        },
+        {
+          "heading": "Storm Damage",
+          "body": "Emergency storm damage repair available 24/7 for Austin homeowners.",
+          "icon": "storm"
+        },
+        {
+          "heading": "Shingle Replacement",
+          "body": "Missing or damaged shingles replaced with matching materials.",
+          "icon": "shingle"
+        }
+      ]
+    },
+    {
+      "type": "process",
+      "heading": "How It Works",
+      "steps": [
+        {
+          "heading": "Call or Request a Quote",
+          "body": "Reach out by phone or form and we will respond within the hour."
+        },
+        {
+          "heading": "Free Inspection",
+          "body": "We assess the damage and give you a clear, honest estimate."
+        },
+        {
+          "heading": "Fast Repair",
+          "body": "Most repairs completed same day or next day."
+        }
+      ]
+    },
+    {
+      "type": "reviews",
+      "heading": "What Austin Customers Say"
+    },
+    {
+      "type": "faqs",
+      "heading": "Common Questions About Roof Repair in Austin"
+    },
+    {
+      "type": "cta-banner",
+      "heading": "Need Roof Repair in Austin?",
+      "subheading": "Call us today for a free estimate. We respond within the hour.",
+      "cta": {
+        "label": "Get a Free Quote",
+        "href": "/contact"
+      }
+    }
+  ]
+}

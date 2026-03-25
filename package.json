@@ -15,6 +15,7 @@
   "dependencies": {
     "@astrojs/markdoc": "^1.0.2",
     "astro": "^6.0.8",
+    "schema-dts": "^2.0.0",
     "wrangler": "^4.77.0"
   },
   "devDependencies": {

@@ -1,0 +1,29 @@
+---
+import { getBusinessData } from "@/lib/utils";
+
+interface Props {
+  heading: string;
+  subheading?: string;
+  cta?: { label: string; href: string };
+}
+
+const { heading, subheading, cta } = Astro.props;
+const business = await getBusinessData();
+---
+
+<section class="cta-banner">
+  <h2>{heading}</h2>
+  {subheading && <p>{subheading}</p>}
+  <div class="cta-actions">
+    <a href={`tel:${business.phone}`} class="btn-primary">
+      Call {business.phone}
+    </a>
+    {
+      cta && (
+        <a href={cta.href} class="btn-secondary">
+          {cta.label}
+        </a>
+      )
+    }
+  </div>
+</section>

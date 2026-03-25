@@ -1,0 +1,23 @@
+---
+interface Props {
+  heading: string;
+  steps: Array<{ heading: string; body: string }>;
+}
+
+const { heading, steps } = Astro.props;
+---
+
+<section class="process">
+  <h2>{heading}</h2>
+  <ol>
+    {
+      steps.map((step, i) => (
+        <li>
+          <span class="step-number">{i + 1}</span>
+          <h3>{step.heading}</h3>
+          <p>{step.body}</p>
+        </li>
+      ))
+    }
+  </ol>
+</section>

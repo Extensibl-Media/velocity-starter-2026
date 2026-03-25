@@ -1,0 +1,34 @@
+---
+import MarketingLayout from "@/layouts/MarketingLayout.astro";
+import { getCollection } from "astro:content";
+import { getBusinessData } from "@/lib/utils";
+
+const services = await getCollection("services");
+const sorted = services.sort((a, b) => a.data.order - b.data.order);
+
+const business = await getBusinessData();
+---
+
+<MarketingLayout
+  title="Our Services"
+  description={`Professional contracting services from ${business.businessName}`}
+>
+  <section class="services-listing">
+    <h1>Our Services</h1>
+    <ul>
+      {
+        sorted.map((service) => (
+          <li>
+            <a href={`/services/${service.data.slug}`}>
+              <h2>{service.data.title}</h2>
+              <p>{service.data.description}</p>
+              {service.data.isEmergency && (
+                <span>⚡ 24/7 Emergency Service</span>
+              )}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</MarketingLayout>

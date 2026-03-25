@@ -1,0 +1,340 @@
+# Use DecapBridge PKCE auth (required)
+backend:
+  name: git-gateway
+  repo: Extensibl-Media/velocity-starter-2026
+  branch: main
+  auth_type: pkce
+  base_url: https://auth.decapbridge.com
+  auth_endpoint: /sites/cc7922fa-6c8f-4b68-87c0-7c2c5ea37c94/pkce
+  auth_token_endpoint: /sites/cc7922fa-6c8f-4b68-87c0-7c2c5ea37c94/token
+  gateway_url: https://gateway.decapbridge.com
+  commit_messages:
+    create: Create {{collection}} "{{slug}}" - {{author-name}} <{{author-login}}> via DecapBridge
+    update: Update {{collection}} "{{slug}}" - {{author-name}} <{{author-login}}> via DecapBridge
+    delete: Delete {{collection}} "{{slug}}" - {{author-name}} <{{author-login}}> via DecapBridge
+    uploadMedia: Upload "{{path}}" - {{author-name}} <{{author-login}}> via DecapBridge
+    deleteMedia: Delete "{{path}}" - {{author-name}} <{{author-login}}> via DecapBridge
+    openAuthoring: Message {{message}} - {{author-name}} <{{author-login}}> via DecapBridge
+
+auth:
+  email_claim: email
+  first_name_claim: first_name
+  last_name_claim: last_name
+  avatar_url_claim: avatar_url
+
+logo_url: https://decapbridge.com/decapcms-with-bridge.svg
+site_url: https://vws-starter-2026.pages.dev
+
+media_folder: src/assets/images/uploads
+public_folder: /images/uploads
+
+collections:
+  # Site Settings
+  - name: "settings"
+    label: "Site Settings"
+    files:
+      - name: "general"
+        label: "General Settings"
+        file: "src/content/settings/general.json"
+        fields:
+          - { label: "Business Name", name: "businessName", widget: "string" }
+          - { label: "Tagline", name: "tagline", widget: "string" }
+          - { label: "Phone Number", name: "phone", widget: "string" }
+          - { label: "Email", name: "email", widget: "string" }
+          - { label: "Address", name: "address", widget: "string" }
+          - { label: "City", name: "city", widget: "string" }
+          - { label: "State", name: "state", widget: "string" }
+          - { label: "Zip", name: "zip", widget: "string" }
+          - {
+              label: "License Number",
+              name: "license",
+              widget: "string",
+              required: false,
+            }
+          - {
+              label: "Google Business Profile URL",
+              name: "gbpUrl",
+              widget: "string",
+              required: false,
+            }
+          - label: "Social Links"
+            name: "social"
+            widget: "object"
+            required: false
+            fields:
+              - {
+                  label: "Facebook",
+                  name: "facebook",
+                  widget: "string",
+                  required: false,
+                }
+              - {
+                  label: "Instagram",
+                  name: "instagram",
+                  widget: "string",
+                  required: false,
+                }
+              - {
+                  label: "Youtube",
+                  name: "youtube",
+                  widget: "string",
+                  required: false,
+                }
+      - name: "hours"
+        label: "Business Hours"
+        file: "src/content/settings/hours.json"
+        fields:
+          - label: "Hours"
+            name: "hours"
+            widget: "list"
+            fields:
+              - { label: "Day", name: "day", widget: "string" }
+              - { label: "Open", name: "open", widget: "string" }
+              - { label: "Close", name: "close", widget: "string" }
+              - {
+                  label: "Closed All Day",
+                  name: "closedAllDay",
+                  widget: "boolean",
+                  default: false,
+                }
+      - name: "seo"
+        label: "SEO Defaults"
+        file: "src/content/settings/seo.json"
+        fields:
+          - { label: "Default Meta Title", name: "metaTitle", widget: "string" }
+          - {
+              label: "Default Meta Description",
+              name: "metaDescription",
+              widget: "text",
+            }
+          - {
+              label: "Google Site Verification",
+              name: "googleVerification",
+              widget: "string",
+              required: false,
+            }
+          - {
+              label: "Bing Site Verification",
+              name: "bingVerification",
+              widget: "string",
+              required: false,
+            }
+
+  # Services (generic article-style ranking pages)
+  - name: "services"
+    label: "Services"
+    folder: "src/content/services"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - {
+          label: "Slug",
+          name: "slug",
+          widget: "string",
+          hint: "URL-friendly version of the title e.g. roof-repair",
+        }
+      - { label: "Short Description", name: "description", widget: "text" }
+      - {
+          label: "Meta Title",
+          name: "metaTitle",
+          widget: "string",
+          required: false,
+        }
+      - {
+          label: "Meta Description",
+          name: "metaDescription",
+          widget: "text",
+          required: false,
+        }
+      - {
+          label: "Featured Image",
+          name: "image",
+          widget: "image",
+          required: false,
+        }
+      - {
+          label: "Emergency Service",
+          name: "isEmergency",
+          widget: "boolean",
+          default: false,
+        }
+      - {
+          label: "Featured",
+          name: "featured",
+          widget: "boolean",
+          default: false,
+        }
+      - { label: "Order", name: "order", widget: "number", default: 0 }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  # Service Areas (flat, for UI use)
+  - name: "service_areas"
+    label: "Service Areas"
+    folder: "src/content/service-areas"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "City", name: "city", widget: "string" }
+      - { label: "State", name: "state", widget: "string" }
+      - {
+          label: "Slug",
+          name: "slug",
+          widget: "string",
+          hint: "e.g. austin-tx",
+        }
+      - { label: "County", name: "county", widget: "string", required: false }
+      - {
+          label: "Featured",
+          name: "featured",
+          widget: "boolean",
+          default: false,
+        }
+      - { label: "Order", name: "order", widget: "number", default: 0 }
+
+  # Service in Service Area (main local SEO collection)
+  - name: "local_pages"
+    label: "Local Service Pages"
+    folder: "src/content/local-pages"
+    create: true
+    slug: "{{fields.area}}-{{fields.service}}"
+    fields:
+      - label: "Service Area"
+        name: "area"
+        widget: "relation"
+        collection: "service_areas"
+        search_fields: ["city", "state"]
+        value_field: "slug"
+        display_fields: ["city", "state"]
+      - label: "Service"
+        name: "service"
+        widget: "relation"
+        collection: "services"
+        search_fields: ["title"]
+        value_field: "slug"
+        display_fields: ["title"]
+      - {
+          label: "Page Title",
+          name: "title",
+          widget: "string",
+          hint: "e.g. Roof Repair in Austin TX",
+        }
+      - { label: "Meta Title", name: "metaTitle", widget: "string" }
+      - { label: "Meta Description", name: "metaDescription", widget: "text" }
+      - { label: "Hero Headline", name: "heroHeadline", widget: "string" }
+      - {
+          label: "Hero Subheadline",
+          name: "heroSubheadline",
+          widget: "string",
+          required: false,
+        }
+      - {
+          label: "Featured Image",
+          name: "image",
+          widget: "image",
+          required: false,
+        }
+      - { label: "Body", name: "body", widget: "markdown" }
+      - {
+          label: "Featured",
+          name: "featured",
+          widget: "boolean",
+          default: false,
+        }
+      - { label: "Draft", name: "draft", widget: "boolean", default: false }
+
+  # FAQs
+  - name: "faqs"
+    label: "FAQs"
+    folder: "src/content/faqs"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Question", name: "question", widget: "string" }
+      - { label: "Answer", name: "answer", widget: "text" }
+      - label: "Related Service"
+        name: "service"
+        widget: "relation"
+        collection: "services"
+        search_fields: ["title"]
+        value_field: "slug"
+        display_fields: ["title"]
+        required: false
+      - { label: "Order", name: "order", widget: "number", default: 0 }
+
+  # Reviews
+  - name: "reviews"
+    label: "Reviews"
+    folder: "src/content/reviews"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Author Name", name: "author", widget: "string" }
+      - {
+          label: "Rating",
+          name: "rating",
+          widget: "number",
+          min: 1,
+          max: 5,
+          default: 5,
+        }
+      - { label: "Review", name: "body", widget: "text" }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - label: "Service Received"
+        name: "service"
+        widget: "relation"
+        collection: "services"
+        search_fields: ["title"]
+        value_field: "slug"
+        display_fields: ["title"]
+        required: false
+      - {
+          label: "Location",
+          name: "location",
+          widget: "string",
+          required: false,
+          hint: "e.g. Austin, TX",
+        }
+      - {
+          label: "Featured",
+          name: "featured",
+          widget: "boolean",
+          default: false,
+        }
+      - {
+          label: "Source",
+          name: "source",
+          widget: "select",
+          options: ["Google", "Facebook", "Yelp", "Direct"],
+          default: "Google",
+        }
+
+  # Blog Posts
+  - name: "posts"
+    label: "Blog Posts"
+    folder: "src/content/posts"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - { label: "Description", name: "description", widget: "text" }
+      - {
+          label: "Cover Image",
+          name: "image",
+          widget: "image",
+          required: false,
+        }
+      - { label: "Author", name: "author", widget: "string", default: "Admin" }
+      - {
+          label: "Featured",
+          name: "featured",
+          widget: "boolean",
+          default: false,
+        }
+      - { label: "Draft", name: "draft", widget: "boolean", default: false }
+      - label: "Tags"
+        name: "tags"
+        widget: "list"
+        required: false
+      - { label: "Body", name: "body", widget: "markdown" }

@@ -1,0 +1,17 @@
+---
+interface Props {
+  heading: string;
+  body: string;
+  image?: string;
+}
+
+const { heading, body, image } = Astro.props;
+---
+
+<section class="about">
+  {image && <img src={image} alt={heading} />}
+  <div class="about-content">
+    <h2>{heading}</h2>
+    <p>{body}</p>
+  </div>
+</section>

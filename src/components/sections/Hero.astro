@@ -1,0 +1,23 @@
+---
+interface Props {
+  heading: string;
+  subheading?: string;
+  cta?: { label: string; href: string };
+}
+
+const { heading, subheading, cta } = Astro.props;
+---
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1>{heading}</h1>
+    {subheading && <p>{subheading}</p>}
+    {
+      cta && (
+        <a href={cta.href} class="btn-primary">
+          {cta.label}
+        </a>
+      )
+    }
+  </div>
+</section>

@@ -1,0 +1,37 @@
+---
+import { getCollection } from "astro:content";
+
+interface Props {
+  heading?: string;
+  service?: string;
+}
+
+const { heading = "What Our Customers Say", service } = Astro.props;
+
+const allReviews = await getCollection("reviews");
+const reviews = allReviews
+  .filter((r) => r.data.featured)
+  .filter((r) => !service || !r.data.service || r.data.service === service);
+---
+
+<section class="reviews">
+  <h2>{heading}</h2>
+  {
+    reviews.length > 0 ? (
+      <ul>
+        {reviews.map((review) => (
+          <li>
+            <p>{review.data.body}</p>
+            <cite>
+              — {review.data.author}
+              {review.data.location ? `, ${review.data.location}` : ""}
+            </cite>
+            <span>{"★".repeat(review.data.rating)}</span>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p>No reviews yet.</p>
+    )
+  }
+</section>

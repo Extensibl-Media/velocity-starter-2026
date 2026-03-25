@@ -1,0 +1,17 @@
+{
+  "businessName": "Demo Contractor",
+  "tagline": "Quality Work You Can Trust",
+  "phone": "(512) 555-1234",
+  "email": "info@democontractor.com",
+  "address": "123 Main St",
+  "city": "Austin",
+  "state": "TX",
+  "zip": "78701",
+  "license": "TX-123456",
+  "gbpUrl": "",
+  "social": {
+    "facebook": "",
+    "instagram": "",
+    "youtube": ""
+  }
+}

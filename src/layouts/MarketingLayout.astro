@@ -1,0 +1,56 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Header from "@/components/layout/Header.astro";
+import Footer from "@/components/layout/Footer.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  imageAlt?: string;
+  article?: {
+    publishedTime?: Date;
+    modifiedTime?: Date;
+    authors?: string[];
+    tags?: string[];
+  };
+  noindex?: boolean;
+  nofollow?: boolean;
+  includeLocalBusinessSchema?: boolean;
+  businessType?: string;
+  openingHours?: string[];
+  areaServed?: string[];
+}
+
+const {
+  title,
+  description,
+  image,
+  imageAlt,
+  article,
+  noindex = false,
+  nofollow = false,
+  includeLocalBusinessSchema = true,
+  businessType = "GeneralContractor",
+  openingHours,
+  areaServed,
+} = Astro.props;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  image={image}
+  imageAlt={imageAlt}
+  article={article}
+  noindex={noindex}
+  nofollow={nofollow}
+  includeLocalBusinessSchema={includeLocalBusinessSchema}
+  businessType={businessType}
+  openingHours={openingHours}
+  areaServed={areaServed}
+>
+  <Header slot="header" />
+  <slot />
+  <Footer slot="footer" />
+</BaseLayout>
