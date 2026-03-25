@@ -2,7 +2,7 @@
 backend:
   name: git-gateway
   repo: Extensibl-Media/velocity-starter-2026
-  branch: main
+  branch: master
   auth_type: pkce
   base_url: https://auth.decapbridge.com
   auth_endpoint: /sites/cc7922fa-6c8f-4b68-87c0-7c2c5ea37c94/pkce
