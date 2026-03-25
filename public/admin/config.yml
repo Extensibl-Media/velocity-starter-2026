@@ -173,6 +173,8 @@ collections:
     label: "Service Areas"
     folder: "src/content/service-areas"
     create: true
+    extension: json
+    format: json
     slug: "{{slug}}"
     fields:
       - { label: "City", name: "city", widget: "string" }
@@ -197,6 +199,8 @@ collections:
     label: "Local Service Pages"
     folder: "src/content/local-pages"
     create: true
+    extension: json
+    format: json
     slug: "{{fields.area}}-{{fields.service}}"
     fields:
       - label: "Service Area"
@@ -213,28 +217,9 @@ collections:
         search_fields: ["title"]
         value_field: "slug"
         display_fields: ["title"]
-      - {
-          label: "Page Title",
-          name: "title",
-          widget: "string",
-          hint: "e.g. Roof Repair in Austin TX",
-        }
+      - { label: "Page Title", name: "title", widget: "string" }
       - { label: "Meta Title", name: "metaTitle", widget: "string" }
       - { label: "Meta Description", name: "metaDescription", widget: "text" }
-      - { label: "Hero Headline", name: "heroHeadline", widget: "string" }
-      - {
-          label: "Hero Subheadline",
-          name: "heroSubheadline",
-          widget: "string",
-          required: false,
-        }
-      - {
-          label: "Featured Image",
-          name: "image",
-          widget: "image",
-          required: false,
-        }
-      - { label: "Body", name: "body", widget: "markdown" }
       - {
           label: "Featured",
           name: "featured",
@@ -242,12 +227,114 @@ collections:
           default: false,
         }
       - { label: "Draft", name: "draft", widget: "boolean", default: false }
+      - label: "Sections"
+        name: "sections"
+        widget: "list"
+        types:
+          - label: "Hero"
+            name: "hero"
+            widget: "object"
+            fields:
+              - { label: "Heading", name: "heading", widget: "string" }
+              - {
+                  label: "Subheading",
+                  name: "subheading",
+                  widget: "string",
+                  required: false,
+                }
+              - label: "CTA"
+                name: "cta"
+                widget: "object"
+                required: false
+                fields:
+                  - { label: "Label", name: "label", widget: "string" }
+                  - { label: "URL", name: "href", widget: "string" }
+          - label: "Services Grid"
+            name: "services-grid"
+            widget: "object"
+            fields:
+              - { label: "Heading", name: "heading", widget: "string" }
+              - label: "Items"
+                name: "items"
+                widget: "list"
+                fields:
+                  - { label: "Heading", name: "heading", widget: "string" }
+                  - { label: "Body", name: "body", widget: "text" }
+                  - {
+                      label: "Icon",
+                      name: "icon",
+                      widget: "string",
+                      required: false,
+                    }
+          - label: "Process"
+            name: "process"
+            widget: "object"
+            fields:
+              - { label: "Heading", name: "heading", widget: "string" }
+              - label: "Steps"
+                name: "steps"
+                widget: "list"
+                fields:
+                  - { label: "Heading", name: "heading", widget: "string" }
+                  - { label: "Body", name: "body", widget: "text" }
+          - label: "Reviews"
+            name: "reviews"
+            widget: "object"
+            fields:
+              - {
+                  label: "Heading",
+                  name: "heading",
+                  widget: "string",
+                  required: false,
+                }
+          - label: "FAQs"
+            name: "faqs"
+            widget: "object"
+            fields:
+              - {
+                  label: "Heading",
+                  name: "heading",
+                  widget: "string",
+                  required: false,
+                }
+          - label: "About"
+            name: "about"
+            widget: "object"
+            fields:
+              - { label: "Heading", name: "heading", widget: "string" }
+              - { label: "Body", name: "body", widget: "text" }
+              - {
+                  label: "Image",
+                  name: "image",
+                  widget: "image",
+                  required: false,
+                }
+          - label: "CTA Banner"
+            name: "cta-banner"
+            widget: "object"
+            fields:
+              - { label: "Heading", name: "heading", widget: "string" }
+              - {
+                  label: "Subheading",
+                  name: "subheading",
+                  widget: "string",
+                  required: false,
+                }
+              - label: "CTA"
+                name: "cta"
+                widget: "object"
+                required: false
+                fields:
+                  - { label: "Label", name: "label", widget: "string" }
+                  - { label: "URL", name: "href", widget: "string" }
 
   # FAQs
   - name: "faqs"
     label: "FAQs"
     folder: "src/content/faqs"
     create: true
+    extension: json
+    format: json
     slug: "{{slug}}"
     fields:
       - { label: "Question", name: "question", widget: "string" }
@@ -267,6 +354,8 @@ collections:
     label: "Reviews"
     folder: "src/content/reviews"
     create: true
+    extension: json
+    format: json
     slug: "{{slug}}"
     fields:
       - { label: "Author Name", name: "author", widget: "string" }
