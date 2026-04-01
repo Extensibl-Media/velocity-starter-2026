@@ -222,6 +222,45 @@ const seoSettings = defineCollection({
   }),
 });
 
+const navigationSettings = defineCollection({
+  loader: file("./src/content/settings/navigation.json", {
+    parser: (text) => {
+      const data = JSON.parse(text);
+      return [{ id: "navigation", ...data }];
+    },
+  }),
+  schema: z.object({
+    items: z.array(
+      z.lazy(() =>
+        z.object({
+          label: z.string(),
+          href: z.string().optional(),
+          enabled: z.boolean().default(true),
+          autoPopulate: z.enum(["services", "service-areas"]).optional(),
+          children: z
+            .array(
+              z.object({
+                label: z.string(),
+                href: z.string().optional(),
+                enabled: z.boolean().default(true),
+                children: z
+                  .array(
+                    z.object({
+                      label: z.string(),
+                      href: z.string(),
+                      enabled: z.boolean().default(true),
+                    })
+                  )
+                  .optional(),
+              })
+            )
+            .optional(),
+        })
+      )
+    ),
+  }),
+});
+
 export const collections = {
   services,
   serviceAreas,
@@ -232,4 +271,5 @@ export const collections = {
   generalSettings,
   hoursSettings,
   seoSettings,
+  navigationSettings,
 };

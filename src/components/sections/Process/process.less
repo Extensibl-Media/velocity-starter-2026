@@ -1,0 +1,191 @@
+/*-- -------------------------- -->
+<---           Steps            -->
+<--- -------------------------- -*/
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #steps-1675 {
+        padding: var(--sectionPadding);
+        padding-left: 0;
+        padding-right: 0;
+
+        .cs-container {
+            width: 100%;
+            /* changes to 1920px at tablet */
+            max-width: (584/16rem);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* 48px - 64px */
+            gap: clamp(3rem, 6vw, 4rem);
+        }
+
+        .cs-content {
+            /* set text align to left if content needs to be left aligned */
+            text-align: center;
+            width: 100%;
+            padding: 0 (16/16rem);
+            display: flex;
+            flex-direction: column;
+            /* centers content horizontally, set to flex-start to left align */
+            align-items: center;
+        }
+
+        .cs-text {
+            /* Override.  cs-topper cs-title and first cs-text should be removed and put into your global css sheet so it can control every instance of them on your site and is consistent. This selector is a section specific override that stays inside this stitch */
+            max-width: (522/16rem);
+        }
+
+        .cs-card-group {
+            margin: 0;
+            padding: 0;
+            display: grid;
+            justify-items: center;
+            align-items: stretch;
+            grid-auto-flow: row;
+        }
+
+        .cs-item {
+            list-style: none;
+            /* prevents padding and border from affecting height and width */
+            box-sizing: border-box;
+            padding: (24/16rem);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            position: relative;
+
+            /* bottom border */
+            &::after {
+                content: "";
+                width: 100%;
+                height: 1px;
+                /* to change the color of the bottom border, adjust the second color (at 50%). the first and third will blend the color to transparent */
+                /* note you'll also have to change the color in the tablet media query when the lines go vertical */
+                background: linear-gradient(
+                    90deg,
+                    rgba(255, 255, 255, 0) 0%,
+                    rgba(186, 186, 186, 1) 50%,
+                    rgba(255, 255, 255, 0) 100%
+                );
+                opacity: .6;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+            }
+
+            &:first-of-type {
+                padding-top: 0;
+            }
+
+            &:last-of-type {
+                padding-bottom: 0;
+
+                &::after {
+                    content: none;
+                }
+            }
+        }
+
+        .cs-number {
+            /* 80px - 100px */
+            font-size: clamp(5rem, 1vw, 6.25rem);
+            font-weight: 900;
+            line-height: 1.2em;
+            color: var(--primary);
+            opacity: 0.12;
+            display: block;
+        }
+
+        .cs-h3 {
+            /* 20px - 25px */
+            font-size: clamp(1.25rem, 2vw, 1.5625rem);
+            font-weight: 700;
+            line-height: 1.2em;
+            margin: (-31/16rem) 0 (16/16rem) 0;
+            color: var(--headerColor);
+        }
+
+        .cs-item-text {
+            /* 14px - 16px */
+            font-size: clamp(0.875rem, 2vw, 1rem);
+            line-height: 1.5em;
+            text-align: left;
+            margin: 0;
+            color: var(--bodyTextColor);
+        }
+    }
+}
+
+/* Tablet - 768px */
+@media only screen and (min-width: 48rem) {
+    #steps-1675 {
+        .cs-container {
+            max-width: (1920/16rem);
+        }
+
+        .cs-card-group {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+        }
+
+        .cs-item {
+            /* 24px - 60px */
+            padding: clamp(1.5rem, 3vw, 3.75rem);
+
+            &::after {
+                width: 1px;
+                height: 100%;
+                background: linear-gradient(
+                    0deg,
+                    rgba(255, 255, 255, 0) 0%,
+                    rgba(186, 186, 186, 1) 50%,
+                    rgba(255, 255, 255, 0) 100%
+                );
+                opacity: .6;
+                right: 0;
+                left: initial;
+            }
+
+            /* the specificity of the mobile .cs-item means we need to explicitly define the first and last items here, too */
+            &:first-of-type,
+            &:last-of-type {
+                /* 24px - 60px */
+                padding: clamp(1.5rem, 3vw, 3.75rem);
+            }
+        }
+    }
+}
+
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        #steps-1675 {
+            .cs-topper {
+                color: var(--primaryLight);
+            }
+            .cs-title {
+                color: var(--bodyTextColorWhite);
+            }
+
+            .cs-item {
+                border-color: var(--bodyTextColorWhite);
+                &:after {
+                    opacity: .2;
+                }
+            }
+
+            .cs-item-text, .cs-text {
+                color: var(--bodyTextColorWhite);
+                opacity: 0.8;
+            }
+
+            .cs-h3,
+            .cs-number {
+                color: var(--primaryLight);
+            }
+        }
+    }
+}
+                                

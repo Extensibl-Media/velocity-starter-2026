@@ -1,0 +1,25 @@
+---
+import "./secondary-page-header.less";
+import { Picture } from "astro:assets";
+import type { GetImageResult } from "astro";
+
+interface Props {
+  title: string; // heading text
+  image: GetImageResult; // pre-optimized image from getImage()
+}
+
+const { title, image } = Astro.props;
+---
+
+<section id="int-hero">
+  <h1 id="home-h">{title}</h1>
+
+  <Picture
+    src={image.src}
+    width={image.attributes.width}
+    height={image.attributes.height}
+    formats={["avif", "webp"]}
+    alt=""
+    priority
+  />
+</section>

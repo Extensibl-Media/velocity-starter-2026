@@ -1,4 +1,13 @@
 ---
+import ContactCTA from "@/components/sections/ContactForms/ContactCTA.astro";
+import HomeHero from "@/components/sections/Hero/HomeHero.astro";
+import Locations from "@/components/sections/Locations/Locations.astro";
+import Process from "@/components/sections/Process/Process.astro";
+import ReviewsGrid from "@/components/sections/Reviews/ReviewsGrid.astro";
+import SingleReview from "@/components/sections/Reviews/SingleReview.astro";
+import Services3Card from "@/components/sections/Services/Services3Card.astro";
+import SBSPair from "@/components/sections/SideBySide/SBSPair.astro";
+import WhyChooseUs from "@/components/sections/WhyChooseUs/WhyChooseUs.astro";
 import MarketingLayout from "@/layouts/MarketingLayout.astro";
 import { getBusinessData } from "@/lib/utils";
 
@@ -6,9 +15,13 @@ const business = await getBusinessData();
 ---
 
 <MarketingLayout title="Home" description={business.tagline}>
-  <section>
-    <h1>{business.businessName}</h1>
-    <p>{business.tagline}</p>
-    <a href={`tel:${business.phone}`}>{business.phone}</a>
-  </section>
+  <HomeHero />
+  <Services3Card />
+  <SBSPair />
+  <SingleReview />
+  <WhyChooseUs />
+  <Locations />
+  <!-- <Process /> -->
+  <ReviewsGrid />
+  <ContactCTA />
 </MarketingLayout>

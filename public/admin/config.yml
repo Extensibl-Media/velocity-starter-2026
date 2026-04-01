@@ -427,3 +427,61 @@ collections:
         widget: "list"
         required: false
       - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "navigation"
+    label: "Navigation"
+    file: "src/content/settings/navigation.json"
+    fields:
+      - label: "Nav Items"
+        name: "items"
+        widget: "list"
+        fields:
+          - { label: "Label", name: "label", widget: "string" }
+          - { label: "URL", name: "href", widget: "string", required: false }
+          - {
+              label: "Enabled",
+              name: "enabled",
+              widget: "boolean",
+              default: true,
+            }
+          - label: "Auto Populate"
+            name: "autoPopulate"
+            widget: "select"
+            required: false
+            hint: "Auto-populate children from a collection"
+            options:
+              - { label: "None", value: "" }
+              - { label: "Services", value: "services" }
+              - { label: "Service Areas", value: "service-areas" }
+          - label: "Children"
+            name: "children"
+            widget: "list"
+            required: false
+            hint: "Manual child links — ignored if Auto Populate is set"
+            fields:
+              - { label: "Label", name: "label", widget: "string" }
+              - {
+                  label: "URL",
+                  name: "href",
+                  widget: "string",
+                  required: false,
+                }
+              - {
+                  label: "Enabled",
+                  name: "enabled",
+                  widget: "boolean",
+                  default: true,
+                }
+              - label: "Children"
+                name: "children"
+                widget: "list"
+                required: false
+                fields:
+                  - { label: "Label", name: "label", widget: "string" }
+                  - { label: "URL", name: "href", widget: "string" }
+                  - {
+                      label: "Enabled",
+                      name: "enabled",
+                      widget: "boolean",
+                      default: true,
+                    }

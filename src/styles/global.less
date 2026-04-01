@@ -1,0 +1,125 @@
+@import "root.less";
+
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Roboto', Arial, sans-serif;
+  font-size: var(--bodyFontSize);
+  color: var(--bodyTextColor);
+  background-color: #ffffff;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  &.dark-mode {
+    background-color: var(--background, #1a1a1a);
+    color: var(--bodyTextColor);
+  }
+}
+
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    color: var(--primary);
+  }
+}
+
+ul, ol {
+  list-style: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--headerColor);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* Utility */
+.cs-topper {
+  font-size: var(--topperFontSize);
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.cs-title {
+  font-size: var(--headerFontSize);
+  color: var(--headerColor);
+  margin-bottom: 1rem;
+}
+
+.cs-text {
+  font-size: var(--bodyFontSize);
+  color: var(--bodyTextColor);
+  line-height: 1.6em;
+  max-width: 40ch;
+}
+
+.cs-button-solid {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 2rem;
+  background-color: var(--primary);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 0.25rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: var(--primaryLight);
+    color: #ffffff;
+    // transform: translateY(-2px);
+  }
+}
+
+/* Screen reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Section padding */
+.cs-section {
+  padding: var(--sectionPadding);
+}
+
+/* Container */
+.cs-container {
+  width: 100%;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}

@@ -1,6 +1,13 @@
 ---
 import { getBusinessData } from "@/lib/utils";
+import NavItem from "@/components/layout/NavItem.astro";
+import type { NavNode } from "@/lib/utils";
 
+interface Props {
+  navItems: NavNode[];
+}
+
+const { navItems } = Astro.props;
 const business = await getBusinessData();
 ---
 
@@ -11,9 +18,7 @@ const business = await getBusinessData();
     </a>
 
     <nav class="nav">
-      <a href="/">Home</a>
-      <a href="/services">Services</a>
-      <a href="/contact">Contact</a>
+      {navItems.map((item) => <NavItem node={item} />)}
     </nav>
 
     <div class="header-cta">

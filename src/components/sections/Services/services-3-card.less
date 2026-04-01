@@ -1,0 +1,206 @@
+/*-- -------------------------- -->
+<---         Services           -->
+<--- -------------------------- -*/
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #services-264 {
+        padding: var(--sectionPadding);
+
+        .cs-container {
+            width: 100%;
+            max-width: (1280/16rem);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* 48px - 64px */
+            gap: clamp(3rem, 6vw, 4rem);
+        }
+
+        .cs-content {
+            /* set text align to left if content needs to be left aligned */
+            text-align: left;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            /* centers content horizontally, set to flex-start to left align */
+            align-items: flex-start;
+        }
+
+        .cs-text {
+            margin-bottom: (16/16rem);
+            &:last-of-type {
+                margin-bottom: (32/16rem);
+            }
+        }
+
+        .cs-button-solid {
+            font-size: (16/16rem);
+            /* 46px - 56px */
+            line-height: clamp(2.875rem, 5.5vw, 3.5rem);
+            text-decoration: none;
+            font-weight: 700;
+            text-align: center;
+            margin: 0;
+            color: #000;
+            min-width: (150/16rem);
+            padding: 0 (24/16rem);
+            background-color: var(--secondaryLight);
+            border-radius: (4/16rem);
+            display: inline-block;
+            position: relative;
+            z-index: 1;
+            /* prevents padding from adding to the width */
+            box-sizing: border-box;
+            transition: color 0.3s;
+
+            &:before {
+                content: "";
+                position: absolute;
+                height: 100%;
+                width: 0%;
+                background: #000;
+                opacity: 1;
+                top: 0;
+                left: 0;
+                z-index: -1;
+                border-radius: (4/16rem);
+                transition: width 0.3s;
+            }
+
+            &:hover {
+                color: #fff;
+                &:before {
+                    width: 100%;
+                }
+            }
+        }
+
+        .cs-card-group {
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: (8/16rem);
+        }
+
+        .cs-item {
+            list-style: none;
+            position: relative;
+            display: block;
+            width: 100%;
+            height: 60vw;
+            max-height: (250/16rem);
+            font-size: clamp(1rem, 1.7vw, 1.5rem);
+            color: #fff;
+            /* 16px - 20px top & bottom */
+            /* 20px - 24px left & right */
+            padding: clamp(1rem, 2vw, 1.25rem) clamp(1.25rem, 2vw, 1.5rem);
+            /* prevents padding and border from affecting height and width */
+            box-sizing: border-box;
+        }
+
+        .cs-h3 {
+            /* 16px - 25px */
+            font-size: clamp(1rem, 2vw, 1.5625rem);
+            font-weight: 700;
+            line-height: 1.2em;
+            margin: 0;
+            color: var(--bodyTextColorWhite);
+            display: block;
+        }
+
+        .cs-picture {
+            display: block;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+
+            &:before {
+                /* top right box */
+                content: "";
+                width: 100%;
+                height: 100%;
+                background: #000;
+                opacity: 0.4;
+                position: absolute;
+                display: block;
+                top: 0;
+                left: 0;
+                z-index: 1;
+                transition: opacity 0.3s;
+            }
+
+            img {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 100%;
+                object-fit: cover;
+                transition: transform 0.3s;
+            }
+        }
+    }
+}
+
+/* Tablet - 768px */
+@media only screen and (min-width: 48rem) {
+    #services-264 {
+        .cs-container {
+            flex-direction: row;
+        }
+
+        .cs-card-group {
+            width: 64%;
+            max-width: (867/16rem);
+            flex-direction: row;
+            justify-content: space-between;
+            /* 16px - 20px */
+            gap: clamp(1rem, 1.5vw, 1.25rem);
+            flex: none;
+        }
+
+        .cs-item {
+            width: 100%;
+            height: 50vw;
+            max-width: (275/16rem);
+            max-height: (460/16rem);
+
+            &:hover {
+                .cs-picture {
+                    &:before {
+                        opacity: 0.7;
+                    }
+                    img {
+                        transform: scale(1.2);
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        #services-264 {
+            .cs-topper {
+                color: var(--primary);
+            }
+            .cs-title,
+            .cs-text {
+                color: var(--bodyTextColorWhite);
+            }
+        }
+    }
+}
+                                

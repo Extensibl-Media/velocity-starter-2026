@@ -1,0 +1,186 @@
+/*-- -------------------------- -->
+<---          Services          -->
+<--- -------------------------- -*/
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #locations-1697 {
+        padding: var(--sectionPadding);
+        position: relative;
+        z-index: 1;
+
+        .cs-container {
+            width: 100%;
+            /* changes to 1280px at tablet */
+            max-width: (500/16rem);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* 48px - 64px */
+            gap: clamp(3rem, 6vw, 4rem);
+        }
+
+        .cs-card-group {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+        }
+
+        .cs-item {
+            list-style: none;
+            width: 100%;
+            /* prevents padding and border from affecting height and width */
+            box-sizing: border-box;
+            /* 24px - 60px top & bottom*/
+            /* 16px - 40px left & right*/
+            padding: clamp(1.5rem, 5vw, 3.75rem) clamp(1rem, 3vw, 2.5rem);
+            display: flex;
+            flex-direction: column;
+            grid-column: span 12;
+            grid-row: span 1;
+            position: relative;
+            z-index: 1;
+
+            /* bottom border */
+            &::after {
+                content: "";
+                width: 100%;
+                height: 1px;
+                /* to change the color of the bottom border, adjust the second color (at 50%). the first and third will blend the color to transparent */
+                /* note you'll also have to change the color in the tablet media query when the lines go vertical */
+                background: linear-gradient(
+                    90deg,
+                    rgba(255, 255, 255, 0) 0%,
+                    rgb(186, 186, 186, 1) 50%,
+                    rgba(255, 255, 255, 0) 100%
+                );
+                position: absolute;
+                bottom: 0;
+                left: 0;
+            }
+
+            &:last-of-type {
+                &::after {
+                    content: none;
+                }
+            }
+        }
+
+        .cs-h3 {
+            /* 20px - 25px */
+            font-size: clamp(1.25rem, 2.5vw, 1.5625rem);
+            font-weight: bold;
+            line-height: 1.2em;
+            margin: 0 0 (16/16rem) 0;
+            color: var(--headerColor);
+        }
+
+        .cs-item-text {
+            /* 14px - 16px */
+            font-size: clamp(0.875rem, 1.5vw, 1rem);
+            line-height: 1.5em;
+            text-decoration: none;
+            max-width: (300/16rem);
+            padding: 0;
+            color: var(--bodyTextColor);
+        }
+
+        .cs-address {
+            max-width: 18ch;
+            margin-bottom: (16/16rem);
+        }
+
+        .cs-link {
+            font-size: (16/16rem);
+            font-weight: 700;
+            line-height: 1.2em;
+            text-align: inherit;
+            text-decoration: none;
+            margin-top: auto;
+            /* setting minimum top spacing with padding and using margin-top: auto; to ensure the link is always at the bottom of the item */
+            /* 24px - 32px */
+            padding-top: clamp(1.5rem, 1vw, 2rem);
+            color: var(--secondary);
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: (10/16rem);
+            transition: color 0.3s;
+
+            &:hover {
+                .cs-arrow {
+                    transform: translateX(0.25rem);
+                }
+            }
+        }
+
+        .cs-link-text {
+            width: fit-content;
+        }
+
+        .cs-arrow {
+            width: (20/16rem);
+            height: auto;
+            display: block;
+            transition: filter 0.3s, transform 0.3s;
+        }
+    }
+}
+
+/* Tablet - 768px */
+@media only screen and (min-width: 48rem) {
+    #locations-1697 {
+        .cs-container {
+            max-width: (1280/16rem);
+        }
+
+        .cs-item {
+            grid-column: span 3;
+
+            &:nth-of-type(4) {
+                &::after {
+                    display: none;
+                }
+            }
+
+            &::after {
+                width: 1px;
+                height: 100%;
+                background: linear-gradient(
+                    0deg,
+                    rgba(255, 255, 255, 0) 0%,
+                    rgb(186, 186, 186, 1) 50%,
+                    rgba(255, 255, 255, 0) 100%
+                );
+                right: 0;
+                left: initial;
+            }
+        }
+    }
+}
+
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        #locations-1697 {
+            .cs-h3,
+            .cs-item-text {
+                color: var(--bodyTextColorWhite);
+            }
+
+            .cs-item {
+                &:after {
+                    opacity: .5;
+                }
+            }
+
+            .cs-item-text {
+                opacity: 0.9;
+            }
+        }
+    }
+}
+                                

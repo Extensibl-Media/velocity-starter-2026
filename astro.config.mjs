@@ -1,6 +1,8 @@
 // @ts-check
 import { defineConfig, envField } from 'astro/config';
 import markdoc from '@astrojs/markdoc';
+import sitemap from '@astrojs/sitemap';
+import icon from 'astro-icon';
 
 // https://astro.build/config
 export default defineConfig({
@@ -25,7 +27,10 @@ export default defineConfig({
     layout: 'constrained',
   },
 
-  integrations: [markdoc()],
+  integrations: [markdoc(), 
+    sitemap(),
+    icon(),
+  ],
 
   vite: {
     plugins: [],

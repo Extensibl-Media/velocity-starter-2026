@@ -1,0 +1,125 @@
+/*-- -------------------------- -->
+<---          Review            -->
+<--- -------------------------- -*/
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #reviews-1714 {
+        position: relative;
+        z-index: 1;
+
+        .cs-container {
+            width: 100%;
+            max-width: (1312/16rem);
+            margin: auto;
+            padding: var(--sectionPadding);
+            padding-bottom: 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            position: relative;
+        }
+
+        .cs-content {
+            /* set text align to center if content needs to be centrally aligned */
+            text-align: left;
+            width: 100%;
+            /* -88px top -150px */
+            margin-bottom: ~"calc(clamp(5.5rem, 13vw, 9.375rem)*-1)";
+            /* 40px - 100px top & bottom */
+            /* 16px - 80px left & right */
+            padding: clamp(2.5rem, 9vw, 6.25rem) clamp(1rem, 7vw, 5rem);
+            box-sizing: border-box;
+            background-color: #111926;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            /* aligns content to the left, set to center to centrally align */
+            align-items: flex-start;
+            /* 16px - 40px */
+            gap: clamp(1rem, 4vw, 2.5rem);
+            position: relative;
+            z-index: 10;
+        }
+
+        .cs-icon {
+            width: (80/16rem);
+            height: auto;
+        }
+
+        .cs-quote {
+            /* 20px - 31px */
+            font-size: clamp(1.25rem, 2vw, 1.9375rem);
+            font-weight: 700;
+            line-height: 1.2em;
+            max-width: (1000/16rem);
+            margin: 0;
+            color: #fff;
+        }
+
+        .cs-graphic {
+            width: (233/16rem);
+            height: auto;
+            opacity: .08;
+            position: absolute;
+            right: (-16/16rem);
+            bottom: (-70/16rem);
+            z-index: -1;
+        }
+
+        .cs-background {
+            width: 100%;
+            /* 340px - 620px */
+            height: clamp(21.25rem, 47vw, 38.75rem);
+            display: block;
+            position: relative;
+            z-index: 1;
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+        }
+    }
+}
+
+/* Tablet - 768px */
+@media only screen and (min-width: 48rem) {
+    #reviews-1714 {
+        .cs-content {
+            flex-direction: row;
+            justify-content: flex-start;
+        }
+    }
+}
+                                
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        #reviews-1714 {
+            .cs-content {
+                background-color: var(--dark);
+
+                &:before {
+                    content: '';
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, .6);
+                    opacity: 1;
+                    position: absolute;
+                    display: block;
+                    top: 0;
+                    left: 0;
+                    z-index: -1;
+                }
+            }
+        }
+    }
+}
+                                
