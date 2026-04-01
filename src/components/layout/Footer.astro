@@ -1,39 +1,186 @@
 ---
-import { getBusinessData } from "@/lib/utils";
+import { getBusinessData, getResolvedNav } from "@/lib/utils";
+import { getCollection } from "astro:content";
 
 const business = await getBusinessData();
 const year = new Date().getFullYear();
+const navItems = await getResolvedNav();
+
+const services = await getCollection('services');
+const sortedServices = services
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 6);
+
+const serviceAreas = await getCollection('serviceAreas');
+const featuredAreas = serviceAreas
+  .filter(a => a.data.featured)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 6);
 ---
 
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-brand">
-      <a href="/" class="logo">{business.businessName}</a>
-      {business.tagline && <p>{business.tagline}</p>}
-    </div>
+<footer class="bg-bg-inverse text-fg-inverse">
 
-    <div class="footer-contact">
-      <a href={`tel:${business.phone}`}>{business.phone}</a>
-      <a href={`mailto:${business.email}`}>{business.email}</a>
-      <address>
-        {business.address}, {business.city}, {business.state}
-        {business.zip}
-      </address>
-    </div>
+  <!-- Main footer -->
+  <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
 
-    <div class="footer-nav">
-      <a href="/">Home</a>
-      <a href="/services">Services</a>
-      <a href="/contact">Contact</a>
+      <!-- Brand column -->
+      <div class="lg:col-span-1">
+        <a href="/" class="inline-block font-bold text-xl text-fg-inverse hover:text-accent transition-colors mb-4">
+          {business.businessName}
+        </a>
+        {business.tagline && (
+          <p class="text-fg-inverse/60 text-sm leading-relaxed mb-6">
+            {business.tagline}
+          </p>
+        )}
+        <div class="flex flex-col gap-3 text-sm">
+          {business.phone && (
+            <a href={`tel:${business.phone}`} class="flex items-center gap-2 text-fg-inverse/70 hover:text-fg-inverse transition-colors">
+              <svg class="w-4 h-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              {business.phone}
+            </a>
+          )}
+          {business.email && (
+            <a href={`mailto:${business.email}`} class="flex items-center gap-2 text-fg-inverse/70 hover:text-fg-inverse transition-colors">
+              <svg class="w-4 h-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                <polyline points="22,6 12,12 2,6" />
+              </svg>
+              {business.email}
+            </a>
+          )}
+          {business.address && (
+            <address class="flex items-start gap-2 text-fg-inverse/70 not-italic">
+              <svg class="w-4 h-4 shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              <span>{business.address}, {business.city}, {business.state} {business.zip}</span>
+            </address>
+          )}
+        </div>
+        <!-- Social links -->
+        {(business.social?.facebook || business.social?.instagram || business.social?.youtube) && (
+          <div class="flex items-center gap-3 mt-6">
+            {business.social?.facebook && (
+              <a href={business.social.facebook} target="_blank" rel="noopener" aria-label="Facebook" class="w-8 h-8 flex items-center justify-center rounded-lg bg-fg-inverse/10 text-fg-inverse/60 hover:bg-fg-inverse/20 hover:text-fg-inverse transition-colors">
+                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                </svg>
+              </a>
+            )}
+            {business.social?.instagram && (
+              <a href={business.social.instagram} target="_blank" rel="noopener" aria-label="Instagram" class="w-8 h-8 flex items-center justify-center rounded-lg bg-fg-inverse/10 text-fg-inverse/60 hover:bg-fg-inverse/20 hover:text-fg-inverse transition-colors">
+                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                </svg>
+              </a>
+            )}
+            {business.social?.youtube && (
+              <a href={business.social.youtube} target="_blank" rel="noopener" aria-label="YouTube" class="w-8 h-8 flex items-center justify-center rounded-lg bg-fg-inverse/10 text-fg-inverse/60 hover:bg-fg-inverse/20 hover:text-fg-inverse transition-colors">
+                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z" />
+                  <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" />
+                </svg>
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+
+      <!-- Services column -->
+      {sortedServices.length > 0 && (
+        <div>
+          <h3 class="text-sm font-semibold text-fg-inverse uppercase tracking-wider mb-4">
+            Our Services
+          </h3>
+          <ul class="flex flex-col gap-2.5 list-none m-0 p-0">
+            {sortedServices.map((service) => (
+              <li>
+                <a
+                  href={`/services/${service.data.slug}`}
+                  class="text-sm text-fg-inverse/60 hover:text-fg-inverse transition-colors"
+                >
+                  {service.data.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <!-- Service areas column -->
+      {featuredAreas.length > 0 && (
+        <div>
+          <h3 class="text-sm font-semibold text-fg-inverse uppercase tracking-wider mb-4">
+            Service Areas
+          </h3>
+          <ul class="flex flex-col gap-2.5 list-none m-0 p-0">
+            {featuredAreas.map((area) => (
+              <li>
+                <span class="text-sm text-fg-inverse/60">
+                  {area.data.city}, {area.data.state}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <!-- Quick links column -->
+      <div>
+        <h3 class="text-sm font-semibold text-fg-inverse uppercase tracking-wider mb-4">
+          Quick Links
+        </h3>
+        <ul class="flex flex-col gap-2.5 list-none m-0 p-0">
+          {navItems
+            .filter(item => item.href)
+            .map(item => (
+              <li>
+                <a
+                  href={item.href}
+                  class="text-sm text-fg-inverse/60 hover:text-fg-inverse transition-colors"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <!-- {business.license && (
+          <div class="mt-6 pt-6 border-t border-fg-inverse/10">
+            <p class="text-xs text-fg-inverse/40">
+              License #{business.license}
+            </p>
+          </div>
+        )} -->
+      </div>
+
     </div>
   </div>
 
-  <div class="footer-bottom">
-    <p>&copy; {year} {business.businessName}. All rights reserved.</p>
-    <p>
-      Powered by <a href="https://extensibl.com" target="_blank" rel="noopener"
-        >Extensibl Media</a
-      >
-    </p>
+  <!-- Bottom bar -->
+  <div class="border-t border-fg-inverse/10">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-xs text-fg-inverse/40">
+        &copy; {year} {business.businessName}. All rights reserved.
+      </p>
+      <p class="text-xs text-fg-inverse/40">
+        Built by{' '}
+        <a
+          href="https://extensibl.com"
+          target="_blank"
+          rel="noopener"
+          class="text-fg-inverse/60 hover:text-fg-inverse transition-colors"
+        >
+          Extensibl Media
+        </a>
+      </p>
+    </div>
   </div>
 </footer>

@@ -1,5 +1,6 @@
 ---
 import MarketingLayout from "@/layouts/MarketingLayout.astro";
+import PageRenderer from "@/components/PageRenderer.astro";
 import { getCollection } from "astro:content";
 import {
   createBreadcrumbSchema,
@@ -7,7 +8,6 @@ import {
 } from "@/lib/schema";
 import JsonLd from "@/components/seo/JsonLD.astro";
 import { getBusinessData, getSiteData } from "@/lib/utils";
-import { sectionRegistry } from "@/lib/sectionRegistry";
 
 export async function getStaticPaths() {
   const localPages = await getCollection("localPages");
@@ -23,7 +23,6 @@ export async function getStaticPaths() {
 }
 
 const { page } = Astro.props;
-
 const business = await getBusinessData();
 const site = getSiteData();
 
@@ -58,11 +57,5 @@ const localBusinessSchema = createLocalBusinessSchema(business, site, {
   includeLocalBusinessSchema={false}
 >
   <JsonLd schema={[breadcrumbs, localBusinessSchema]} />
-
-  {
-    page.data.sections.map((section) => {
-      const Component = sectionRegistry[section.type];
-      return <Component {...section} service={page.data.service} />;
-    })
-  }
+  <PageRenderer config={{ sections: page.data.sections }} />
 </MarketingLayout>

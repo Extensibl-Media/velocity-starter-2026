@@ -1,5 +1,5 @@
 ---
-import "@/styles/global.less";
+import "../styles/global.css";
 import SEO from "@/components/seo/SEO.astro";
 import JsonLd from "@/components/seo/JsonLD.astro";
 import { ClientRouter } from "astro:transitions";
@@ -54,7 +54,7 @@ if (includeLocalBusinessSchema) {
       businessType,
       openingHours,
       areaServed,
-    })
+    }),
   );
 }
 ---

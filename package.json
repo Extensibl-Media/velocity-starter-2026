@@ -15,14 +15,14 @@
   "dependencies": {
     "@astrojs/markdoc": "^1.0.2",
     "@astrojs/sitemap": "^3.7.2",
+    "@tailwindcss/vite": "^4.2.2",
     "astro": "^6.0.8",
     "astro-icon": "^1.1.5",
-    "less": "^4.6.4",
     "schema-dts": "^2.0.0",
+    "tailwindcss": "^4.2.2",
     "wrangler": "^4.77.0"
   },
   "devDependencies": {
-    "@types/node": "^25.5.0",
-    "autoprefixer": "^10.4.27"
+    "@types/node": "^25.5.0"
   }
 }

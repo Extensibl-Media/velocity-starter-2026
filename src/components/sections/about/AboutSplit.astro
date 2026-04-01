@@ -1,0 +1,19 @@
+---
+// AboutSplit — placeholder
+// Replace with full implementation
+
+interface Props {
+  theme?: string;
+  data?: Record<string, unknown>;
+}
+
+const { theme = 'default', data } = Astro.props;
+---
+
+<section class={`section-wrapper section-py theme-${theme}`}>
+  <div class="section-container">
+    <p class="theme-text-muted text-sm">
+      [AboutSplit — not yet implemented]
+    </p>
+  </div>
+</section>

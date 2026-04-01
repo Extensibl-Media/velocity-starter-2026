@@ -1,27 +1,15 @@
 ---
-import ContactCTA from "@/components/sections/ContactForms/ContactCTA.astro";
-import HomeHero from "@/components/sections/Hero/HomeHero.astro";
-import Locations from "@/components/sections/Locations/Locations.astro";
-import Process from "@/components/sections/Process/Process.astro";
-import ReviewsGrid from "@/components/sections/Reviews/ReviewsGrid.astro";
-import SingleReview from "@/components/sections/Reviews/SingleReview.astro";
-import Services3Card from "@/components/sections/Services/Services3Card.astro";
-import SBSPair from "@/components/sections/SideBySide/SBSPair.astro";
-import WhyChooseUs from "@/components/sections/WhyChooseUs/WhyChooseUs.astro";
-import MarketingLayout from "@/layouts/MarketingLayout.astro";
-import { getBusinessData } from "@/lib/utils";
+import MarketingLayout from '@/layouts/MarketingLayout.astro';
+import PageRenderer from '@/components/PageRenderer.astro';
+import { getEntry } from 'astro:content';
 
-const business = await getBusinessData();
+const pageConfig = await getEntry('pages', 'home');
+if (!pageConfig) return Astro.redirect('/404');
 ---
 
-<MarketingLayout title="Home" description={business.tagline}>
-  <HomeHero />
-  <Services3Card />
-  <SBSPair />
-  <SingleReview />
-  <WhyChooseUs />
-  <Locations />
-  <!-- <Process /> -->
-  <ReviewsGrid />
-  <ContactCTA />
+<MarketingLayout
+  title={pageConfig.data.metaTitle}
+  description={pageConfig.data.metaDescription}
+>
+  <PageRenderer config={pageConfig.data} />
 </MarketingLayout>

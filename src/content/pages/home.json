@@ -1,0 +1,61 @@
+{
+  "title": "Home",
+  "metaTitle": "Peak Roofing Co | Trusted Roofing in Boise, ID",
+  "metaDescription": "Professional roofing services in Boise, ID. Licensed, insured, and trusted by homeowners since 2019.",
+  "sections": [
+    {
+      "type": "hero:full",
+      "theme": "inverse",
+      "data": {
+        "headline": "Trusted Roof Repair in Boise, ID",
+        "subheadline": "Fast response times, licensed and insured, serving Boise homeowners since 2019.",
+        "cta": { "label": "Call Now", "href": "tel:2085550147" },
+        "secondaryCta": { "label": "Get a Free Quote", "href": "/contact" }
+      }
+    },
+    {
+      "type": "trust-bar:badges",
+      "theme": "default",
+      "data": {
+        "foundingYear": 2019,
+        "googleRating": 4.9,
+        "reviewCount": 142,
+        "familyOwned": true,
+        "licensedInsured": true
+      }
+    },
+    {
+      "type": "services:grid",
+      "theme": "alt",
+      "data": {
+        "heading": "Our Roofing Services",
+        "subheading": "Professional roofing solutions for every need."
+      }
+    },
+    {
+      "type": "process:numbered",
+      "theme": "muted",
+      "data": {
+        "heading": "How It Works",
+        "subheading": "Getting your roof fixed is simple."
+      }
+    },
+    {
+      "type": "reviews:cards",
+      "theme": "default",
+      "data": {
+        "heading": "What Our Customers Say"
+      }
+    },
+    {
+      "type": "cta:banner",
+      "theme": "primary",
+      "data": {
+        "heading": "Ready to Get Started?",
+        "subheading": "Call us today for a free estimate. We respond within the hour.",
+        "cta": { "label": "Call Now", "href": "tel:2085550147" },
+        "secondaryCta": { "label": "Get a Free Quote", "href": "/contact" }
+      }
+    }
+  ]
+}

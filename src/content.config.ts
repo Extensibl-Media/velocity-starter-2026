@@ -1,6 +1,26 @@
 import { defineCollection } from "astro:content";
 import { glob, file } from "astro/loaders";
 import { z } from "astro/zod";
+
+// Pages (for Top Level Pages like About, Contact, etc.)
+const pages = defineCollection({
+  loader: glob({ base: "./src/content/pages", pattern: "**/*.json" }),
+  schema: z.object({
+    title: z.string(),
+    metaTitle: z.string().optional(),
+    metaDescription: z.string().optional(),
+    noindex: z.boolean().default(false),
+    sections: z.array(
+      z.object({
+        type: z.string(),
+        theme: z
+          .enum(["default", "alt", "muted", "inverse", "primary", "accent"])
+          .default("default"),
+        data: z.record(z.string(), z.unknown()).optional(),
+      }),
+    ),
+  }),
+});
 // Services
 const services = defineCollection({
   loader: glob({
@@ -45,72 +65,13 @@ const localPages = defineCollection({
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
     sections: z.array(
-      z.discriminatedUnion("type", [
-        // Hero
-        z.object({
-          type: z.literal("hero"),
-          heading: z.string(),
-          subheading: z.string().optional(),
-          cta: z
-            .object({
-              label: z.string(),
-              href: z.string(),
-            })
-            .optional(),
-        }),
-        // Services Grid
-        z.object({
-          type: z.literal("services-grid"),
-          heading: z.string(),
-          items: z.array(
-            z.object({
-              heading: z.string(),
-              body: z.string(),
-              icon: z.string().optional(),
-            })
-          ),
-        }),
-        // Reviews
-        z.object({
-          type: z.literal("reviews"),
-          heading: z.string().optional(),
-        }),
-        // FAQs
-        z.object({
-          type: z.literal("faqs"),
-          heading: z.string().optional(),
-        }),
-        // CTA Banner
-        z.object({
-          type: z.literal("cta-banner"),
-          heading: z.string(),
-          subheading: z.string().optional(),
-          cta: z
-            .object({
-              label: z.string(),
-              href: z.string(),
-            })
-            .optional(),
-        }),
-        // About
-        z.object({
-          type: z.literal("about"),
-          heading: z.string(),
-          body: z.string(),
-          image: z.string().optional(),
-        }),
-        // Process
-        z.object({
-          type: z.literal("process"),
-          heading: z.string(),
-          steps: z.array(
-            z.object({
-              heading: z.string(),
-              body: z.string(),
-            })
-          ),
-        }),
-      ])
+      z.object({
+        type: z.string(),
+        theme: z
+          .enum(["default", "alt", "muted", "inverse", "primary", "accent"])
+          .default("default"),
+        data: z.record(z.string(), z.unknown()).optional(),
+      }),
     ),
   }),
 });
@@ -202,7 +163,7 @@ const hoursSettings = defineCollection({
         open: z.string(),
         close: z.string(),
         closedAllDay: z.boolean().default(false),
-      })
+      }),
     ),
   }),
 });
@@ -249,14 +210,14 @@ const navigationSettings = defineCollection({
                       label: z.string(),
                       href: z.string(),
                       enabled: z.boolean().default(true),
-                    })
+                    }),
                   )
                   .optional(),
-              })
+              }),
             )
             .optional(),
-        })
-      )
+        }),
+      ),
     ),
   }),
 });
@@ -272,4 +233,5 @@ export const collections = {
   hoursSettings,
   seoSettings,
   navigationSettings,
+  pages,
 };

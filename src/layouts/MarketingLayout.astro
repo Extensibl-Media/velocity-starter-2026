@@ -1,9 +1,9 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import Header from "@/components/layout/Header.astro";
-import Footer from "@/components/layout/Footer/Footer.astro";
 import { getResolvedNav } from "@/lib/utils";
 import NavBar from "@/components/layout/Header/NavBar.astro";
+import Header from "@/components/layout/Header.astro";
+import Footer from "@/components/layout/Footer.astro";
 
 interface Props {
   title?: string;
@@ -54,8 +54,7 @@ const navItems = await getResolvedNav();
   openingHours={openingHours}
   areaServed={areaServed}
 >
-  <!-- <Header slot="header" navItems={navItems} /> -->
-  <NavBar slot="header" navItems={navItems} />
+  <Header slot="header" navItems={navItems} />
   <slot />
   <Footer slot="footer" />
 </BaseLayout>

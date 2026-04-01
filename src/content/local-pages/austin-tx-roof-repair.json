@@ -8,68 +8,49 @@
   "draft": false,
   "sections": [
     {
-      "type": "hero",
-      "heading": "Trusted Roof Repair in Austin, TX",
-      "subheading": "Fast response times, licensed and insured, serving Austin homeowners since 2005.",
-      "cta": {
-        "label": "Call Now",
-        "href": "tel:5125551234"
+      "type": "hero:image-overlay",
+      "theme": "inverse",
+      "data": {
+        "heading": "Trusted Roof Repair in Austin, TX",
+        "subheading": "Fast response times, licensed and insured, serving Austin homeowners since 2019.",
+        "cta": { "label": "Call Now", "href": "tel:5125551234" }
       }
     },
     {
-      "type": "services-grid",
-      "heading": "What We Fix",
-      "items": [
-        {
-          "heading": "Leak Repair",
-          "body": "Fast detection and repair of roof leaks before they cause interior damage.",
-          "icon": "leak"
-        },
-        {
-          "heading": "Storm Damage",
-          "body": "Emergency storm damage repair available 24/7 for Austin homeowners.",
-          "icon": "storm"
-        },
-        {
-          "heading": "Shingle Replacement",
-          "body": "Missing or damaged shingles replaced with matching materials.",
-          "icon": "shingle"
-        }
-      ]
+      "type": "services:grid",
+      "theme": "alt",
+      "data": {
+        "heading": "What We Fix"
+      }
     },
     {
-      "type": "process",
-      "heading": "How It Works",
-      "steps": [
-        {
-          "heading": "Call or Request a Quote",
-          "body": "Reach out by phone or form and we will respond within the hour."
-        },
-        {
-          "heading": "Free Inspection",
-          "body": "We assess the damage and give you a clear, honest estimate."
-        },
-        {
-          "heading": "Fast Repair",
-          "body": "Most repairs completed same day or next day."
-        }
-      ]
+      "type": "process:numbered",
+      "theme": "muted",
+      "data": {
+        "heading": "How It Works"
+      }
     },
     {
-      "type": "reviews",
-      "heading": "What Austin Customers Say"
+      "type": "reviews:cards",
+      "theme": "default",
+      "data": {
+        "heading": "What Austin Customers Say"
+      }
     },
     {
-      "type": "faqs",
-      "heading": "Common Questions About Roof Repair in Austin"
+      "type": "faqs:accordion",
+      "theme": "default",
+      "data": {
+        "heading": "Common Questions About Roof Repair in Austin"
+      }
     },
     {
-      "type": "cta-banner",
-      "heading": "Need Roof Repair in Austin?",
-      "subheading": "Call us today for a free estimate. We respond within the hour.",
-      "cta": {
-        "label": "Get a Free Quote",
-        "href": "/contact"
+      "type": "cta:banner",
+      "theme": "primary",
+      "data": {
+        "heading": "Need Roof Repair in Austin?",
+        "subheading": "Call us today for a free estimate. We respond within the hour.",
+        "cta": { "label": "Get a Free Quote", "href": "/contact" }
       }
     }
   ]

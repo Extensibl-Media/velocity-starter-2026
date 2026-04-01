@@ -1,0 +1,31 @@
+---
+import { sectionRegistry } from '@/lib/sectionRegistry';
+
+interface SectionConfig {
+  type: string;
+  theme?: string;
+  data?: Record<string, unknown>;
+}
+
+interface Props {
+  config: {
+    sections: SectionConfig[];
+  };
+}
+
+const { config } = Astro.props;
+---
+
+{config.sections.map((section) => {
+  const Component = sectionRegistry[section.type];
+  if (!Component) {
+    console.warn(`No component found for section type: ${section.type}`);
+    return null;
+  }
+  return (
+    <Component
+      theme={section.theme ?? 'default'}
+      data={section.data}
+    />
+  );
+})}
