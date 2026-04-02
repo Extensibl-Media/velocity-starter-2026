@@ -20,7 +20,7 @@ const pages = defineCollection({
     metaDescription: z.string().optional(),
     noindex: z.boolean().default(false),
     draft: z.boolean().default(false),
-    sections: z.array(sectionSchema),
+    sections: z.array(sectionSchema).default([]),
   }),
 });
 // Services
