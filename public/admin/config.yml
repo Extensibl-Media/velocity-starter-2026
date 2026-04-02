@@ -195,7 +195,7 @@ collections:
     extension: json
     format: json
     identifier_field: title
-    slug: "{{title}}"
+    slug: "{{fields.slug}}"
     fields:
       - label: URL Slug
         name: slug
