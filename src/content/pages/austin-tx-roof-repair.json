@@ -1,0 +1,56 @@
+{
+  "slug": "austin-tx/roof-repair",
+  "title": "Roof Repair in Austin TX",
+  "metaTitle": "Roof Repair in Austin TX | Demo Contractor",
+  "metaDescription": "Professional roof repair services in Austin TX. Fast response, licensed and insured. Call us today for a free estimate.",
+  "featured": true,
+  "draft": false,
+  "sections": [
+    {
+      "type": "hero:image-overlay",
+      "theme": "inverse",
+      "data": {
+        "heading": "Trusted Roof Repair in Austin, TX",
+        "subheading": "Fast response times, licensed and insured, serving Austin homeowners since 2019.",
+        "cta": { "label": "Call Now", "href": "tel:5125551234" }
+      }
+    },
+    {
+      "type": "services:grid",
+      "theme": "alt",
+      "data": {
+        "heading": "What We Fix"
+      }
+    },
+    {
+      "type": "process:numbered",
+      "theme": "muted",
+      "data": {
+        "heading": "How It Works"
+      }
+    },
+    {
+      "type": "reviews:cards",
+      "theme": "default",
+      "data": {
+        "heading": "What Austin Customers Say"
+      }
+    },
+    {
+      "type": "faqs:accordion",
+      "theme": "default",
+      "data": {
+        "heading": "Common Questions About Roof Repair in Austin"
+      }
+    },
+    {
+      "type": "cta:banner",
+      "theme": "primary",
+      "data": {
+        "heading": "Need Roof Repair in Austin?",
+        "subheading": "Call us today for a free estimate. We respond within the hour.",
+        "cta": { "label": "Get a Free Quote", "href": "/contact" }
+      }
+    }
+  ]
+}

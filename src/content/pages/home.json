@@ -1,16 +1,33 @@
 {
+  "slug": "index",
   "title": "Home",
   "metaTitle": "Peak Roofing Co | Trusted Roofing in Boise, ID",
   "metaDescription": "Professional roofing services in Boise, ID. Licensed, insured, and trusted by homeowners since 2019.",
   "sections": [
     {
-      "type": "hero:full",
+      "type": "hero:split-form",
       "theme": "inverse",
       "data": {
-        "headline": "Trusted Roof Repair in Boise, ID",
-        "subheadline": "Fast response times, licensed and insured, serving Boise homeowners since 2019.",
-        "cta": { "label": "Call Now", "href": "tel:2085550147" },
-        "secondaryCta": { "label": "Get a Free Quote", "href": "/contact" }
+        "eyebrow": {
+          "text": "Roofing Specialists — Boise • Meridian • Nampa",
+          "variant": "badge"
+        },
+        "heading": "Trusted Roof Repair in Boise, ID",
+        "subheading": "Fast response times, licensed and insured.",
+        "body": "Family-owned and operated. Competitive pricing, fast response, and a team that gets the job done right.",
+        "trustBadges": [
+          { "text": "Licensed & Insured" },
+          { "text": "Family Owned" },
+          { "text": "Same-Day Response" }
+        ],
+        "ctas": [
+          { "label": "Get a Free Quote", "href": "tel:2085550147", "variant": "primary" }
+        ],
+        "showPhone": true,
+        "backgroundImage": {
+          "src": "/src/assets/images/landing.jpg",
+          "overlayOpacity": 70
+        }
       }
     },
     {

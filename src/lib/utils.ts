@@ -9,7 +9,6 @@ export async function getBusinessData(): Promise<BusinessData> {
     if (!entry) throw new Error("No general settings found");
     return entry.data as BusinessData;
   } catch {
-    // Dev fallback — replace with real data in CMS
     return {
       businessName: siteConfig.name,
       tagline: siteConfig.description,
@@ -30,7 +29,6 @@ export function getSiteData(): SiteData {
   };
 }
 
-// Resolved nav node — fully generic, no type strings
 export interface NavNode {
   label: string;
   href?: string;
@@ -53,12 +51,11 @@ async function resolveNavItem(
   collections: {
     services: Awaited<ReturnType<typeof getCollection<"services">>>;
     serviceAreas: Awaited<ReturnType<typeof getCollection<"serviceAreas">>>;
-    localPages: Awaited<ReturnType<typeof getCollection<"localPages">>>;
+    pages: Awaited<ReturnType<typeof getCollection<"pages">>>;
   }
 ): Promise<NavNode> {
-  const { services, serviceAreas, localPages } = collections;
+  const { services, serviceAreas, pages } = collections;
 
-  // Auto-populate from services collection
   if (item.autoPopulate === "services") {
     const sorted = services.sort((a, b) => a.data.order - b.data.order);
     return {
@@ -71,17 +68,15 @@ async function resolveNavItem(
     };
   }
 
-  // Auto-populate from service areas + valid local pages
   if (item.autoPopulate === "service-areas") {
     const sortedAreas = serviceAreas.sort(
       (a, b) => a.data.order - b.data.order
     );
     const sortedServices = services.sort((a, b) => a.data.order - b.data.order);
 
+    // Use pages collection — find pages whose id matches area/service pattern
     const validPages = new Set(
-      localPages
-        .filter((p) => !p.data.draft)
-        .map((p) => `${p.data.area}/${p.data.service}`)
+      pages.filter((p) => !p.data.draft).map((p) => p.id)
     );
 
     const areaNodes: NavNode[] = sortedAreas
@@ -94,7 +89,6 @@ async function resolveNavItem(
 
         return {
           label: `${area.data.city}, ${area.data.state}`,
-          // href: `/${area.data.slug}`,
           children: areaServices.map((service) => ({
             label: service.data.title,
             href: `/${area.data.slug}/${service.data.slug}`,
@@ -110,7 +104,6 @@ async function resolveNavItem(
     };
   }
 
-  // Manual children
   if (item.children && item.children.length > 0) {
     return {
       label: item.label,
@@ -130,7 +123,6 @@ async function resolveNavItem(
     };
   }
 
-  // Plain link
   return {
     label: item.label,
     href: item.href,
@@ -144,16 +136,15 @@ export async function getResolvedNav(): Promise<NavNode[]> {
     if (!entry) return [];
 
     const enabledItems = entry.data.items.filter((item) => item.enabled);
-
     const needsCollections = enabledItems.some((item) => item.autoPopulate);
 
-    const [services, serviceAreas, localPages] = await Promise.all([
+    const [services, serviceAreas, pages] = await Promise.all([
       needsCollections ? getCollection("services") : Promise.resolve([]),
       needsCollections ? getCollection("serviceAreas") : Promise.resolve([]),
-      needsCollections ? getCollection("localPages") : Promise.resolve([]),
+      needsCollections ? getCollection("pages") : Promise.resolve([]),
     ]);
 
-    const collections = { services, serviceAreas, localPages };
+    const collections = { services, serviceAreas, pages };
 
     return Promise.all(
       enabledItems.map((item) => resolveNavItem(item, collections))

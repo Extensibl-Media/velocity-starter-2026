@@ -2,6 +2,15 @@ import { defineCollection } from "astro:content";
 import { glob, file } from "astro/loaders";
 import { z } from "astro/zod";
 
+// Shared section schema
+const sectionSchema = z.object({
+  type: z.string(),
+  theme: z
+    .enum(["default", "alt", "muted", "inverse", "primary", "brand-secondary"])
+    .default("default"),
+  data: z.record(z.string(), z.unknown()).optional(),
+});
+
 // Pages (for Top Level Pages like About, Contact, etc.)
 const pages = defineCollection({
   loader: glob({ base: "./src/content/pages", pattern: "**/*.json" }),
@@ -10,15 +19,8 @@ const pages = defineCollection({
     metaTitle: z.string().optional(),
     metaDescription: z.string().optional(),
     noindex: z.boolean().default(false),
-    sections: z.array(
-      z.object({
-        type: z.string(),
-        theme: z
-          .enum(["default", "alt", "muted", "inverse", "primary", "accent"])
-          .default("default"),
-        data: z.record(z.string(), z.unknown()).optional(),
-      }),
-    ),
+    draft: z.boolean().default(false),
+    sections: z.array(sectionSchema),
   }),
 });
 // Services
@@ -53,28 +55,28 @@ const serviceAreas = defineCollection({
   }),
 });
 
-// Local Service Pages
-const localPages = defineCollection({
-  loader: glob({ base: "./src/content/local-pages", pattern: "**/*.json" }),
-  schema: z.object({
-    area: z.string(),
-    service: z.string(),
-    title: z.string(),
-    metaTitle: z.string(),
-    metaDescription: z.string(),
-    featured: z.boolean().default(false),
-    draft: z.boolean().default(false),
-    sections: z.array(
-      z.object({
-        type: z.string(),
-        theme: z
-          .enum(["default", "alt", "muted", "inverse", "primary", "accent"])
-          .default("default"),
-        data: z.record(z.string(), z.unknown()).optional(),
-      }),
-    ),
-  }),
-});
+// // Local Service Pages
+// const localPages = defineCollection({
+//   loader: glob({ base: "./src/content/local-pages", pattern: "**/*.json" }),
+//   schema: z.object({
+//     area: z.string(),
+//     service: z.string(),
+//     title: z.string(),
+//     metaTitle: z.string(),
+//     metaDescription: z.string(),
+//     featured: z.boolean().default(false),
+//     draft: z.boolean().default(false),
+//     sections: z.array(
+//       z.object({
+//         type: z.string(),
+//         theme: z
+//           .enum(["default", "alt", "muted", "inverse", "primary", "accent"])
+//           .default("default"),
+//         data: z.record(z.string(), z.unknown()).optional(),
+//       }),
+//     ),
+//   }),
+// });
 
 // FAQs
 const faqs = defineCollection({
@@ -163,7 +165,7 @@ const hoursSettings = defineCollection({
         open: z.string(),
         close: z.string(),
         closedAllDay: z.boolean().default(false),
-      }),
+      })
     ),
   }),
 });
@@ -210,14 +212,14 @@ const navigationSettings = defineCollection({
                       label: z.string(),
                       href: z.string(),
                       enabled: z.boolean().default(true),
-                    }),
+                    })
                   )
                   .optional(),
-              }),
+              })
             )
             .optional(),
-        }),
-      ),
+        })
+      )
     ),
   }),
 });
@@ -225,7 +227,7 @@ const navigationSettings = defineCollection({
 export const collections = {
   services,
   serviceAreas,
-  localPages,
+  // localPages,
   faqs,
   reviews,
   posts,

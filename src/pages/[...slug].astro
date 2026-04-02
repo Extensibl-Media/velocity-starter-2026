@@ -1,0 +1,53 @@
+---
+import MarketingLayout from "@/layouts/MarketingLayout.astro";
+import PageRenderer from "@/components/PageRenderer.astro";
+import { getCollection } from "astro:content";
+import { getBusinessData, getSiteData } from "@/lib/utils";
+import {
+  createBreadcrumbSchema,
+  createLocalBusinessSchema,
+} from "@/lib/schema";
+import JsonLd from "@/components/seo/JsonLD.astro";
+
+export async function getStaticPaths() {
+  const pages = await getCollection("pages");
+  return pages
+    .filter((page) => !page.data.draft)
+    .filter((page) => page.id !== "")
+    .map((page) => ({
+      params: {
+        slug: page.id === "index" ? undefined : page.id,
+      },
+      props: { page },
+    }));
+}
+
+const { page } = Astro.props;
+const business = await getBusinessData();
+const site = getSiteData();
+
+const segments = page.id.split("/");
+const breadcrumbItems = [
+  { name: "Home", url: site.url },
+  ...segments.map((segment: string, i: number) => ({
+    name: segment
+      .split("-")
+      .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" "),
+    url: `${site.url}/${segments.slice(0, i + 1).join("/")}`,
+  })),
+];
+
+const breadcrumbs = createBreadcrumbSchema(breadcrumbItems);
+const localBusinessSchema = createLocalBusinessSchema(business, site);
+---
+
+<MarketingLayout
+  title={page.data.metaTitle ?? page.data.title}
+  description={page.data.metaDescription}
+  noindex={page.data.noindex}
+  includeLocalBusinessSchema={false}
+>
+  <JsonLd schema={[breadcrumbs, localBusinessSchema]} />
+  <PageRenderer config={page.data} />
+</MarketingLayout>

@@ -1,0 +1,46 @@
+{
+    "slug": "services/roof-repair",
+    "title": "Roof Repair",
+    "metaTitle": "Roof Repair Services | Peak Roofing Co",
+    "metaDescription": "Professional roof repair services in Boise ID. Licensed and insured. Fast response times.",
+    "draft": false,
+    "sections": [
+      {
+        "type": "hero:image-overlay",
+        "theme": "inverse",
+        "data": {
+          "heading": "Professional Roof Repair in Boise, ID",
+          "subheading": "Fast response times, licensed and insured.",
+          "showPhone": true,
+          "ctas": [
+            { "label": "Call Now", "href": "tel:2085550147", "variant": "secondary" },
+            { "label": "Get a Free Quote", "href": "/contact", "variant": "outline" }
+          ]
+        }
+      },
+      {
+        "type": "reviews:cards",
+        "theme": "default",
+        "data": {
+          "heading": "What Our Customers Say",
+          "service": "roof-repair"
+        }
+      },
+      {
+        "type": "faqs:accordion",
+        "theme": "alt",
+        "data": {
+          "service": "roof-repair"
+        }
+      },
+      {
+        "type": "cta:banner",
+        "theme": "primary",
+        "data": {
+          "heading": "Need Roof Repair?",
+          "subheading": "Call us today for a free estimate.",
+          "showPhone": true
+        }
+      }
+    ]
+  }

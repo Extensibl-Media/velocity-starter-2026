@@ -1,0 +1,29 @@
+{
+    "slug": "about",
+    "title": "About Us",
+    "metaTitle": "Peak Roofing Co | Trusted Roofing in Boise, ID",
+    "metaDescription": "Professional roofing services in Boise, ID. Licensed, insured, and trusted by homeowners since 2019.",
+    "sections": [
+      {
+        "type": "hero:minimal",
+        "theme": "inverse",
+        "data": {
+          "headline": "About Us",
+          "subheadline": "Helping Boise homeowners with trusted roofing services since 2019.",
+          "cta": { "label": "Call Now", "href": "tel:2085550147" },
+          "secondaryCta": { "label": "Get a Free Quote", "href": "/contact" }
+        }
+      },
+      {
+        "type": "cta:banner",
+        "theme": "primary",
+        "data": {
+          "heading": "Ready to Get Started?",
+          "subheading": "Call us today for a free estimate. We respond within the hour.",
+          "cta": { "label": "Call Now", "href": "tel:2085550147" },
+          "secondaryCta": { "label": "Get a Free Quote", "href": "/contact" }
+        }
+      }
+    ]
+  }
+  

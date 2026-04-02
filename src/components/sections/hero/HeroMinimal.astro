@@ -1,0 +1,18 @@
+---
+interface Props {
+  theme?: string;
+  data?: Record<string, unknown>;
+}
+const { theme = "default", data } = Astro.props;
+---
+
+<section class={`section-wrapper section-py-lg theme-${theme}`}>
+  <div class="section-container">
+    <h1 class="theme-heading text-4xl font-bold">{data?.headline as string}</h1>
+    {
+      data?.subheadline && (
+        <p class="theme-text-muted mt-4">{data.subheadline as string}</p>
+      )
+    }
+  </div>
+</section>

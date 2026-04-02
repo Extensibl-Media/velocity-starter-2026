@@ -3,6 +3,7 @@ import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 // Static imports — required for Astro components
 import HeroImageOverlay from "@/components/sections/hero/HeroImageOverlay.astro";
 import HeroFull from "@/components/sections/hero/HeroFull.astro";
+import HeroMinimal from "@/components/sections/hero/HeroMinimal.astro";
 import HeroSplitForm from "@/components/sections/hero/HeroSplitForm.astro";
 import HeroStackedForm from "@/components/sections/hero/HeroStackedForm.astro";
 import ServicesGrid from "@/components/sections/services/ServicesGrid.astro";
@@ -28,6 +29,7 @@ import TrustBarStats from "@/components/sections/trust-bar/TrustBarStats.astro";
 export const sectionRegistry: Record<string, AstroComponentFactory> = {
   "hero:image-overlay": HeroImageOverlay,
   "hero:full": HeroFull,
+  "hero:minimal": HeroMinimal,
   "hero:split-form": HeroSplitForm,
   "hero:stacked-form": HeroStackedForm,
   "services:grid": ServicesGrid,

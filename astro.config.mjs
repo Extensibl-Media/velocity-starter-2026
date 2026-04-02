@@ -1,3 +1,4 @@
+import tailwindcss from "@tailwindcss/vite";
 // @ts-check
 import { defineConfig, envField } from 'astro/config';
 import markdoc from '@astrojs/markdoc';
@@ -8,7 +9,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'static',
+	output: 'static',
   
   site: process.env.SITE_URL || 'https://example.com',
 

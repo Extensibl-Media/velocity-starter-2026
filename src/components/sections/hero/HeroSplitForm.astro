@@ -1,13 +1,291 @@
 ---
+import type { HeroData } from "./types";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from "@/components/starwind/card";
+import { Button } from "@/components/starwind/button";
+import { Input } from "@/components/starwind/input";
+import { Label } from "@/components/starwind/label";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+  SelectGroup,
+} from "@/components/starwind/select";
+import { getBusinessData } from "@/lib/utils";
+import { getCollection } from "astro:content";
+
 interface Props {
   theme?: string;
-  data?: Record<string, unknown>;
+  data?: HeroData;
 }
-const { theme = 'default', data } = Astro.props;
+
+const { theme = "default", data } = Astro.props;
+const business = await getBusinessData();
+const services = await getCollection("services");
+const sortedServices = services.sort((a, b) => a.data.order - b.data.order);
+
+const hasBackground = !!data?.backgroundImage?.src;
+const overlayOpacity = (data?.backgroundImage?.overlayOpacity ?? 60) / 100;
 ---
-<section class={`section-wrapper section-py theme-${theme}`}>
-  <div class="section-container">
-    <h1 class="theme-heading text-4xl font-bold">{data?.headline as string}</h1>
-    {data?.subheadline && <p class="theme-text-muted mt-4">{data.subheadline as string}</p>}
+
+<section
+  class:list={[
+    "hero-split section-wrapper section-py relative overflow-hidden min-h-[600px]",
+    `theme-${theme}`,
+    hasBackground ? "has-bg" : "no-bg",
+  ]}
+  style={hasBackground
+    ? `--hero-image: url('${data?.backgroundImage?.src}'); --hero-overlay: ${overlayOpacity}`
+    : ""}
+>
+  <div class="section-container relative z-10">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <!-- Left — content -->
+      <div class="flex flex-col gap-5">
+        {
+          data?.eyebrow && (
+            <div>
+              {data.eyebrow.variant === "badge" ? (
+                <Badge
+                  class="uppercase text-white bg-primary-accent tracking-widest text-xs text-wrap"
+                  size="lg"
+                >
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              )}
+            </div>
+          )
+        }
+
+        <h1 class="hero-heading theme-heading font-extrabold m-0">
+          {data?.useBusinessName ? business.businessName : data?.heading}
+        </h1>
+
+        {
+          data?.subheading && (
+            <p class="hero-subheading theme-text-muted leading-relaxed m-0">
+              {data.subheading}
+            </p>
+          )
+        }
+
+        {
+          data?.body && (
+            <div class="flex flex-col gap-3 text-base leading-relaxed theme-text">
+              {Array.isArray(data.body) ? (
+                data.body.map((p) => <p class="m-0">{p}</p>)
+              ) : (
+                <p class="m-0">{data.body}</p>
+              )}
+            </div>
+          )
+        }
+
+        {
+          data?.trustBadges && data.trustBadges.length > 0 && (
+            <div class="flex flex-wrap gap-x-6 gap-y-2">
+              {data.trustBadges.map((badge) => (
+                <span class="flex items-center gap-1.5 text-sm font-medium theme-text-muted">
+                  <svg
+                    class="w-4 h-4 shrink-0 text-color-brand-secondary"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    aria-hidden="true"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  {badge.text}
+                </span>
+              ))}
+            </div>
+          )
+        }
+
+        {
+          data?.offer && (
+            <div
+              class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm"
+              style="background: rgba(244,162,97,0.12); border-color: rgba(244,162,97,0.3)"
+            >
+              {data.offer.label && (
+                <span class="font-bold text-xs uppercase tracking-wide text-color-brand-secondary">
+                  {data.offer.label}
+                </span>
+              )}
+              <span class="theme-text">{data.offer.text}</span>
+            </div>
+          )
+        }
+
+        {
+          data?.ctas && data.ctas.length > 0 && (
+            <div class="flex flex-wrap items-center gap-4 mt-2">
+              {data.ctas.map((cta) => (
+                <Button variant={cta.variant ?? "primary"} href={cta.href}>
+                  {cta.label}
+                </Button>
+              ))}
+              {data?.showPhone && business.phone && (
+                <a
+                  href={`tel:${business.phone}`}
+                  class="flex items-center gap-2 font-semibold text-base theme-text no-underline hover:opacity-80 transition-opacity"
+                >
+                  <svg
+                    class="w-4 h-4 shrink-0"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    aria-hidden="true"
+                  >
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+                  </svg>
+                  {business.phone}
+                </a>
+              )}
+            </div>
+          )
+        }
+      </div>
+
+      <!-- Right — form -->
+      <div class="w-full">
+        <Card>
+          <CardHeader>
+            <CardTitle>Get a Free Quote</CardTitle>
+            <CardDescription>
+              We'll get back to you within the hour.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form class="flex flex-col gap-4" name="hero-quote" method="POST">
+              <div class="flex flex-col gap-1.5">
+                <Label for="hero-name">Full Name</Label>
+                <Input
+                  type="text"
+                  id="hero-name"
+                  name="name"
+                  placeholder="John Smith"
+                  required
+                />
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <Label for="hero-phone">Phone Number</Label>
+                <Input
+                  type="tel"
+                  id="hero-phone"
+                  name="phone"
+                  placeholder="(555) 555-5555"
+                  required
+                />
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <Label for="hero-email">Email</Label>
+                <Input
+                  type="email"
+                  id="hero-email"
+                  name="email"
+                  placeholder="you@example.com"
+                />
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <Label for="hero-service">Service Needed</Label>
+                <Select id="hero-service" name="service">
+                  <SelectTrigger class="w-full">
+                    <SelectValue placeholder="Select a service" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {
+                        sortedServices.map((service) => (
+                          <SelectItem value={service.data.slug}>
+                            {service.data.title}
+                          </SelectItem>
+                        ))
+                      }
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <Label for="hero-message">Message (optional)</Label>
+                <Input
+                  type="text"
+                  id="hero-message"
+                  name="message"
+                  placeholder="Tell us about your project"
+                />
+              </div>
+            </form>
+          </CardContent>
+          <CardFooter>
+            <Button variant="primary" type="submit" class="w-full">
+              Request a Free Quote
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    </div>
   </div>
 </section>
+
+<style>
+  /* Pseudo elements only — everything else is Tailwind */
+
+  .hero-split.has-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: var(--hero-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .hero-split.has-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: rgba(0, 0, 0, var(--hero-overlay, 0.6));
+  }
+
+  .hero-split.no-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(
+      135deg,
+      var(--color-bg-primary) 0%,
+      var(--color-bg-inverse) 100%
+    );
+  }
+
+  .hero-heading {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.1;
+  }
+
+  .hero-subheading {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+  }
+</style>
