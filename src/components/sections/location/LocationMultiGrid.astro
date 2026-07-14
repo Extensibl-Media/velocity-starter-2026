@@ -1,0 +1,147 @@
+---
+import { getBusinessData } from "@/lib/utils";
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * location:multi — a grid of location cards for businesses with more than one
+ * branch / yard / office. Each card carries a name, address, phone, an optional
+ * hours line, and a "Directions" button. Falls back to the single business record
+ * from generalSettings when no locations are authored.
+ */
+interface LocationCard {
+  name?: string;
+  address?: string;
+  phone?: string;
+  hoursNote?: string;
+  mapUrl?: string;
+}
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    locations?: LocationCard[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const business = await getBusinessData();
+
+const fallbackAddress = [
+  business.address,
+  [business.city, business.state].filter(Boolean).join(", "),
+  business.zip,
+]
+  .filter(Boolean)
+  .join(" ");
+
+const locations: LocationCard[] =
+  data?.locations && data.locations.length > 0
+    ? data.locations
+    : [
+        {
+          name: business.businessName,
+          address: fallbackAddress,
+          phone: business.phone,
+        },
+      ];
+
+const dirHref = (loc: LocationCard) =>
+  `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+    loc.address ?? loc.name ?? ""
+  )}`;
+const tel = (phone?: string) => (phone ? `tel:${phone.replace(/[^\d+]/g, "")}` : null);
+---
+
+<section class:list={["location-multi section-wrapper section-py", `theme-${theme}`]}>
+  <div class="section-container">
+    {
+      (data?.eyebrow || data?.heading || data?.subheading) && (
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                {data.eyebrow.text}
+              </span>
+            ))}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>
+          )}
+        </div>
+      )
+    }
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {
+        locations.map((loc) => (
+          <div class="loc-card flex flex-col">
+            <div class="flex items-center gap-3">
+              <span class="pin-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+              </span>
+              <h3 class="theme-heading text-lg font-bold m-0">{loc.name}</h3>
+            </div>
+
+            {loc.address && <p class="theme-text-muted m-0 mt-4">{loc.address}</p>}
+
+            {loc.hoursNote && (
+              <p class="theme-text-subtle text-sm m-0 mt-2">{loc.hoursNote}</p>
+            )}
+
+            {tel(loc.phone) && (
+              <a
+                href={tel(loc.phone)}
+                class="theme-heading font-semibold mt-3 inline-block hover:text-primary transition-colors"
+              >
+                {loc.phone}
+              </a>
+            )}
+
+            <div class="mt-auto pt-5">
+              <Button variant="outline" href={loc.mapUrl ?? dirHref(loc)} class="w-full">
+                Directions
+              </Button>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .loc-card {
+    padding: 1.75rem;
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-sm);
+  }
+  .pin-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--t-radius);
+    background: color-mix(in srgb, var(--theme-accent) 12%, transparent);
+    color: var(--theme-accent);
+  }
+  .pin-icon svg {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+</style>

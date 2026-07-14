@@ -1,0 +1,237 @@
+---
+import { getCollection } from "astro:content";
+import { getBusinessData } from "@/lib/utils";
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    body?: string;
+    coverageNote?: string;
+    cta?: SectionCTA;
+    featuredOnly?: boolean;
+    limit?: number;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const business = await getBusinessData();
+const serviceAreas = await getCollection("serviceAreas");
+
+const sorted = serviceAreas
+  .filter((a) => !data?.featuredOnly || a.data.featured)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, data?.limit ?? serviceAreas.length);
+
+// Build Google Maps embed URL from business address
+const addressQuery = encodeURIComponent(
+  `${business.address}, ${business.city}, ${business.state} ${business.zip}`
+);
+const mapEmbedUrl = `https://www.google.com/maps/embed/v1/place?key=AIzaSyD-placeholder&q=${addressQuery}`;
+
+// Fallback to search embed which doesn't require an API key
+const mapSearchUrl = `https://maps.google.com/maps?q=${addressQuery}&output=embed&z=10`;
+---
+
+<section class={`section-wrapper section-py theme-${theme}`}>
+  <div class="section-container">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+      {/* Left — map */}
+      <div class="map-wrapper">
+        <iframe
+          src={mapSearchUrl}
+          width="100%"
+          height="100%"
+          style="border: 0;"
+          allowfullscreen
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title={`Map of ${business.city}, ${business.state} service area`}
+          class="map-iframe"></iframe>
+        {/* Coverage callout badge */}
+        {
+          data?.coverageNote && (
+            <div class="coverage-badge">
+              <svg
+                class="w-4 h-4 shrink-0"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              <span>{data.coverageNote}</span>
+            </div>
+          )
+        }
+      </div>
+
+      {/* Right — content */}
+      <div class="flex flex-col gap-6">
+        {
+          data?.eyebrow && (
+            <div>
+              {data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              )}
+            </div>
+          )
+        }
+
+        {
+          data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )
+        }
+
+        {
+          data?.body && (
+            <p class="theme-text-muted text-lg leading-relaxed m-0">
+              {data.body}
+            </p>
+          )
+        }
+
+        {/* Service area cards grid */}
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {
+            sorted.map((area) => {
+              const hasPage = true; // future: check pages collection for area pages
+              return (
+                <a href={`/${area.data.slug}`} class="area-card group">
+                  <svg
+                    class="w-3.5 h-3.5 shrink-0 text-color-brand-secondary"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    aria-hidden="true"
+                  >
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  <span class="text-sm font-semibold theme-text group-hover:text-primary transition-colors">
+                    {area.data.city}, {area.data.state}
+                  </span>
+                </a>
+              );
+            })
+          }
+        </div>
+
+        {/* Don't see your area CTA */}
+        <div class="not-listed-callout">
+          <p class="theme-text-muted text-sm m-0">
+            Don't see your area?{" "}
+            <a
+              href={`tel:${business.phone}`}
+              class="font-semibold text-primary hover:underline"
+            >
+              Give us a call
+            </a>
+            {" "}— we may still be able to help.
+          </p>
+        </div>
+
+        {
+          data?.cta && (
+            <div>
+              <Button
+                variant={data.cta.variant ?? "primary"}
+                href={data.cta.href}
+              >
+                {data.cta.label}
+              </Button>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .map-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4/3;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      box-shadow: var(--t-shadow-md);
+    }
+
+    .map-iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 1.5rem;
+    }
+
+    /* Coverage note badge over map */
+    .coverage-badge {
+      position: absolute;
+      bottom: 1rem;
+      left: 1rem;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.875rem;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border-radius: 999px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--theme-accent);
+      box-shadow: var(--t-shadow-md);
+    }
+
+    /* Area cards */
+    .area-card {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.625rem 0.875rem;
+      border-radius: 0.625rem;
+      border: 1px solid var(--color-border);
+      background: var(--color-bg);
+      text-decoration: none;
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+    }
+
+    .area-card:hover {
+      border-color: var(--theme-accent);
+      box-shadow: var(--t-shadow-md);
+      background: var(--color-bg-alt);
+    }
+
+    /* Not listed callout */
+    .not-listed-callout {
+      padding: 0.875rem 1rem;
+      border-radius: 0.625rem;
+      background: var(--color-bg-muted);
+      border: 1px dashed var(--color-border);
+    }
+  </style>
+</section>

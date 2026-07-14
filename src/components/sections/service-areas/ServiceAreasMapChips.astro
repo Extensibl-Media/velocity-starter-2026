@@ -1,0 +1,150 @@
+---
+import { getCollection } from "astro:content";
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+/**
+ * service-areas:map-chips — a full-width embedded map with a horizontal row of
+ * city chips beneath it. Unlike map-split (map beside a text column), this puts
+ * the map front-and-center and treats the `serviceAreas` collection as a compact
+ * chip strip. Provide `mapEmbedUrl` for the iframe.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    limit?: number;
+    mapEmbedUrl?: string;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const all = await getCollection("serviceAreas");
+let areas = all.sort((a, b) => a.data.order - b.data.order);
+if (data?.limit) areas = areas.slice(0, data.limit);
+---
+
+<section
+  class:list={["service-areas-map-chips section-wrapper section-py", `theme-${theme}`]}
+>
+  <div class="section-container">
+    <div class="flex flex-col items-center text-center gap-3 mb-10">
+      {
+        data?.eyebrow && (
+          <div>
+            {data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="theme-accent text-sm font-semibold uppercase tracking-widest">
+                {data.eyebrow.text}
+              </span>
+            )}
+          </div>
+        )
+      }
+      {
+        data?.heading && (
+          <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+        )
+      }
+      {
+        data?.subheading && (
+          <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>
+        )
+      }
+    </div>
+
+    {
+      data?.mapEmbedUrl && (
+        <div class="map-frame">
+          <iframe
+            src={data.mapEmbedUrl}
+            width="100%"
+            height="100%"
+            style="border: 0;"
+            allowfullscreen
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Service area map"
+          />
+        </div>
+      )
+    }
+
+    <ul class="map-chip-row" role="list">
+      {
+        areas.map((area) => (
+          <li>
+            <a href={`/${area.data.slug}`} class="map-chip">
+              <svg
+                class="map-chip-pin theme-accent"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                aria-hidden="true"
+              >
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              <span class="theme-text font-semibold text-sm">
+                {area.data.city}, {area.data.state}
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .map-frame {
+    width: 100%;
+    aspect-ratio: 16 / 7;
+    border-radius: var(--t-radius);
+    overflow: hidden;
+    border: var(--t-border-width) solid var(--theme-border);
+    box-shadow: var(--t-shadow-md);
+    margin-bottom: 1.75rem;
+  }
+  .map-frame iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .map-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.625rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .map-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.5rem 0.95rem;
+    border-radius: 999px;
+    border: var(--t-border-width) solid var(--theme-border);
+    background-color: var(--card);
+    text-decoration: none;
+    transition:
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
+  }
+  .map-chip:hover {
+    box-shadow: var(--t-shadow-sm);
+    transform: translateY(-1px);
+  }
+  .map-chip-pin {
+    width: 0.9rem;
+    height: 0.9rem;
+    flex-shrink: 0;
+  }
+</style>

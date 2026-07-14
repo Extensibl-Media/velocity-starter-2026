@@ -1,0 +1,106 @@
+---
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+/**
+ * content:cards — a generic info-cards grid (2/3/4 cols). Each card carries an
+ * optional small icon (inline SVG string from the CMS/JSON, with a sensible
+ * default), a title, and a body. Good for "how it works" style info blocks.
+ * Theme-pure: card surface + border derive from tokens.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    columns?: 2 | 3 | 4;
+    items?: { icon?: string; title: string; body?: string }[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const items = data?.items ?? [];
+
+const columns = data?.columns ?? 3;
+const gridClass =
+  columns === 2
+    ? "grid-cols-1 sm:grid-cols-2"
+    : columns === 4
+      ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+      : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
+
+const hasHeader = Boolean(data?.eyebrow || data?.heading || data?.subheading);
+
+// Default icon rendered when a card omits its own SVG.
+const defaultIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m9 12 2 2 4-4" /></svg>`;
+---
+
+{
+  items.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {hasHeader && (
+          <div class="flex flex-col items-center text-center gap-3 mb-12">
+            {data?.eyebrow && (
+              <div>
+                {data.eyebrow.variant === "badge" ? (
+                  <Badge class="uppercase tracking-widest text-xs">
+                    {data.eyebrow.text}
+                  </Badge>
+                ) : (
+                  <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                    {data.eyebrow.text}
+                  </span>
+                )}
+              </div>
+            )}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">
+                {data.subheading}
+              </p>
+            )}
+          </div>
+        )}
+
+        <div class={`grid ${gridClass} gap-6`}>
+          {items.map((item) => (
+            <div class="card flex flex-col gap-3 p-6 rounded-xl border theme-border bg-background">
+              <span class="card-icon" set:html={item.icon || defaultIcon} />
+              <h3 class="theme-heading text-lg font-semibold m-0">
+                {item.title}
+              </h3>
+              {item.body && (
+                <p class="theme-text-muted text-sm leading-relaxed m-0">
+                  {item.body}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .card-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--radius);
+    color: var(--theme-accent);
+    background: color-mix(in srgb, var(--theme-accent) 12%, transparent);
+  }
+  .card-icon :global(svg) {
+    width: 1.375rem;
+    height: 1.375rem;
+  }
+</style>

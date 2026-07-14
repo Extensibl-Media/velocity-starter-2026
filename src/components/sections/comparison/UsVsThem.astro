@@ -1,0 +1,174 @@
+---
+import type { Eyebrow, ComparisonRow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    usLabel?: string;
+    themLabel?: string;
+    rows?: ComparisonRow[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const usLabel = data?.usLabel ?? "Us";
+const themLabel = data?.themLabel ?? "Others";
+const rows = data?.rows ?? [];
+---
+
+{
+  rows.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Section header */}
+        {(data?.eyebrow || data?.heading || data?.subheading) && (
+          <div class="flex flex-col items-center text-center gap-3 mb-12">
+            {data?.eyebrow && (
+              <div>
+                {data.eyebrow.variant === "badge" ? (
+                  <Badge class="uppercase tracking-widest text-xs">
+                    {data.eyebrow.text}
+                  </Badge>
+                ) : (
+                  <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                    {data.eyebrow.text}
+                  </span>
+                )}
+              </div>
+            )}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">
+                {data.subheading}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Comparison table */}
+        <div class="comparison-table max-w-3xl mx-auto rounded-xl border theme-border overflow-hidden">
+          {/* Header row */}
+          <div class="comparison-row grid grid-cols-3">
+            <div class="comparison-cell theme-border" aria-hidden="true" />
+            <div class="comparison-cell comparison-us flex items-center justify-center text-center">
+              <span class="theme-heading text-base font-bold">{usLabel}</span>
+            </div>
+            <div class="comparison-cell flex items-center justify-center text-center">
+              <span class="theme-text-muted text-base font-semibold">
+                {themLabel}
+              </span>
+            </div>
+          </div>
+
+          {/* Body rows */}
+          {rows.map((row) => (
+            <div class="comparison-row grid grid-cols-3">
+              <div class="comparison-cell theme-border flex items-center">
+                <span class="theme-text text-sm font-medium">
+                  {row.feature}
+                </span>
+              </div>
+              <div class="comparison-cell comparison-us flex items-center justify-center text-center">
+                {typeof row.us === "boolean" ? (
+                  row.us ? (
+                    <svg
+                      class="w-5 h-5"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      stroke="var(--color-primary)"
+                      stroke-width="2.25"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      role="img"
+                      aria-label="Yes"
+                    >
+                      <path d="M4 10.5l4 4 8-9" />
+                    </svg>
+                  ) : (
+                    <svg
+                      class="w-5 h-5 theme-text-subtle"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.25"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      role="img"
+                      aria-label="No"
+                    >
+                      <path d="M5 5l10 10M15 5L5 15" />
+                    </svg>
+                  )
+                ) : (
+                  <span class="theme-text text-sm font-medium">{row.us}</span>
+                )}
+              </div>
+              <div class="comparison-cell flex items-center justify-center text-center">
+                {typeof row.them === "boolean" ? (
+                  row.them ? (
+                    <svg
+                      class="w-5 h-5"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      stroke="var(--color-primary)"
+                      stroke-width="2.25"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      role="img"
+                      aria-label="Yes"
+                    >
+                      <path d="M4 10.5l4 4 8-9" />
+                    </svg>
+                  ) : (
+                    <svg
+                      class="w-5 h-5 theme-text-subtle"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.25"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      role="img"
+                      aria-label="No"
+                    >
+                      <path d="M5 5l10 10M15 5L5 15" />
+                    </svg>
+                  )
+                ) : (
+                  <span class="theme-text-muted text-sm">{row.them}</span>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .comparison-row + .comparison-row {
+    border-top: 1px solid var(--theme-border);
+  }
+  .comparison-cell {
+    padding: 0.875rem 1rem;
+  }
+  /* Vertical divider before the "them" column */
+  .comparison-row > .comparison-cell:last-child {
+    border-left: 1px solid var(--theme-border);
+  }
+  /* Highlight the whole "us" column */
+  .comparison-us {
+    background: color-mix(in srgb, var(--theme-accent) 6%, transparent);
+    border-left: 1px solid var(--theme-border);
+  }
+</style>

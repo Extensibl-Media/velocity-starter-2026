@@ -148,6 +148,18 @@ const generalSettings = defineCollection({
         youtube: z.string().optional(),
       })
       .optional(),
+    headerVariant: z
+      .enum([
+        "classic", "centered", "minimal", "transparent", "inverse",
+        "two-row", "pill", "compact", "cta-prominent", "gradient",
+      ])
+      .optional(),
+    footerVariant: z
+      .enum([
+        "columns", "simple", "cta", "newsletter", "map",
+        "mega", "centered", "hours", "social", "bar",
+      ])
+      .optional(),
   }),
 });
 

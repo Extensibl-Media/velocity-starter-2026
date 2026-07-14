@@ -1,0 +1,124 @@
+---
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+/**
+ * gallery:polaroid — a scattered stack of tilted polaroid-style photos with
+ * handwritten-feel captions on a light frame. Cards sit at alternating angles
+ * and straighten on hover. Pure CSS, no JS.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    images?: { src: string; alt?: string; caption?: string }[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const images = data?.images ?? [];
+---
+
+<section class:list={["gallery-polaroid section-wrapper section-py", `theme-${theme}`]}>
+  <div class="section-container">
+    {
+      (data?.eyebrow || data?.heading || data?.subheading) && (
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            ))}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>
+          )}
+        </div>
+      )
+    }
+
+    {
+      images.length > 0 && (
+        <div class="polaroid-scatter">
+          {images.map((img) => (
+            <figure class="polaroid surface-base m-0">
+              <div class="polaroid-frame">
+                <SmartImage
+                  src={img.src}
+                  alt={img.alt ?? ""}
+                  widths={[300, 500]}
+                  sizes="(min-width: 640px) 18rem, 70vw"
+                  class="polaroid-img"
+                />
+              </div>
+              {img.caption && (
+                <figcaption class="polaroid-caption theme-text-subtle">{img.caption}</figcaption>
+              )}
+            </figure>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .polaroid-scatter {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 1.75rem 1.5rem;
+  }
+  .polaroid {
+    flex: 0 0 auto;
+    width: 15rem;
+    padding: 0.85rem 0.85rem 0;
+    border-radius: calc(var(--t-radius) / 2);
+    box-shadow: var(--t-shadow-lg);
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+  .polaroid:nth-child(4n + 1) {
+    transform: rotate(-3deg);
+  }
+  .polaroid:nth-child(4n + 2) {
+    transform: rotate(2deg);
+  }
+  .polaroid:nth-child(4n + 3) {
+    transform: rotate(-1.5deg);
+  }
+  .polaroid:nth-child(4n) {
+    transform: rotate(3deg);
+  }
+  .polaroid:hover {
+    transform: rotate(0deg) translateY(-6px) scale(1.03);
+    box-shadow: var(--t-shadow-lg);
+    z-index: 1;
+  }
+  .polaroid-frame {
+    overflow: hidden;
+  }
+  .polaroid-frame :global(.polaroid-img) {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+  }
+  .polaroid-caption {
+    padding: 0.85rem 0.25rem 1.1rem;
+    text-align: center;
+    font-style: italic;
+    font-size: 1rem;
+    line-height: 1.3;
+  }
+</style>

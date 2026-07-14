@@ -1,0 +1,95 @@
+---
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * cta:choose-path — a "pick your next step" CTA. A shared header on top, then
+ * two (or more) raised cards side by side, each with its own icon, title, body
+ * and button. Great for splitting audiences (e.g. "Need it now" vs "Just quoting").
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    paths?: { icon?: string; title?: string; body?: string; cta?: SectionCTA }[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const paths = data?.paths ?? [];
+---
+
+<section class:list={["cta-choose-path section-wrapper section-py", `theme-${theme}`]}>
+  <div class="section-container">
+    <div class="flex flex-col items-center text-center gap-4 max-w-2xl mx-auto mb-10">
+      {data?.eyebrow &&
+        (data.eyebrow.variant === "badge" ? (
+          <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+        ) : (
+          <span class="text-sm font-bold uppercase tracking-widest theme-accent">
+            {data.eyebrow.text}
+          </span>
+        ))}
+
+      {data?.heading && (
+        <h2 class="theme-heading text-3xl lg:text-4xl font-black m-0 leading-tight">
+          {data.heading}
+        </h2>
+      )}
+
+      {data?.subheading && (
+        <p class="theme-text-muted text-lg leading-relaxed m-0">{data.subheading}</p>
+      )}
+    </div>
+
+    {paths.length > 0 && (
+      <div class="grid gap-6 md:grid-cols-2">
+        {paths.map((path) => (
+          <div class="path-card flex flex-col items-start gap-4 h-full">
+            {path.icon && (
+              <span class="path-icon inline-flex items-center justify-center text-2xl" aria-hidden="true">
+                {path.icon}
+              </span>
+            )}
+            {path.title && (
+              <h3 class="theme-heading text-xl lg:text-2xl font-bold m-0">{path.title}</h3>
+            )}
+            {path.body && (
+              <p class="theme-text-muted leading-relaxed m-0 flex-1">{path.body}</p>
+            )}
+            {path.cta && (
+              <Button variant={path.cta.variant ?? "primary"} href={path.cta.href} class="mt-2">
+                {path.cta.label}
+              </Button>
+            )}
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .path-card {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-sm);
+    padding: 2rem;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .path-card:hover {
+    box-shadow: var(--t-shadow-md);
+    transform: translateY(-2px);
+  }
+  .path-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--t-radius);
+    background-color: color-mix(in srgb, var(--theme-accent) 14%, transparent);
+    color: var(--theme-accent);
+  }
+</style>

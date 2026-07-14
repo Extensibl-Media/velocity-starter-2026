@@ -1,0 +1,138 @@
+---
+import type { Eyebrow, ProcessStep } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    steps?: ProcessStep[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const steps = data?.steps ?? [];
+---
+
+{
+  steps.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Section header */}
+        <div class="flex flex-col items-center text-center gap-3 mb-16">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">
+                {data.eyebrow.text}
+              </Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            ))}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">
+              {data.subheading}
+            </p>
+          )}
+        </div>
+
+        {/* Horizontal icon row */}
+        <div class="process-icon-row" style={`--step-count: ${steps.length}`}>
+          {steps.map((step, index) => (
+            <div class="process-icon-step">
+              {index < steps.length - 1 && (
+                <div class="process-icon-connector" aria-hidden="true" />
+              )}
+              <div class="process-icon-circle">
+                <span class="process-icon-number">{index + 1}</span>
+              </div>
+              <h3 class="theme-heading font-bold text-lg m-0">
+                {step.heading}
+              </h3>
+              {step.body && (
+                <p class="theme-text-muted text-sm leading-relaxed m-0 mt-2">
+                  {step.body}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .process-icon-row {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 3rem;
+  }
+
+  @media (min-width: 768px) {
+    .process-icon-row {
+      grid-template-columns: repeat(var(--step-count), 1fr);
+      gap: 1rem;
+    }
+  }
+
+  .process-icon-step {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0 1rem;
+  }
+
+  /* Subtle connector line between steps on desktop */
+  .process-icon-connector {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .process-icon-connector {
+      display: block;
+      position: absolute;
+      top: 2rem;
+      left: calc(50% + 2.5rem);
+      right: calc(-50% + 2.5rem);
+      height: 2px;
+      background: var(--color-primary);
+      opacity: 0.2;
+      z-index: 0;
+    }
+  }
+
+  .process-icon-circle {
+    position: relative;
+    z-index: 1;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 6px
+      color-mix(in srgb, var(--theme-accent) 10%, transparent);
+  }
+
+  .process-icon-number {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-fg-on-primary);
+    line-height: 1;
+  }
+</style>

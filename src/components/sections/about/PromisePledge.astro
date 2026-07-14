@@ -1,0 +1,150 @@
+---
+import type { Eyebrow, SectionCTA, FeatureItem } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * about:promise — an "our promise to you" pledge. The intro sits on the left;
+ * the pledges render as a numbered vertical list inside one raised pledge card
+ * on the right, each with a title, supporting line, and optional sub-points.
+ * Distinct from the values grid — this is a single signed commitment block.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    items?: FeatureItem[];
+    cta?: SectionCTA;
+    ctas?: SectionCTA[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const ctas = (
+  data?.ctas?.length ? data.ctas : [data?.cta].filter(Boolean)
+) as SectionCTA[];
+const items = (data?.items ?? []).filter((item) => item?.title);
+const hasIntro = Boolean(data?.eyebrow || data?.heading || data?.subheading);
+---
+
+{
+  (hasIntro || items.length > 0) && (
+    <section class:list={["about-promise section-wrapper section-py", `theme-${theme}`]}>
+      <div class="section-container">
+        <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,24rem)_1fr] gap-10 lg:gap-16 items-start">
+          {/* Intro */}
+          <div class="flex flex-col gap-5 lg:sticky lg:top-24">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs self-start">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg leading-relaxed m-0">
+                {data.subheading}
+              </p>
+            )}
+
+            {ctas.length > 0 && (
+              <div class="flex flex-wrap gap-4 mt-2">
+                {ctas.map((cta, i) => (
+                  <Button variant={cta.variant ?? (i === 0 ? "primary" : "outline")} href={cta.href}>
+                    {cta.label}
+                  </Button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Pledge card */}
+          {items.length > 0 && (
+            <ol class="pledge-card list-none m-0 p-0">
+              {items.map((item, i) => (
+                <li class="pledge-item">
+                  <span class="pledge-num" aria-hidden="true">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div class="flex flex-col gap-1.5 min-w-0">
+                    <h3 class="theme-heading font-semibold text-lg m-0">
+                      {item.title}
+                    </h3>
+                    {item.body && (
+                      <p class="theme-text-muted text-base leading-relaxed m-0">
+                        {item.body}
+                      </p>
+                    )}
+                    {item.bullets && item.bullets.length > 0 && (
+                      <ul class="flex flex-col gap-1.5 m-0 p-0 list-none mt-1">
+                        {item.bullets.map((bullet) => (
+                          <li class="theme-text-subtle text-sm flex items-start gap-2">
+                            <svg
+                              class="w-4 h-4 theme-accent shrink-0 mt-0.5"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2.5"
+                              aria-hidden="true"
+                            >
+                              <path d="M20 6 9 17l-5-5" />
+                            </svg>
+                            <span>{bullet}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ol>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .pledge-card {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-lg);
+    overflow: hidden;
+  }
+
+  .pledge-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 1.5rem;
+  }
+
+  .pledge-item + .pledge-item {
+    border-top: var(--t-border-width) solid var(--theme-border);
+  }
+
+  .pledge-num {
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--theme-accent);
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+  }
+</style>

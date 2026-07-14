@@ -1,0 +1,53 @@
+---
+/**
+ * Dev-only error shim. PageRenderer renders this in place of a section that
+ * fails validation during `astro dev`, so broken content is loud and locatable.
+ * In production builds the broken section is silently omitted instead.
+ *
+ * Intentionally NOT theme-pure — it's a diagnostic, styled to stand out.
+ */
+interface Props {
+  type?: string;
+  message: string;
+  details?: string[];
+}
+const { type, message, details = [] } = Astro.props;
+---
+
+<div class="section-error" role="alert">
+  <div class="section-error-inner">
+    <strong>⚠ Section error{type ? ` — “${type}”` : ""}</strong>
+    <p>{message}</p>
+    {
+      details.length > 0 && (
+        <ul>
+          {details.map((d) => (
+            <li>{d}</li>
+          ))}
+        </ul>
+      )
+    }
+    <small>Dev-only shim — this section is omitted in production builds.</small>
+  </div>
+</div>
+
+<style>
+  .section-error { padding: 1rem; }
+  .section-error-inner {
+    max-width: 72rem;
+    margin: 0 auto;
+    border: 2px dashed #dc2626;
+    border-radius: 0.5rem;
+    background: #fef2f2;
+    color: #7f1d1d;
+    padding: 1rem 1.25rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  .section-error-inner strong { display: block; margin-bottom: 0.25rem; font-size: 0.95rem; }
+  .section-error-inner p { margin: 0; }
+  .section-error-inner ul { margin: 0.5rem 0 0; padding-left: 1.25rem; }
+  .section-error-inner li { margin: 0.15rem 0; }
+  .section-error-inner small { display: block; margin-top: 0.6rem; opacity: 0.7; }
+</style>

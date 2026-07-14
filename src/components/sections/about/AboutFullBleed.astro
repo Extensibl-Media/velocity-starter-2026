@@ -1,0 +1,118 @@
+---
+import { getBackgroundImage } from "@/lib/images";
+import type { Eyebrow, SectionCTA, ImageRef } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * about:full-bleed — a full-bleed background image with a dark overlay and an
+ * overlaid story card (eyebrow / heading / body / CTA), aligned left or center.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    body?: string;
+    image?: ImageRef;
+    cta?: SectionCTA;
+    align?: "left" | "center";
+    overlayOpacity?: number;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const hasCard = !!(data?.eyebrow || data?.heading || data?.body || data?.cta);
+
+const align = data?.align ?? "left";
+
+const bgUrl = await getBackgroundImage(data?.image?.src, { width: 2200 });
+const hasBackground = !!bgUrl;
+const overlayOpacity = (data?.overlayOpacity ?? 55) / 100;
+---
+
+{
+  hasCard && (
+    <section
+      class:list={[
+        "about-full-bleed section-wrapper relative overflow-hidden flex items-center min-h-[520px]",
+        `theme-${theme}`,
+        hasBackground ? "has-bg" : "no-bg",
+      ]}
+      style={
+        hasBackground
+          ? `--bg-image: url('${bgUrl}'); --bg-overlay: ${overlayOpacity}`
+          : ""
+      }
+    >
+      <div class="section-container relative z-10 py-20 lg:py-28">
+        <div
+          class:list={[
+            "story-card flex flex-col gap-5 max-w-xl rounded-2xl bg-background p-8 lg:p-10",
+            align === "center" && "mx-auto text-center items-center",
+          ]}
+        >
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">
+                {data.eyebrow.text}
+              </Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            ))}
+
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0 leading-tight">
+              {data.heading}
+            </h2>
+          )}
+
+          {data?.body && (
+            <p class="theme-text-muted text-lg leading-relaxed m-0">
+              {data.body}
+            </p>
+          )}
+
+          {data?.cta && (
+            <div class="mt-2">
+              <Button
+                variant={data.cta.variant ?? "primary"}
+                href={data.cta.href}
+              >
+                {data.cta.label}
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .about-full-bleed.has-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .about-full-bleed.has-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: rgba(0, 0, 0, var(--bg-overlay, 0.55));
+  }
+
+  .story-card {
+    box-shadow: var(--t-shadow-lg);
+  }
+</style>

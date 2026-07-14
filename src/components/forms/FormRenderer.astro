@@ -1,0 +1,19 @@
+---
+import { resolveForm } from "@/lib/formRegistry";
+import type { FormConfig } from "@/types/sections";
+
+/**
+ * Renders the correct lead-form sub-component into a hero's form slot, chosen by
+ * `form.type` (defaults to "simple"). Drop this anywhere a form should go and
+ * pass the section's `data.form`.
+ */
+interface Props {
+  form?: FormConfig;
+  services?: { data: { slug: string; title: string } }[];
+}
+
+const { form, services } = Astro.props;
+const FormComp = resolveForm(form?.type);
+---
+
+<FormComp form={form} services={services} />

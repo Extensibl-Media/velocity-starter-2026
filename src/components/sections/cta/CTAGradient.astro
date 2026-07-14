@@ -1,0 +1,105 @@
+---
+import { getBusinessData } from "@/lib/utils";
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    ctas?: SectionCTA[];
+    showPhone?: boolean;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const business = await getBusinessData();
+
+const hasContent = !!(data?.heading || data?.subheading || data?.ctas?.length || data?.showPhone);
+---
+
+{
+  hasContent && (
+    <section class:list={["cta-gradient section-wrapper section-py-lg", `theme-${theme}`]}>
+      <div class="section-container relative z-10">
+        <div class="flex flex-col items-center text-center gap-6 max-w-3xl mx-auto">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="eyebrow-text text-sm font-semibold uppercase tracking-widest">
+                {data.eyebrow.text}
+              </span>
+            ))}
+
+          {data?.heading && (
+            <h2 class="cta-heading text-3xl lg:text-5xl font-black m-0 leading-tight">
+              {data.heading}
+            </h2>
+          )}
+
+          {data?.subheading && (
+            <p class="cta-subheading text-lg leading-relaxed m-0">{data.subheading}</p>
+          )}
+
+          {(data?.ctas?.length || data?.showPhone) && (
+            <div class="flex flex-wrap items-center justify-center gap-4 mt-2">
+              {data?.ctas?.map((cta) => (
+                <Button variant={cta.variant ?? "primary"} href={cta.href}>
+                  {cta.label}
+                </Button>
+              ))}
+              {data?.showPhone && business.phone && (
+                <a
+                  href={`tel:${business.phone}`}
+                  class="cta-phone inline-flex items-center gap-2 font-bold text-lg hover:opacity-80 transition-opacity no-underline"
+                >
+                  <svg
+                    class="w-5 h-5 shrink-0"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    aria-hidden="true"
+                  >
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+                  </svg>
+                  {business.phone}
+                </a>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .cta-gradient {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-bg-inverse));
+  }
+
+  /* Light text on the bold gradient band */
+  .cta-heading {
+    color: var(--color-fg-on-primary);
+  }
+
+  .cta-subheading {
+    color: color-mix(in srgb, var(--color-fg-on-primary) 85%, transparent);
+  }
+
+  .eyebrow-text {
+    color: color-mix(in srgb, var(--color-fg-on-primary) 90%, transparent);
+  }
+
+  .cta-phone {
+    color: var(--color-fg-on-primary);
+  }
+</style>

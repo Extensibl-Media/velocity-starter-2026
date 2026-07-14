@@ -1,0 +1,155 @@
+---
+import { getCollection } from "astro:content";
+import { getBusinessData } from "@/lib/utils";
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+/**
+ * service-areas:map-full — a full-width Google Maps embed built from the
+ * business address, with the (featured) city list rendered as chips below it.
+ * `data.mapEmbedUrl` overrides the auto-built embed URL. If `hrefBase` is set,
+ * chips link to `${hrefBase}/${slug}`.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    mapEmbedUrl?: string;
+    featuredOnly?: boolean;
+    limit?: number;
+    hrefBase?: string;
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const business = await getBusinessData();
+
+const all = await getCollection("serviceAreas");
+let areas = all.sort((a, b) => a.data.order - b.data.order);
+if (data?.featuredOnly) areas = areas.filter((a) => a.data.featured);
+if (data?.limit) areas = areas.slice(0, data.limit);
+
+const hrefBase = data?.hrefBase?.replace(/\/$/, "");
+
+// Build the Google Maps embed URL from the business address.
+const fullAddress = [business.address, business.city, business.state, business.zip]
+  .filter(Boolean)
+  .join(", ");
+const mapEmbedUrl =
+  data?.mapEmbedUrl ??
+  (fullAddress
+    ? `https://www.google.com/maps?q=${encodeURIComponent(fullAddress)}&output=embed`
+    : null);
+---
+
+{
+  mapEmbedUrl && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Header */}
+        <div class="flex flex-col items-center text-center gap-3 mb-10">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <div>
+                <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+              </div>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            ))}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>
+          )}
+        </div>
+
+        {/* Full-width map */}
+        <div class="map-box rounded-2xl overflow-hidden">
+          <iframe
+            src={mapEmbedUrl}
+            width="100%"
+            height="100%"
+            style="border: 0;"
+            allowfullscreen
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title={
+              fullAddress
+                ? `Map of our service area near ${business.city || fullAddress}`
+                : "Service area map"
+            }
+            class="map-iframe"
+          />
+        </div>
+
+        {/* City chips */}
+        {areas.length > 0 && (
+          <div class="flex flex-wrap justify-center gap-2 mt-8">
+            {areas.map((area) => {
+              const label = `${area.data.city}, ${area.data.state}`;
+              return hrefBase ? (
+                <a href={`${hrefBase}/${area.data.slug}`} aria-label={label} class="chip">
+                  {area.data.city}
+                </a>
+              ) : (
+                <span class="chip">{area.data.city}</span>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Optional CTA */}
+        {data?.cta && (
+          <div class="flex justify-center mt-10">
+            <a
+              href={data.cta.href}
+              class="inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold text-sm transition-colors bg-primary text-primary-foreground hover:opacity-90"
+            >
+              {data.cta.label}
+            </a>
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .map-box {
+    position: relative;
+    width: 100%;
+    height: 360px;
+    border: var(--t-border-width) solid var(--theme-border);
+  }
+  .map-iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.875rem;
+    border-radius: 999px;
+    border: var(--t-border-width) solid var(--theme-border);
+    background: var(--color-background);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--theme-fg);
+    text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  a.chip:hover {
+    background: var(--color-primary);
+    color: var(--color-fg-on-primary);
+    border-color: var(--theme-accent);
+  }
+</style>

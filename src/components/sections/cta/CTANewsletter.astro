@@ -1,0 +1,80 @@
+---
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+import { Input } from "@/components/starwind/input";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    submitLabel?: string;
+    placeholder?: string;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const submitLabel = data?.submitLabel ?? "Subscribe";
+const placeholder = data?.placeholder ?? "you@example.com";
+const hasContent = !!(data?.heading || data?.subheading);
+---
+
+{
+  hasContent && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        <div class="flex flex-col items-center text-center gap-4 max-w-2xl mx-auto">
+          {data?.eyebrow && (
+            <div>
+              {data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              )}
+            </div>
+          )}
+
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0 leading-tight">
+              {data.heading}
+            </h2>
+          )}
+
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg leading-relaxed m-0">
+              {data.subheading}
+            </p>
+          )}
+
+          <form
+            name="newsletter"
+            method="POST"
+            class="flex flex-col sm:flex-row w-full gap-3 mt-2"
+          >
+            <label for="newsletter-email" class="sr-only">
+              Email address
+            </label>
+            <Input
+              id="newsletter-email"
+              type="email"
+              name="email"
+              required
+              placeholder={placeholder}
+              class="text-fg-muted placeholder:text-fg-muted border-bg-inverse flex-1"
+            />
+            <Button type="submit" variant="primary" class="shrink-0">
+              {submitLabel}
+            </Button>
+          </form>
+        </div>
+      </div>
+    </section>
+  )
+}

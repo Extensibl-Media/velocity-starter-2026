@@ -1,0 +1,137 @@
+---
+import type { Eyebrow, PricingPlan, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    items?: PricingPlan[];
+    footnote?: string;
+    secondaryCta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const items = data?.items ?? [];
+---
+
+{
+  items.length > 0 && (
+    <section
+      class:list={[
+        "pricing-price-list section-wrapper section-py",
+        `theme-${theme}`,
+      ]}
+    >
+      <div class="section-container">
+        {/* Section header */}
+        {(data?.eyebrow || data?.heading || data?.subheading) && (
+          <div class="flex flex-col items-center text-center gap-3 mb-12">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="theme-accent text-sm font-semibold uppercase tracking-widest">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">
+                {data.subheading}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Service menu — each line has its own price + CTA */}
+        <div class="menu-card mx-auto max-w-4xl overflow-hidden rounded-[var(--t-radius)]">
+          <ul class="menu-list m-0 p-0 list-none">
+            {items.map((item) => (
+              <li class="menu-row flex flex-col gap-4 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-7">
+                <div class="flex flex-col gap-1 min-w-0">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <h3 class="theme-heading text-base font-semibold m-0">
+                      {item.name}
+                    </h3>
+                    {item.highlighted && (
+                      <Badge class="uppercase tracking-widest text-[10px]">
+                        Popular
+                      </Badge>
+                    )}
+                  </div>
+                  {item.description && (
+                    <p class="theme-text-muted text-sm leading-relaxed m-0">
+                      {item.description}
+                    </p>
+                  )}
+                </div>
+
+                <div class="flex items-center justify-between gap-4 shrink-0 sm:justify-end">
+                  <div class="text-right whitespace-nowrap">
+                    <span class="theme-heading text-xl font-bold leading-none">
+                      {item.price}
+                    </span>
+                    {item.period && (
+                      <span class="theme-text-subtle text-sm ml-1">
+                        {item.period}
+                      </span>
+                    )}
+                  </div>
+                  {item.cta && (
+                    <Button
+                      variant={item.cta.variant ?? "outline"}
+                      href={item.cta.href}
+                      size="sm"
+                    >
+                      {item.cta.label}
+                    </Button>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {data?.footnote && (
+          <p class="theme-text-subtle text-sm text-center max-w-3xl mx-auto mt-4 m-0">
+            {data.footnote}
+          </p>
+        )}
+
+        {data?.secondaryCta && (
+          <div class="flex justify-center mt-8">
+            <Button
+              variant={data.secondaryCta.variant ?? "primary"}
+              href={data.secondaryCta.href}
+            >
+              {data.secondaryCta.label}
+            </Button>
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .menu-card {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    box-shadow: var(--t-shadow-sm);
+  }
+  .menu-row + .menu-row {
+    border-top: var(--t-border-width) solid var(--theme-border);
+  }
+</style>

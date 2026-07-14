@@ -1,0 +1,137 @@
+---
+import type { Eyebrow, ImageRef, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import SmartImage from "@/components/media/SmartImage.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * content:image-text — prose `body` on one side and an image on the other,
+ * with `imagePosition` controlling which side the image sits on (default
+ * "right"). `body` is an HTML string authored in the CMS/JSON, rendered as a
+ * themed `.rich-text` block. Theme-pure: typography derives from design tokens.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    body?: string;
+    image?: ImageRef;
+    imagePosition?: "left" | "right";
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const hasContent = Boolean(data?.heading || data?.body || data?.eyebrow);
+const imageRight = (data?.imagePosition ?? "right") === "right";
+---
+
+{
+  (hasContent || data?.image) && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+          {/* Text */}
+          <div class={`flex flex-col gap-4 ${imageRight ? "lg:order-1" : "lg:order-2"}`}>
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <div>
+                  <Badge class="uppercase tracking-widest text-xs">
+                    {data.eyebrow.text}
+                  </Badge>
+                </div>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+            {data?.body && (
+              <div class="rich-text theme-text" set:html={data.body} />
+            )}
+            {data?.cta && (
+              <div class="mt-2">
+                <Button
+                  href={data.cta.href}
+                  variant={data.cta.variant ?? "primary"}
+                >
+                  {data.cta.label}
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Image */}
+          {data?.image && (
+            <div class={`image-text-media ${imageRight ? "lg:order-2" : "lg:order-1"}`}>
+              <SmartImage
+                src={data.image.src}
+                alt={data.image.alt ?? ""}
+                widths={[480, 768, 1024]}
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                class="w-full h-full object-cover"
+              />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .image-text-media {
+    position: relative;
+    border-radius: 1rem;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    box-shadow: var(--t-shadow-md);
+  }
+  .image-text-media :global(img) {
+    border-radius: 1rem;
+  }
+
+  .rich-text {
+    line-height: 1.75;
+  }
+  .rich-text :global(> * + *) {
+    margin-top: 1.25em;
+  }
+  .rich-text :global(h2),
+  .rich-text :global(h3),
+  .rich-text :global(h4) {
+    color: var(--theme-heading);
+    font-family: var(--font-heading);
+    font-weight: var(--t-font-weight-heading);
+    line-height: 1.25;
+    margin-top: 2em;
+  }
+  .rich-text :global(h2) { font-size: 1.5rem; }
+  .rich-text :global(h3) { font-size: 1.25rem; }
+  .rich-text :global(a) {
+    color: var(--theme-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .rich-text :global(ul),
+  .rich-text :global(ol) {
+    padding-left: 1.5rem;
+  }
+  .rich-text :global(ul) { list-style: disc; }
+  .rich-text :global(ol) { list-style: decimal; }
+  .rich-text :global(li + li) { margin-top: 0.5rem; }
+  .rich-text :global(blockquote) {
+    border-left: 3px solid var(--color-primary);
+    padding-left: 1rem;
+    color: var(--theme-fg-muted);
+    font-style: italic;
+  }
+  .rich-text :global(strong) { font-weight: 600; }
+  .rich-text :global(img) { border-radius: var(--radius); }
+</style>

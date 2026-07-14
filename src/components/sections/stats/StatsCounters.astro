@@ -1,0 +1,195 @@
+---
+import type { Eyebrow, StatItem } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    stats?: StatItem[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const stats = data?.stats ?? [];
+
+const count = stats.length;
+const gridClass =
+  count === 1
+    ? "grid-cols-1"
+    : count === 2
+      ? "grid-cols-2"
+      : count === 3
+        ? "grid-cols-2 lg:grid-cols-3"
+        : "grid-cols-2 lg:grid-cols-4";
+---
+
+{
+  stats.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Section header */}
+        {(data?.eyebrow || data?.heading || data?.subheading) && (
+          <div class="flex flex-col items-center text-center gap-3 mb-12">
+            {data?.eyebrow && (
+              <div>
+                {data.eyebrow.variant === "badge" ? (
+                  <Badge class="uppercase tracking-widest text-xs">
+                    {data.eyebrow.text}
+                  </Badge>
+                ) : (
+                  <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                    {data.eyebrow.text}
+                  </span>
+                )}
+              </div>
+            )}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">
+                {data.subheading}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Stats */}
+        <div class={`stats-counters grid ${gridClass} gap-8`}>
+          {stats.map((stat) => (
+            <div class="flex flex-col items-center text-center gap-2">
+              <span
+                class="stat-number theme-heading text-4xl lg:text-5xl font-bold m-0 leading-none tabular-nums"
+                style="color: var(--theme-accent)"
+                data-value={stat.value}
+              >
+                {stat.value}
+              </span>
+              <span class="theme-text-muted text-sm font-medium leading-tight">
+                {stat.label}
+              </span>
+              {stat.description && (
+                <span class="theme-text-subtle text-xs leading-relaxed max-w-[16rem]">
+                  {stat.description}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<script>
+  interface Parsed {
+    prefix: string;
+    suffix: string;
+    target: number;
+    decimals: number;
+  }
+
+  function parseValue(raw: string): Parsed | null {
+    // Find the first run of digits (with optional grouping commas / decimal point).
+    const match = raw.match(/[\d.,]*\d[\d.,]*/);
+    if (!match) return null;
+
+    const numeric = match[0];
+    const start = match.index ?? 0;
+    const prefix = raw.slice(0, start);
+    const suffix = raw.slice(start + numeric.length);
+
+    const cleaned = numeric.replace(/,/g, "");
+    const target = parseFloat(cleaned);
+    if (Number.isNaN(target)) return null;
+
+    const dot = cleaned.indexOf(".");
+    const decimals = dot === -1 ? 0 : cleaned.length - dot - 1;
+
+    return { prefix, suffix, target, decimals };
+  }
+
+  function format(value: number, parsed: Parsed): string {
+    const fixed = value.toFixed(parsed.decimals);
+    const grouped = Number(fixed).toLocaleString("en-US", {
+      minimumFractionDigits: parsed.decimals,
+      maximumFractionDigits: parsed.decimals,
+    });
+    return `${parsed.prefix}${grouped}${parsed.suffix}`;
+  }
+
+  function animate(el: HTMLElement) {
+    if (el.dataset.counted === "true") return;
+    el.dataset.counted = "true";
+
+    const raw = el.dataset.value ?? el.textContent ?? "";
+    const parsed = parseValue(raw);
+    if (!parsed) return;
+
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (reduced || parsed.target === 0) {
+      el.textContent = raw;
+      return;
+    }
+
+    const duration = 1600;
+    const startTime = performance.now();
+
+    function tick(now: number) {
+      const progress = Math.min((now - startTime) / duration, 1);
+      // easeOutCubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = parsed!.target * eased;
+      el.textContent = format(current, parsed!);
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        el.textContent = raw;
+      }
+    }
+
+    requestAnimationFrame(tick);
+  }
+
+  function init() {
+    const numbers = Array.from(
+      document.querySelectorAll<HTMLElement>(".stat-number"),
+    );
+    if (numbers.length === 0) return;
+
+    if (!("IntersectionObserver" in window)) {
+      numbers.forEach(animate);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            animate(entry.target as HTMLElement);
+            observer.unobserve(entry.target);
+          }
+        }
+      },
+      { threshold: 0.4 },
+    );
+
+    numbers.forEach((el) => observer.observe(el));
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+  document.addEventListener("astro:after-swap", init);
+</script>

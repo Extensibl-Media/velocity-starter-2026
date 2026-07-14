@@ -1,0 +1,230 @@
+---
+import { getBusinessData, getResolvedNav } from "@/lib/utils";
+import { getCollection } from "astro:content";
+
+const business = await getBusinessData();
+const year = new Date().getFullYear();
+const navItems = await getResolvedNav();
+
+const services = await getCollection("services");
+const sortedServices = services
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 6);
+
+const quickLinks = navItems.filter((item) => item.href);
+---
+
+<footer>
+  <!-- CTA band -->
+  <div class="bg-primary text-fg-on-primary">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-14">
+      <div
+        class="flex flex-col lg:flex-row items-center justify-between gap-6 text-center lg:text-left"
+      >
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-fg-on-primary">Ready to Get Started?</h2>
+          <p class="mt-2 text-fg-on-primary/80 max-w-xl">
+            Get a free, no-obligation quote today and see how we can help.
+          </p>
+        </div>
+        <div class="flex flex-col sm:flex-row items-center gap-3 shrink-0">
+          <a
+            href="/contact"
+            class="inline-flex items-center justify-center px-6 py-3 bg-bg text-fg text-sm font-semibold rounded-lg hover:bg-bg-muted transition-colors"
+          >
+            Get a Free Quote
+          </a>
+          {
+            business.phone && (
+              <a
+                href={`tel:${business.phone}`}
+                class="inline-flex items-center justify-center gap-2 px-6 py-3 border border-fg-on-primary/40 text-fg-on-primary text-sm font-semibold rounded-lg hover:bg-fg-on-primary/10 transition-colors"
+              >
+                <svg
+                  class="w-4 h-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  aria-hidden="true"
+                >
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+                </svg>
+                {business.phone}
+              </a>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lower area -->
+  <div class="bg-bg-inverse text-fg-inverse">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <!-- Brand / contact column -->
+        <div>
+          <a
+            href="/"
+            class="inline-block font-bold text-xl text-fg-inverse hover:text-accent transition-colors mb-4"
+          >
+            {business.businessName}
+          </a>
+          {
+            business.tagline && (
+              <p class="text-fg-inverse/60 text-sm leading-relaxed mb-6">
+                {business.tagline}
+              </p>
+            )
+          }
+          <div class="flex flex-col gap-3 text-sm">
+            {
+              business.phone && (
+                <a
+                  href={`tel:${business.phone}`}
+                  class="flex items-center gap-2 text-fg-inverse/70 hover:text-fg-inverse transition-colors"
+                >
+                  <svg
+                    class="w-4 h-4 shrink-0"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    aria-hidden="true"
+                  >
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+                  </svg>
+                  {business.phone}
+                </a>
+              )
+            }
+            {
+              business.email && (
+                <a
+                  href={`mailto:${business.email}`}
+                  class="flex items-center gap-2 text-fg-inverse/70 hover:text-fg-inverse transition-colors"
+                >
+                  <svg
+                    class="w-4 h-4 shrink-0"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    aria-hidden="true"
+                  >
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                    <polyline points="22,6 12,12 2,6" />
+                  </svg>
+                  {business.email}
+                </a>
+              )
+            }
+            {
+              business.address && (
+                <address class="flex items-start gap-2 text-fg-inverse/70 not-italic">
+                  <svg
+                    class="w-4 h-4 shrink-0 mt-0.5"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    aria-hidden="true"
+                  >
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  <span>
+                    {business.address}, {business.city}, {business.state}{" "}
+                    {business.zip}
+                  </span>
+                </address>
+              )
+            }
+          </div>
+        </div>
+
+        <!-- Services column -->
+        {
+          sortedServices.length > 0 && (
+            <div>
+              <h3 class="text-sm font-semibold text-fg-inverse uppercase tracking-wider mb-4">
+                Our Services
+              </h3>
+              <ul class="flex flex-col gap-2.5 list-none m-0 p-0">
+                {sortedServices.map((service) => (
+                  <li>
+                    <a
+                      href={`/services/${service.data.slug}`}
+                      class="text-sm text-fg-inverse/60 hover:text-fg-inverse transition-colors"
+                    >
+                      {service.data.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+
+        <!-- Quick links column -->
+        <div>
+          <h3
+            class="text-sm font-semibold text-fg-inverse uppercase tracking-wider mb-4"
+          >
+            Quick Links
+          </h3>
+          <ul class="flex flex-col gap-2.5 list-none m-0 p-0">
+            {
+              quickLinks.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    class="text-sm text-fg-inverse/60 hover:text-fg-inverse transition-colors"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+            <li>
+              <a
+                href="/components"
+                class="text-sm text-fg-inverse/60 hover:text-fg-inverse transition-colors"
+              >
+                Components
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="border-t border-fg-inverse/10">
+      <div
+        class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4"
+      >
+        <p class="text-xs text-fg-inverse/40">
+          &copy; {year}
+          {business.businessName}. All rights reserved.
+        </p>
+        <p class="text-xs text-fg-inverse/40">
+          Built by{" "}
+          <a
+            href="https://extensibl.com"
+            target="_blank"
+            rel="noopener"
+            class="text-fg-inverse/60 hover:text-fg-inverse transition-colors"
+          >
+            Velocity Web Studio
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>

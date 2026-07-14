@@ -1,0 +1,106 @@
+---
+import type { Eyebrow, SectionCTA, ImageRef } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    body?: string;
+    cta?: SectionCTA;
+    secondaryCta?: SectionCTA;
+    image?: ImageRef;
+    imagePosition?: "left" | "right";
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const imagePosition = data?.imagePosition ?? "right";
+const hasContent = !!(data?.heading || data?.body || data?.cta || data?.secondaryCta);
+const hasImage = !!data?.image?.src;
+---
+
+{
+  (hasContent || hasImage) && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        <div
+          class:list={[
+            "flex flex-col gap-8 lg:gap-12 items-center",
+            imagePosition === "left" ? "lg:flex-row" : "lg:flex-row-reverse",
+          ]}
+        >
+          {/* Image */}
+          {hasImage && (
+            <div class="w-full lg:w-1/2">
+              <SmartImage
+                src={data!.image!.src}
+                alt={data!.image!.alt ?? ""}
+                width={800}
+                class="w-full h-full rounded-2xl object-cover"
+              />
+            </div>
+          )}
+
+          {/* Content */}
+          {hasContent && (
+            <div
+              class:list={[
+                "flex flex-col gap-4",
+                hasImage ? "w-full lg:w-1/2" : "max-w-2xl mx-auto text-center",
+              ]}
+            >
+              {data?.eyebrow && (
+                <div>
+                  {data.eyebrow.variant === "badge" ? (
+                    <Badge class="uppercase tracking-widest text-xs">
+                      {data.eyebrow.text}
+                    </Badge>
+                  ) : (
+                    <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                      {data.eyebrow.text}
+                    </span>
+                  )}
+                </div>
+              )}
+
+              {data?.heading && (
+                <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0 leading-tight">
+                  {data.heading}
+                </h2>
+              )}
+
+              {data?.body && (
+                <p class="theme-text-muted text-lg leading-relaxed m-0">
+                  {data.body}
+                </p>
+              )}
+
+              {(data?.cta || data?.secondaryCta) && (
+                <div class="flex flex-wrap gap-3 mt-2">
+                  {data?.cta && (
+                    <Button variant={data.cta.variant ?? "primary"} href={data.cta.href}>
+                      {data.cta.label}
+                    </Button>
+                  )}
+                  {data?.secondaryCta && (
+                    <Button
+                      variant={data.secondaryCta.variant ?? "outline"}
+                      href={data.secondaryCta.href}
+                    >
+                      {data.secondaryCta.label}
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}

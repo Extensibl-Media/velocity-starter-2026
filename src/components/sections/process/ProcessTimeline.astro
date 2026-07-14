@@ -1,0 +1,135 @@
+---
+import type { Eyebrow, ProcessStep } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    steps?: ProcessStep[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const steps = data?.steps ?? [];
+---
+
+{
+  steps.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Section header */}
+        <div class="flex flex-col items-center text-center gap-3 mb-16">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">
+                {data.eyebrow.text}
+              </Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            ))}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">
+              {data.subheading}
+            </p>
+          )}
+        </div>
+
+        {/* Vertical timeline */}
+        <ol class="process-timeline">
+          {steps.map((step, index) => (
+            <li class="process-timeline-item">
+              <div class="process-timeline-marker" aria-hidden="true">
+                <span class="process-timeline-number">{index + 1}</span>
+              </div>
+              <div class="process-timeline-content">
+                <h3 class="theme-heading font-bold text-xl m-0">
+                  {step.heading}
+                </h3>
+                {step.body && (
+                  <p class="theme-text-muted text-base leading-relaxed m-0 mt-3">
+                    {step.body}
+                  </p>
+                )}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .process-timeline {
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    max-width: 44rem;
+    position: relative;
+  }
+
+  /* Continuous vertical rail */
+  .process-timeline::before {
+    content: "";
+    position: absolute;
+    top: 1.75rem;
+    bottom: 1.75rem;
+    left: 1.75rem;
+    width: 2px;
+    background: linear-gradient(
+      180deg,
+      var(--color-primary) 0%,
+      var(--color-brand-secondary) 100%
+    );
+    opacity: 0.25;
+  }
+
+  .process-timeline-item {
+    position: relative;
+    display: flex;
+    gap: 2rem;
+    padding-bottom: 3.5rem;
+  }
+
+  .process-timeline-item:last-child {
+    padding-bottom: 0;
+  }
+
+  .process-timeline-marker {
+    position: relative;
+    z-index: 1;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 6px
+      color-mix(in srgb, var(--theme-accent) 10%, transparent);
+  }
+
+  .process-timeline-number {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-fg-on-primary);
+    line-height: 1;
+  }
+
+  .process-timeline-content {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+</style>

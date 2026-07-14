@@ -1,0 +1,127 @@
+---
+import { getBusinessData } from "@/lib/utils";
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+import { Input } from "@/components/starwind/input";
+import { Label } from "@/components/starwind/label";
+
+/**
+ * contact:inline — compact mid-page lead-capture band. A short heading + subtext
+ * on the left with a small inline form (Name, Phone, submit) on the right;
+ * horizontal on desktop, stacked on mobile. Deliberately lighter than the full
+ * contact:form — this is the redundant conversion touchpoint for mid-scroll.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    submitLabel?: string;
+    showPhone?: boolean;
+  };
+}
+
+const { theme = "primary", data } = Astro.props;
+const business = await getBusinessData();
+
+const telHref =
+  data?.showPhone && business.phone
+    ? `tel:${business.phone.replace(/[^\d+]/g, "")}`
+    : null;
+---
+
+<section class={`section-wrapper section-py theme-${theme}`}>
+  <div class="section-container">
+    <div class="inline-band flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-12 rounded-xl border theme-border p-6 md:p-8">
+      {/* Copy */}
+      <div class="flex flex-col gap-2 lg:flex-1">
+        {
+          data?.eyebrow && (
+            <div>
+              {data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              )}
+            </div>
+          )
+        }
+        {data?.heading && <h2 class="theme-heading text-2xl lg:text-3xl font-bold m-0">{data.heading}</h2>}
+        {data?.subheading && <p class="theme-text-muted text-base max-w-xl m-0">{data.subheading}</p>}
+        {
+          telHref && (
+            <a href={telHref} class="mt-1 inline-flex items-center gap-2 no-underline group w-fit">
+              <span class="inline-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+                </svg>
+              </span>
+              <span class="theme-heading text-base font-semibold group-hover:text-primary transition-colors">
+                {business.phone}
+              </span>
+            </a>
+          )
+        }
+      </div>
+
+      {/* Form */}
+      <form
+        name="inline-lead"
+        method="POST"
+        class="flex flex-col sm:flex-row sm:items-end gap-3 lg:flex-1 lg:justify-end"
+      >
+        <div class="flex flex-col gap-1.5 sm:flex-1">
+          <Label for="inline-name" class="text-fg">Name</Label>
+          <Input
+            type="text"
+            id="inline-name"
+            name="name"
+            placeholder="John Smith"
+            required
+            class="text-fg-muted placeholder:text-fg-muted border-bg-inverse"
+          />
+        </div>
+        <div class="flex flex-col gap-1.5 sm:flex-1">
+          <Label for="inline-phone" class="text-fg">Phone</Label>
+          <Input
+            type="tel"
+            id="inline-phone"
+            name="phone"
+            placeholder="(555) 555-5555"
+            required
+            class="text-fg-muted placeholder:text-fg-muted border-bg-inverse"
+          />
+        </div>
+        <Button variant="primary" type="submit" class="shrink-0">
+          {data?.submitLabel ?? "Get Started"}
+        </Button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<style>
+  .inline-band {
+    background: color-mix(in srgb, var(--theme-accent) 6%, transparent);
+    box-shadow: var(--t-shadow-md);
+  }
+  .inline-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
+    color: var(--theme-accent);
+  }
+  .inline-icon svg {
+    width: 1rem;
+    height: 1rem;
+  }
+</style>

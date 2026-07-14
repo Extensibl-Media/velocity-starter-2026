@@ -1,0 +1,149 @@
+---
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    startingLabel?: string;
+    priceLow?: string;
+    priceHigh?: string;
+    unit?: string;
+    note?: string;
+    highlights?: string[];
+    cta?: SectionCTA;
+    secondaryCta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const highlights = data?.highlights ?? [];
+const hasRange = !!(data?.priceLow || data?.priceHigh);
+---
+
+{
+  hasRange && (
+    <section
+      class:list={[
+        "pricing-starting-at section-wrapper section-py",
+        `theme-${theme}`,
+      ]}
+    >
+      <div class="section-container">
+        <div class="range-banner mx-auto max-w-4xl flex flex-col items-center text-center gap-6 p-8 lg:p-12 rounded-[var(--t-radius)]">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">
+                {data.eyebrow.text}
+              </Badge>
+            ) : (
+              <span class="theme-accent text-sm font-semibold uppercase tracking-widest">
+                {data.eyebrow.text}
+              </span>
+            ))}
+
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )}
+
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">
+              {data.subheading}
+            </p>
+          )}
+
+          {/* Price range */}
+          <div class="flex flex-col items-center gap-1">
+            {data?.startingLabel && (
+              <span class="theme-text-subtle text-sm font-semibold uppercase tracking-widest">
+                {data.startingLabel}
+              </span>
+            )}
+            <div class="flex items-baseline justify-center flex-wrap gap-2">
+              {data?.priceLow && (
+                <span class="theme-heading text-5xl lg:text-6xl font-bold leading-none">
+                  {data.priceLow}
+                </span>
+              )}
+              {data?.priceLow && data?.priceHigh && (
+                <span class="theme-text-muted text-3xl font-light">–</span>
+              )}
+              {data?.priceHigh && (
+                <span class="theme-heading text-5xl lg:text-6xl font-bold leading-none">
+                  {data.priceHigh}
+                </span>
+              )}
+              {data?.unit && (
+                <span class="theme-text-muted text-base font-medium">
+                  {data.unit}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {data?.note && (
+            <p class="theme-text-subtle text-sm max-w-xl m-0">{data.note}</p>
+          )}
+
+          {/* Highlights */}
+          {highlights.length > 0 && (
+            <ul class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 m-0 p-0 list-none">
+              {highlights.map((item) => (
+                <li class="flex items-center gap-2 text-sm theme-text">
+                  <svg
+                    class="w-4 h-4 shrink-0"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="var(--color-primary)"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M20 6 9 17l-5-5" />
+                  </svg>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {/* CTAs */}
+          {(data?.cta || data?.secondaryCta) && (
+            <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+              {data?.cta && (
+                <Button variant={data.cta.variant ?? "primary"} href={data.cta.href}>
+                  {data.cta.label}
+                </Button>
+              )}
+              {data?.secondaryCta && (
+                <Button
+                  variant={data.secondaryCta.variant ?? "outline"}
+                  href={data.secondaryCta.href}
+                >
+                  {data.secondaryCta.label}
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .range-banner {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    box-shadow: var(--t-shadow-md);
+  }
+</style>

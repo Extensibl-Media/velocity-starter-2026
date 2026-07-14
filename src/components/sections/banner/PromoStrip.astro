@@ -1,0 +1,75 @@
+---
+import type { SectionCTA } from "@/types/sections";
+
+interface Props {
+  theme?: string;
+  data?: {
+    icon?: string;
+    badge?: string;
+    text?: string;
+    code?: string;
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "primary", data } = Astro.props;
+const hasContent = !!(data?.text || data?.cta);
+---
+
+{
+  hasContent && (
+    <section class:list={["banner-promo-strip", `theme-${theme}`]}>
+      <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-3 text-center text-sm">
+        {data?.icon && (
+          <span class="text-lg leading-none" aria-hidden="true">
+            {data.icon}
+          </span>
+        )}
+        {data?.badge && (
+          <span
+            class="theme-text rounded-full px-2 py-0.5 text-xs font-bold uppercase tracking-wide"
+            style="background: color-mix(in oklab, currentColor 16%, transparent);"
+          >
+            {data.badge}
+          </span>
+        )}
+        {data?.text && (
+          <span class="theme-text font-semibold">{data.text}</span>
+        )}
+        {data?.code && (
+          <span
+            class="theme-text inline-flex items-center gap-1 rounded border border-dashed px-2 py-0.5 font-mono text-xs font-bold"
+            style="border-color: var(--theme-border);"
+          >
+            {data.code}
+          </span>
+        )}
+        {data?.cta && (
+          <a
+            href={data.cta.href}
+            class="theme-text inline-flex items-center gap-1 font-bold underline underline-offset-2 transition-opacity hover:opacity-80"
+          >
+            {data.cta.label}
+            <svg
+              class="h-3.5 w-3.5 shrink-0"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </a>
+        )}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .banner-promo-strip {
+    width: 100%;
+  }
+</style>

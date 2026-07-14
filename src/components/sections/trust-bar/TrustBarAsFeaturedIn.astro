@@ -1,0 +1,69 @@
+---
+import type { LogoItem } from "@/types/sections";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    heading?: string;
+    logos?: LogoItem[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const heading = data?.heading ?? "As featured in";
+const logos = data?.logos ?? [];
+---
+
+{
+  logos.length > 0 && (
+    <section
+      class:list={[
+        "trust-bar-as-featured-in section-wrapper section-py-sm",
+        `theme-${theme}`,
+      ]}
+    >
+      <div class="section-container">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-center gap-6 md:gap-10">
+          <p class="theme-text-subtle text-xs font-semibold uppercase tracking-widest text-center md:text-right shrink-0 m-0 md:max-w-[10rem]">
+            {heading}
+          </p>
+
+          <span
+            class="hidden md:block w-px self-stretch shrink-0"
+            style="background-color: var(--theme-border);"
+            aria-hidden="true"
+          />
+
+          <ul class="flex flex-wrap items-center justify-center gap-x-8 gap-y-6 md:gap-x-10 list-none m-0 p-0">
+            {logos.map((logo) => (
+              <li class="flex items-center justify-center">
+                {logo.href ? (
+                  <a
+                    href={logo.href}
+                    class="block opacity-70 hover:opacity-100 grayscale hover:grayscale-0 transition duration-200"
+                  >
+                    <SmartImage
+                      src={logo.src}
+                      alt={logo.alt ?? ""}
+                      widths={[120, 240]}
+                      class="h-8 w-auto object-contain"
+                    />
+                  </a>
+                ) : (
+                  <SmartImage
+                    src={logo.src}
+                    alt={logo.alt ?? ""}
+                    widths={[120, 240]}
+                    class="h-8 w-auto object-contain opacity-70 hover:opacity-100 grayscale hover:grayscale-0 transition duration-200"
+                  />
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  )
+}

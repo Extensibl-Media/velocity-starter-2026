@@ -1,0 +1,177 @@
+---
+import type { Eyebrow, TabItem } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    tabs?: TabItem[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const tabs = data?.tabs ?? [];
+---
+
+{
+  tabs.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Section header */}
+        {(data?.eyebrow || data?.heading || data?.subheading) && (
+          <div class="flex flex-col items-center text-center gap-3 mb-12">
+            {data?.eyebrow && (
+              <div>
+                {data.eyebrow.variant === "badge" ? (
+                  <Badge class="uppercase tracking-widest text-xs">
+                    {data.eyebrow.text}
+                  </Badge>
+                ) : (
+                  <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                    {data.eyebrow.text}
+                  </span>
+                )}
+              </div>
+            )}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">
+                {data.subheading}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Tabs */}
+        <div
+          class="grid grid-cols-1 lg:grid-cols-[minmax(0,18rem)_1fr] gap-8"
+          data-tabs
+        >
+          {/* Tab list */}
+          <div
+            class="flex flex-col gap-1"
+            role="tablist"
+            aria-orientation="vertical"
+          >
+            {tabs.map((tab, i) => (
+              <button
+                type="button"
+                data-tab-btn={i}
+                role="tab"
+                aria-selected={i === 0 ? "true" : "false"}
+                class="tab-btn text-left px-4 py-3 rounded-lg border-l-2 font-semibold text-sm transition-colors theme-text-muted"
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Panels */}
+          <div>
+            {tabs.map((tab, i) => (
+              <div
+                data-tab-panel={i}
+                role="tabpanel"
+                hidden={i !== 0}
+                class="flex flex-col gap-5 rounded-xl border theme-border bg-background p-6 lg:p-8"
+              >
+                {tab.image?.src && (
+                  <SmartImage
+                    src={tab.image.src}
+                    alt={tab.image.alt ?? tab.heading ?? tab.label}
+                    class="w-full rounded-lg"
+                  />
+                )}
+                {tab.heading && (
+                  <h3 class="theme-heading text-2xl font-bold m-0">
+                    {tab.heading}
+                  </h3>
+                )}
+                {tab.body && (
+                  <p class="theme-text-muted leading-relaxed m-0">{tab.body}</p>
+                )}
+                {tab.bullets && tab.bullets.length > 0 && (
+                  <ul class="flex flex-col gap-3 m-0 p-0 list-none">
+                    {tab.bullets.map((bullet) => (
+                      <li class="flex items-start gap-3 theme-text">
+                        <svg
+                          class="w-5 h-5 shrink-0 mt-0.5 text-primary"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M20 6 9 17l-5-5" />
+                        </svg>
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .tab-btn {
+    border-color: transparent;
+  }
+  .tab-btn:hover {
+    background: color-mix(in srgb, var(--theme-accent) 6%, transparent);
+  }
+  .tab-btn[aria-selected="true"] {
+    color: var(--theme-accent);
+    border-color: var(--theme-accent);
+    background: color-mix(in srgb, var(--theme-accent) 8%, transparent);
+  }
+</style>
+
+<script>
+  function initBenefitsTabs() {
+    const roots = document.querySelectorAll("[data-tabs]");
+    roots.forEach((root) => {
+      const btns = root.querySelectorAll("[data-tab-btn]");
+      const panels = root.querySelectorAll("[data-tab-panel]");
+      btns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const key = btn.getAttribute("data-tab-btn");
+          btns.forEach((b) =>
+            b.setAttribute(
+              "aria-selected",
+              b.getAttribute("data-tab-btn") === key ? "true" : "false",
+            ),
+          );
+          panels.forEach((panel) => {
+            const match = panel.getAttribute("data-tab-panel") === key;
+            if (match) {
+              panel.removeAttribute("hidden");
+            } else {
+              panel.setAttribute("hidden", "");
+            }
+          });
+        });
+      });
+    });
+  }
+
+  initBenefitsTabs();
+  document.addEventListener("astro:page-load", initBenefitsTabs);
+</script>

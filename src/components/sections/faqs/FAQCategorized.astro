@@ -1,0 +1,102 @@
+---
+import { getCollection } from "astro:content";
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "@/components/starwind/tabs";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/starwind/accordion";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const allFaqs = await getCollection("faqs");
+
+const faqs = allFaqs.sort((a, b) => a.data.order - b.data.order);
+
+// Group FAQs by service, falling back to "General"
+const groups = new Map<string, typeof faqs>();
+for (const faq of faqs) {
+  const category = faq.data.service ?? "General";
+  if (!groups.has(category)) groups.set(category, []);
+  groups.get(category)!.push(faq);
+}
+const categories = Array.from(groups.entries()).map(([name, items]) => ({
+  name,
+  faqs: items,
+}));
+---
+
+{
+  faqs.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Section header */}
+        {(data?.eyebrow || data?.heading || data?.subheading) && (
+          <div class="flex flex-col items-center text-center gap-3 mb-12">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">
+                {data.subheading}
+              </p>
+            )}
+          </div>
+        )}
+
+        <Tabs defaultValue="cat-0" class="w-full max-w-3xl mx-auto">
+          <TabsList class="flex-wrap">
+            {categories.map((c, i) => (
+              <TabsTrigger value={`cat-${i}`}>{c.name}</TabsTrigger>
+            ))}
+          </TabsList>
+          {categories.map((c, i) => (
+            <TabsContent value={`cat-${i}`}>
+              <Accordion type="single" defaultValue={`cat-${i}-q0`}>
+                {c.faqs.map((faq, j) => (
+                  <AccordionItem value={`cat-${i}-q${j}`}>
+                    <AccordionTrigger class="text-left font-semibold theme-heading">
+                      {faq.data.question}
+                    </AccordionTrigger>
+                    <AccordionContent class="theme-text-muted leading-relaxed">
+                      {faq.data.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </TabsContent>
+          ))}
+        </Tabs>
+      </div>
+    </section>
+  )
+}

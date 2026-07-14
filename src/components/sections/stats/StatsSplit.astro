@@ -1,0 +1,85 @@
+---
+import type { Eyebrow, StatItem, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    body?: string;
+    stats?: StatItem[];
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const stats = data?.stats ?? [];
+---
+
+{
+  stats.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Text side */}
+          <div class="flex flex-col items-start gap-5">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+            {data?.body && (
+              <p class="theme-text-muted text-lg leading-relaxed max-w-2xl m-0">
+                {data.body}
+              </p>
+            )}
+            {data?.cta && (
+              <Button
+                variant={data.cta.variant ?? "primary"}
+                href={data.cta.href}
+                class="mt-2"
+              >
+                {data.cta.label}
+              </Button>
+            )}
+          </div>
+
+          {/* Stats side */}
+          <div class="grid grid-cols-2 gap-6">
+            {stats.map((stat) => (
+              <div class="stat-cell flex flex-col gap-2 rounded-xl border theme-border bg-background p-6">
+                <span
+                  class="theme-heading text-3xl lg:text-4xl font-bold m-0 leading-none tabular-nums"
+                  style="color: var(--theme-accent)"
+                >
+                  {stat.value}
+                </span>
+                <span class="theme-text-muted text-sm font-medium leading-tight">
+                  {stat.label}
+                </span>
+                {stat.description && (
+                  <span class="theme-text-subtle text-xs leading-relaxed">
+                    {stat.description}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}

@@ -1,5 +1,6 @@
 {
   "question": "How long does a roof repair take?",
-  "answer": "Most residential roof repairs are completed in a single day. Larger repairs or full replacements may take 2-3 days depending on the scope of work.",
+  "answer": "Most repairs are completed in a single day. Larger jobs like full replacements typically take 1-2 days depending on the size of the roof and weather conditions.",
+  "service": "roof-repair",
   "order": 1
 }

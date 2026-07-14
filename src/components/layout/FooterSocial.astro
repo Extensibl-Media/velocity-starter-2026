@@ -1,0 +1,175 @@
+---
+import { getBusinessData, getResolvedNav } from "@/lib/utils";
+import { Input } from "@/components/starwind/input";
+import { Button } from "@/components/starwind/button";
+
+const business = await getBusinessData();
+const year = new Date().getFullYear();
+const navItems = await getResolvedNav();
+
+const quickLinks = navItems.filter((item) => item.href);
+---
+
+<footer class="bg-bg-inverse text-fg-inverse">
+  <!-- Social-forward hero -->
+  <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-16 text-center">
+    <!-- Brand name + tagline -->
+    <a
+      href="/"
+      class="inline-block font-bold text-3xl sm:text-4xl text-fg-inverse hover:text-accent transition-colors"
+    >
+      {business.businessName}
+    </a>
+    {
+      business.tagline && (
+        <p class="text-fg-inverse/60 text-base leading-relaxed mt-3 max-w-xl mx-auto">
+          {business.tagline}
+        </p>
+      )
+    }
+
+    <!-- Prominent social buttons -->
+    {
+      (business.social?.facebook ||
+        business.social?.instagram ||
+        business.social?.youtube) && (
+        <div class="flex items-center justify-center gap-4 mt-8">
+          {business.social?.facebook && (
+            <a
+              href={business.social.facebook}
+              target="_blank"
+              rel="noopener"
+              aria-label="Facebook"
+              class="w-12 h-12 flex items-center justify-center rounded-full bg-fg-inverse/10 text-fg-inverse/70 hover:bg-accent hover:text-fg-inverse transition-colors"
+            >
+              <svg
+                class="w-6 h-6"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+              </svg>
+            </a>
+          )}
+          {business.social?.instagram && (
+            <a
+              href={business.social.instagram}
+              target="_blank"
+              rel="noopener"
+              aria-label="Instagram"
+              class="w-12 h-12 flex items-center justify-center rounded-full bg-fg-inverse/10 text-fg-inverse/70 hover:bg-accent hover:text-fg-inverse transition-colors"
+            >
+              <svg
+                class="w-6 h-6"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+              </svg>
+            </a>
+          )}
+          {business.social?.youtube && (
+            <a
+              href={business.social.youtube}
+              target="_blank"
+              rel="noopener"
+              aria-label="YouTube"
+              class="w-12 h-12 flex items-center justify-center rounded-full bg-fg-inverse/10 text-fg-inverse/70 hover:bg-accent hover:text-fg-inverse transition-colors"
+            >
+              <svg
+                class="w-6 h-6"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z" />
+                <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" />
+              </svg>
+            </a>
+          )}
+        </div>
+      )
+    }
+
+    <!-- Newsletter form -->
+    <form
+      name="newsletter"
+      method="POST"
+      class="flex flex-col sm:flex-row items-stretch justify-center gap-3 mt-10 max-w-md mx-auto"
+    >
+      <label for="newsletter-email" class="sr-only">Email address</label>
+      <Input
+        id="newsletter-email"
+        type="email"
+        name="email"
+        placeholder="you@example.com"
+        required
+        autocomplete="email"
+        class="flex-1"
+      />
+      <Button type="submit" variant="primary">Subscribe</Button>
+    </form>
+
+    <!-- Compact quick links -->
+    <nav aria-label="Footer navigation" class="mt-10">
+      <ul
+        class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 list-none m-0 p-0"
+      >
+        {
+          quickLinks.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class="text-sm text-fg-inverse/60 hover:text-fg-inverse transition-colors"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <a
+            href="/components"
+            class="text-sm text-fg-inverse/60 hover:text-fg-inverse transition-colors"
+          >
+            Components
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="border-t border-fg-inverse/10">
+    <div
+      class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4"
+    >
+      <p class="text-xs text-fg-inverse/40">
+        &copy; {year}
+        {business.businessName}. All rights reserved.
+      </p>
+      <p class="text-xs text-fg-inverse/40">
+        Built by{" "}
+        <a
+          href="https://extensibl.com"
+          target="_blank"
+          rel="noopener"
+          class="text-fg-inverse/60 hover:text-fg-inverse transition-colors"
+        >
+          Velocity Web Studio
+        </a>
+      </p>
+    </div>
+  </div>
+</footer>

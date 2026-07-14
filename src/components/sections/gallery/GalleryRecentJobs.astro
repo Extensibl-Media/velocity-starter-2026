@@ -1,0 +1,149 @@
+---
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+/**
+ * gallery:recent-jobs — a vertical "recently completed" list. Each row pairs a
+ * job thumbnail with the job title (caption) and a location tag (category),
+ * reading like a live feed of local work. Optional CTA below. No JS.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    cta?: SectionCTA;
+    images?: { src: string; alt?: string; caption?: string; category?: string }[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const images = data?.images ?? [];
+---
+
+<section class:list={["gallery-recent-jobs section-wrapper section-py", `theme-${theme}`]}>
+  <div class="section-container">
+    {
+      (data?.eyebrow || data?.heading || data?.subheading) && (
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            ))}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>
+          )}
+        </div>
+      )
+    }
+
+    {
+      images.length > 0 && (
+        <ul class="recent-jobs-list mx-auto max-w-3xl">
+          {images.map((img) => (
+            <li class="recent-job">
+              <div class="recent-job-thumb">
+                <SmartImage
+                  src={img.src}
+                  alt={img.alt ?? ""}
+                  widths={[120, 240]}
+                  sizes="6rem"
+                  class="recent-job-img"
+                />
+              </div>
+              <div class="recent-job-info">
+                {img.caption && (
+                  <p class="theme-heading font-semibold text-base sm:text-lg m-0">{img.caption}</p>
+                )}
+                {img.category && (
+                  <span class="recent-job-location theme-text-subtle text-sm">
+                    <svg
+                      class="recent-job-pin"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                      <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    {img.category}
+                  </span>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
+    {
+      data?.cta?.href && data?.cta?.label && (
+        <div class="flex justify-center mt-10">
+          <Button href={data.cta.href} variant={data.cta.variant ?? "primary"}>
+            {data.cta.label}
+          </Button>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .recent-jobs-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: var(--t-border-width) solid var(--theme-border);
+  }
+  .recent-job {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: var(--t-border-width) solid var(--theme-border);
+  }
+  .recent-job-thumb {
+    flex: 0 0 auto;
+    width: 6rem;
+    height: 4.5rem;
+    border-radius: var(--t-radius);
+    overflow: hidden;
+  }
+  .recent-job-thumb :global(.recent-job-img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .recent-job-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+  }
+  .recent-job-location {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .recent-job-pin {
+    width: 0.95rem;
+    height: 0.95rem;
+    flex: 0 0 auto;
+    color: var(--theme-accent);
+  }
+</style>

@@ -1,0 +1,196 @@
+---
+import type { Eyebrow, ProcessStep } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+/**
+ * process:zigzag — a connected zig-zag path of steps. Each step alternates
+ * left/right of a central spine; the number node sits on the spine and the
+ * card offsets to one side, creating a switch-back "path" you can follow.
+ * Stacks into a single left-aligned column on mobile.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    steps?: ProcessStep[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const defaultSteps: ProcessStep[] = [
+  {
+    heading: "Book Your Free Inspection",
+    body: "Call or request online and we schedule a visit within 24 hours.",
+  },
+  {
+    heading: "Detailed Roof Report",
+    body: "We photograph every issue and hand you a clear, itemized estimate.",
+  },
+  {
+    heading: "Approve the Scope",
+    body: "No surprises. You sign off on the price and timeline before we start.",
+  },
+  {
+    heading: "Repair or Replace",
+    body: "Our crews complete the work on schedule and clean up the same day.",
+  },
+];
+
+const steps = data?.steps?.length ? data.steps : defaultSteps;
+---
+
+<section
+  class:list={["process-zigzag section-wrapper section-py", `theme-${theme}`]}
+>
+  <div class="section-container">
+    {/* Section header */}
+    <div class="flex flex-col items-center text-center gap-3 mb-16">
+      {
+        data?.eyebrow &&
+          (data.eyebrow.variant === "badge" ? (
+            <Badge class="uppercase tracking-widest text-xs">
+              {data.eyebrow.text}
+            </Badge>
+          ) : (
+            <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+              {data.eyebrow.text}
+            </span>
+          ))
+      }
+      {
+        data?.heading && (
+          <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+            {data.heading}
+          </h2>
+        )
+      }
+      {
+        data?.subheading && (
+          <p class="theme-text-muted text-lg max-w-2xl m-0">
+            {data.subheading}
+          </p>
+        )
+      }
+    </div>
+
+    {/* Zig-zag path */}
+    <ol class="zz-list">
+      {
+        steps.map((step, index) => (
+          <li class:list={["zz-item", index % 2 === 0 ? "zz-left" : "zz-right"]}>
+            <div class="zz-node" aria-hidden="true">
+              <span class="zz-number">{index + 1}</span>
+            </div>
+            <div class="zz-card">
+              <h3 class="theme-heading font-bold text-lg m-0">
+                {step.heading}
+              </h3>
+              {step.body && (
+                <p class="theme-text-muted text-sm leading-relaxed m-0 mt-2">
+                  {step.body}
+                </p>
+              )}
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .zz-list {
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    max-width: 52rem;
+    position: relative;
+  }
+
+  /* Central spine (desktop) */
+  .zz-list::before {
+    content: "";
+    position: absolute;
+    top: 1.5rem;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    width: 2px;
+    background: var(--theme-border);
+  }
+
+  .zz-item {
+    position: relative;
+    padding-left: 4.5rem;
+    padding-bottom: 2.5rem;
+    min-height: 3.5rem;
+  }
+
+  .zz-item:last-child {
+    padding-bottom: 0;
+  }
+
+  .zz-node {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--t-shadow-sm);
+  }
+
+  .zz-number {
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--theme-accent);
+    line-height: 1;
+  }
+
+  .zz-card {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    padding: 1.25rem 1.5rem;
+    box-shadow: var(--t-shadow-sm);
+  }
+
+  /* Zig-zag offset on wider screens */
+  @media (min-width: 768px) {
+    .zz-list::before {
+      left: 50%;
+      transform: translateX(-1px);
+    }
+
+    .zz-item {
+      padding-left: 0;
+      padding-bottom: 3rem;
+      display: flex;
+    }
+
+    .zz-node {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .zz-left {
+      justify-content: flex-start;
+    }
+
+    .zz-right {
+      justify-content: flex-end;
+    }
+
+    .zz-card {
+      width: calc(50% - 3rem);
+    }
+  }
+</style>

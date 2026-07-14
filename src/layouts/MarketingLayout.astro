@@ -1,11 +1,13 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { getResolvedNav } from "@/lib/utils";
-import NavBar from "@/components/layout/Header/NavBar.astro";
-import Header from "@/components/layout/Header.astro";
-import Footer from "@/components/layout/Footer.astro";
+import { getResolvedNav, getBusinessData } from "@/lib/utils";
+import { resolveHeader, resolveFooter } from "@/lib/layoutRegistry";
 
 interface Props {
+  page: {
+    id: string;
+    data: Record<string, any>;
+  };
   title?: string;
   description?: string;
   image?: string;
@@ -36,12 +38,17 @@ const {
   businessType = "GeneralContractor",
   openingHours,
   areaServed,
+  page,
 } = Astro.props;
 
 const navItems = await getResolvedNav();
+const business = await getBusinessData();
+const Header = resolveHeader(business.headerVariant);
+const Footer = resolveFooter(business.footerVariant);
 ---
 
 <BaseLayout
+  page={page}
   title={title}
   description={description}
   image={image}

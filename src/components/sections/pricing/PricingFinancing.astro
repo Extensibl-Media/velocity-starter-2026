@@ -1,0 +1,154 @@
+---
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    monthlyPrice?: string;
+    monthlyUnit?: string;
+    termNote?: string;
+    financingLabel?: string;
+    bullets?: string[];
+    disclaimer?: string;
+    cta?: SectionCTA;
+    secondaryCta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const bullets = data?.bullets ?? [];
+const hasContent = !!(data?.monthlyPrice || data?.heading || bullets.length > 0);
+---
+
+{
+  hasContent && (
+    <section
+      class:list={[
+        "pricing-financing section-wrapper section-py",
+        `theme-${theme}`,
+      ]}
+    >
+      <div class="section-container">
+        <div class="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12">
+          {/* Left — messaging */}
+          <div class="flex flex-col gap-5">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="w-fit uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="theme-accent text-sm font-semibold uppercase tracking-widest">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-xl m-0">
+                {data.subheading}
+              </p>
+            )}
+
+            {bullets.length > 0 && (
+              <ul class="flex flex-col gap-3 m-0 p-0 list-none">
+                {bullets.map((item) => (
+                  <li class="flex items-start gap-2.5 text-sm theme-text">
+                    <svg
+                      class="w-5 h-5 shrink-0 mt-px"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      stroke="var(--color-primary)"
+                      stroke-width="2.25"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M4 10.5l4 4 8-9" />
+                    </svg>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {(data?.cta || data?.secondaryCta) && (
+              <div class="flex flex-wrap items-center gap-3 pt-1">
+                {data?.cta && (
+                  <Button
+                    variant={data.cta.variant ?? "primary"}
+                    href={data.cta.href}
+                  >
+                    {data.cta.label}
+                  </Button>
+                )}
+                {data?.secondaryCta && (
+                  <Button
+                    variant={data.secondaryCta.variant ?? "ghost"}
+                    href={data.secondaryCta.href}
+                  >
+                    {data.secondaryCta.label}
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Right — payment callout card */}
+          <div class="financing-card flex flex-col items-center text-center gap-4 p-8 lg:p-10 rounded-[var(--t-radius)]">
+            {data?.financingLabel && (
+              <span class="theme-text-subtle text-sm font-semibold uppercase tracking-widest">
+                {data.financingLabel}
+              </span>
+            )}
+
+            {data?.monthlyPrice && (
+              <div class="flex items-baseline justify-center gap-1">
+                <span class="theme-heading text-5xl lg:text-6xl font-bold leading-none">
+                  {data.monthlyPrice}
+                </span>
+                {data.monthlyUnit && (
+                  <span class="theme-text-muted text-lg font-medium">
+                    {data.monthlyUnit}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {data?.termNote && (
+              <p class="theme-text-muted text-base max-w-xs m-0">
+                {data.termNote}
+              </p>
+            )}
+
+            {data?.disclaimer && (
+              <p class="theme-text-subtle text-xs leading-relaxed max-w-xs m-0">
+                {data.disclaimer}
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .financing-card {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    box-shadow: var(--t-shadow-md);
+  }
+</style>

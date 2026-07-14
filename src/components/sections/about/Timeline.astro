@@ -1,0 +1,104 @@
+---
+import type { Eyebrow, TimelineItem } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    items?: TimelineItem[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const items = data?.items ?? [];
+---
+
+{
+  items.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Section header */}
+        {(data?.eyebrow || data?.heading || data?.subheading) && (
+          <div class="flex flex-col items-center text-center gap-3 mb-12">
+            {data?.eyebrow && (
+              <div>
+                {data.eyebrow.variant === "badge" ? (
+                  <Badge class="uppercase tracking-widest text-xs">
+                    {data.eyebrow.text}
+                  </Badge>
+                ) : (
+                  <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                    {data.eyebrow.text}
+                  </span>
+                )}
+              </div>
+            )}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">
+                {data.subheading}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Timeline rail */}
+        <ol class="timeline relative list-none m-0 p-0 mx-auto max-w-2xl">
+          {items.map((item) => (
+            <li class="timeline-entry relative pl-10 pb-10 last:pb-0">
+              <span class="timeline-dot" aria-hidden="true" />
+              <div class="flex flex-col gap-1.5">
+                {item.year && (
+                  <span class="text-primary font-bold text-sm tracking-wide">
+                    {item.year}
+                  </span>
+                )}
+                <h3 class="theme-heading font-semibold text-lg m-0">
+                  {item.title}
+                </h3>
+                {item.body && (
+                  <p class="theme-text-muted text-base leading-relaxed m-0">
+                    {item.body}
+                  </p>
+                )}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  /* Vertical rail line running down the left edge of the entries. */
+  .timeline::before {
+    content: "";
+    position: absolute;
+    top: 0.375rem;
+    bottom: 0.375rem;
+    left: 0.4375rem; /* aligns with dot center (0.875rem wide dot) */
+    width: 2px;
+    background-color: var(--color-border);
+  }
+
+  /* Milestone marker dot sitting on the rail. */
+  .timeline-dot {
+    position: absolute;
+    left: 0;
+    top: 0.375rem;
+    width: 0.875rem;
+    height: 0.875rem;
+    border-radius: 9999px;
+    background-color: var(--theme-accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--theme-accent) 18%, transparent);
+  }
+</style>

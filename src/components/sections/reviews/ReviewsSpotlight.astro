@@ -1,0 +1,191 @@
+---
+import { getCollection } from "astro:content";
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    limit?: number;
+    filter?: "featured" | "all";
+    service?: string;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const allReviews = await getCollection("reviews");
+
+const reviews = allReviews
+  .filter((r) => (data?.filter === "all" ? true : r.data.featured))
+  .filter((r) => !data?.service || r.data.service === data.service)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, data?.limit ?? 6);
+
+const spotlight = reviews[0];
+
+const sourceColors: Record<string, string> = {
+  Google: "#EA4335",
+  Facebook: "#1877F2",
+  Yelp: "#D32323",
+  Direct: "var(--theme-accent)",
+};
+
+function getInitials(name: string) {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+}
+---
+
+{
+  spotlight && (
+    <section
+      class:list={[
+        "reviews-spotlight section-wrapper section-py",
+        `theme-${theme}`,
+      ]}
+    >
+      <div class="section-container">
+        {(data?.eyebrow || data?.heading || data?.subheading) && (
+          <div class="flex flex-col items-center text-center gap-3 mb-12">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">
+                {data.subheading}
+              </p>
+            )}
+          </div>
+        )}
+
+        <figure class="spotlight-card">
+          <div class="quote-mark" aria-hidden="true">
+            &ldquo;
+          </div>
+
+          <div class="flex items-center justify-center gap-1 mb-6">
+            {Array.from(
+              { length: 5 },
+              (_, i) => spotlight.data.rating > i
+            ).map((filled) => (
+              <svg
+                class={`w-6 h-6 ${filled ? "star-filled" : "star-empty"}`}
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+            ))}
+          </div>
+
+          <blockquote class="spotlight-body theme-heading">
+            {spotlight.data.body}
+          </blockquote>
+
+          <figcaption class="spotlight-caption">
+            <div
+              class="avatar"
+              style={`background: color-mix(in srgb, ${sourceColors[spotlight.data.source] ?? sourceColors.Direct} 18%, transparent); color: ${sourceColors[spotlight.data.source] ?? sourceColors.Direct};`}
+              aria-hidden="true"
+            >
+              {getInitials(spotlight.data.author)}
+            </div>
+            <div class="flex flex-col text-left">
+              <span class="theme-heading font-bold text-base leading-tight">
+                {spotlight.data.author}
+              </span>
+              {spotlight.data.location && (
+                <span class="theme-text-muted text-sm">
+                  {spotlight.data.location}
+                </span>
+              )}
+            </div>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .spotlight-card {
+    position: relative;
+    max-width: 52rem;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .quote-mark {
+    position: absolute;
+    top: -1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: Georgia, serif;
+    font-size: 9rem;
+    line-height: 1;
+    color: var(--theme-accent);
+    opacity: 0.12;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .spotlight-body {
+    position: relative;
+    z-index: 1;
+    font-size: clamp(1.375rem, 3vw, 2rem);
+    line-height: 1.45;
+    font-weight: 600;
+    margin: 0 0 2.25rem 0;
+  }
+
+  .spotlight-caption {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.875rem;
+  }
+
+  .avatar {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .star-filled {
+    color: var(--color-rating);
+  }
+
+  .star-empty {
+    color: var(--color-rating-empty);
+  }
+</style>

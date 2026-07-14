@@ -1,0 +1,149 @@
+---
+import { getBusinessData } from "@/lib/utils";
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * location:directions-cta — a directions-first CTA panel. A bold "Get directions"
+ * card (address + parking/arrival note + primary + secondary buttons) sits beside
+ * a compact map thumbnail. Purpose is to drive a click to directions, not to browse.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    mapEmbedUrl?: string;
+    note?: string;
+    cta?: SectionCTA;
+    secondaryCta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const business = await getBusinessData();
+
+const fullAddress = [
+  business.address,
+  [business.city, business.state].filter(Boolean).join(", "),
+  business.zip,
+]
+  .filter(Boolean)
+  .join(" ");
+
+const directionsHref = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+  fullAddress
+)}`;
+const telHref = business.phone ? `tel:${business.phone.replace(/[^\d+]/g, "")}` : null;
+const mapEmbedUrl =
+  data?.mapEmbedUrl ??
+  `https://www.google.com/maps?q=${encodeURIComponent(fullAddress)}&output=embed`;
+---
+
+<section class:list={["location-directions-cta section-wrapper section-py", `theme-${theme}`]}>
+  <div class="section-container">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+      {/* Directions card */}
+      <div class="directions-card">
+        {
+          data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs mb-4">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="block text-sm font-semibold uppercase tracking-widest theme-accent mb-4">
+                {data.eyebrow.text}
+              </span>
+            ))
+        }
+        {
+          data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+          )
+        }
+        {data?.subheading && <p class="theme-text-muted text-lg m-0 mt-3">{data.subheading}</p>}
+
+        {
+          fullAddress && (
+            <div class="flex items-start gap-3 mt-6">
+              <span class="pin-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+              </span>
+              <div class="flex flex-col">
+                <span class="theme-heading font-semibold">{business.businessName}</span>
+                <span class="theme-text-muted">{fullAddress}</span>
+              </div>
+            </div>
+          )
+        }
+
+        {data?.note && <p class="theme-text-subtle text-sm m-0 mt-4">{data.note}</p>}
+
+        <div class="flex flex-col sm:flex-row gap-3 mt-6">
+          <Button
+            variant={data?.cta?.variant ?? "primary"}
+            href={data?.cta?.href ?? directionsHref}
+            class="w-full sm:w-auto"
+          >
+            {data?.cta?.label ?? "Get directions"}
+          </Button>
+          {
+            (data?.secondaryCta || telHref) && (
+              <Button
+                variant={data?.secondaryCta?.variant ?? "outline"}
+                href={data?.secondaryCta?.href ?? telHref ?? "#"}
+                class="w-full sm:w-auto"
+              >
+                {data?.secondaryCta?.label ?? `Call ${business.phone}`}
+              </Button>
+            )
+          }
+        </div>
+      </div>
+
+      {/* Map thumbnail */}
+      <div class="map-thumb overflow-hidden">
+        <iframe
+          src={mapEmbedUrl}
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title={`Map of ${business.city}, ${business.state}`}
+          class="w-full h-full min-h-[300px] lg:min-h-[380px] border-0 block"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .directions-card {
+    padding: 2rem;
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-md);
+  }
+  .map-thumb {
+    border-radius: var(--t-radius);
+    border: var(--t-border-width) solid var(--theme-border);
+    box-shadow: var(--t-shadow-sm);
+  }
+  .pin-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--t-radius);
+    background: color-mix(in srgb, var(--theme-accent) 12%, transparent);
+    color: var(--theme-accent);
+  }
+  .pin-icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+</style>

@@ -1,5 +1,7 @@
 ---
-import { sectionRegistry } from '@/lib/sectionRegistry';
+import { sectionRegistry } from "@/lib/sectionRegistry";
+import { validateSectionData, isValidTheme } from "@/lib/sectionSchemas";
+import ErrorShim from "@/components/ErrorShim.astro";
 
 interface SectionConfig {
   type: string;
@@ -14,18 +16,42 @@ interface Props {
 }
 
 const { config } = Astro.props;
+// import.meta.env.DEV is true under `astro dev`, false in production builds.
+const DEV = import.meta.env.DEV;
+
+/** Collect validation errors for a section (empty array = valid). */
+function validate(section: SectionConfig): string[] {
+  const errors: string[] = [];
+  if (!section.type) {
+    errors.push("Missing `type`.");
+    return errors;
+  }
+  if (!sectionRegistry[section.type]) {
+    errors.push(`Unknown section type "${section.type}" — not in the registry.`);
+  }
+  if (!isValidTheme(section.theme)) {
+    errors.push(
+      `Invalid theme "${section.theme}" — use default | alt | muted | inverse | primary | brand-secondary.`,
+    );
+  }
+  if (sectionRegistry[section.type]) {
+    const { ok, errors: dataErrors } = validateSectionData(section.type, section.data);
+    if (!ok) errors.push(...dataErrors);
+  }
+  return errors;
+}
 ---
 
-{config.sections.map((section) => {
-  const Component = sectionRegistry[section.type];
-  if (!Component) {
-    console.warn(`No component found for section type: ${section.type}`);
-    return null;
-  }
-  return (
-    <Component
-      theme={section.theme ?? 'default'}
-      data={section.data}
-    />
-  );
-})}
+{
+  config.sections.map((section) => {
+    const errors = validate(section);
+    if (errors.length > 0) {
+      // Dev: loud, locatable shim. Prod: silently omit the broken section.
+      return DEV ? (
+        <ErrorShim type={section.type} message="Section failed validation." details={errors} />
+      ) : null;
+    }
+    const Component = sectionRegistry[section.type];
+    return <Component theme={section.theme ?? "default"} data={section.data} />;
+  })
+}

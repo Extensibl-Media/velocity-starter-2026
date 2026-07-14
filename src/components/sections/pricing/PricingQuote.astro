@@ -1,0 +1,123 @@
+---
+import type { Eyebrow, EstimateRow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    rangesTitle?: string;
+    rows?: EstimateRow[];
+    trustNote?: string;
+    disclaimer?: string;
+    cta?: SectionCTA;
+    secondaryCta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const rows = data?.rows ?? [];
+const hasContent = !!(data?.heading || rows.length > 0 || data?.cta);
+---
+
+{
+  hasContent && (
+    <section
+      class:list={["pricing-quote section-wrapper section-py", `theme-${theme}`]}
+    >
+      <div class="section-container">
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-5 lg:gap-10 lg:items-start">
+          {/* Left — quote CTA */}
+          <div class="flex flex-col gap-5 lg:col-span-2">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="w-fit uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="theme-accent text-sm font-semibold uppercase tracking-widest">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg m-0">{data.subheading}</p>
+            )}
+
+            {(data?.cta || data?.secondaryCta) && (
+              <div class="flex flex-wrap items-center gap-3 pt-1">
+                {data?.cta && (
+                  <Button
+                    variant={data.cta.variant ?? "primary"}
+                    href={data.cta.href}
+                  >
+                    {data.cta.label}
+                  </Button>
+                )}
+                {data?.secondaryCta && (
+                  <Button
+                    variant={data.secondaryCta.variant ?? "outline"}
+                    href={data.secondaryCta.href}
+                  >
+                    {data.secondaryCta.label}
+                  </Button>
+                )}
+              </div>
+            )}
+
+            {data?.trustNote && (
+              <p class="theme-text-subtle text-sm m-0">{data.trustNote}</p>
+            )}
+          </div>
+
+          {/* Right — sample price ranges */}
+          {rows.length > 0 && (
+            <div class="flex flex-col gap-4 lg:col-span-3">
+              {data?.rangesTitle && (
+                <h3 class="theme-heading text-sm font-semibold uppercase tracking-widest m-0">
+                  {data.rangesTitle}
+                </h3>
+              )}
+              <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {rows.map((row) => (
+                  <div class="range-card flex flex-col gap-2 p-5 rounded-[var(--t-radius)]">
+                    <span class="theme-heading font-semibold">
+                      {row.service}
+                    </span>
+                    <span class="theme-accent text-2xl font-bold leading-none">
+                      {row.from}
+                    </span>
+                    {row.note && (
+                      <span class="theme-text-subtle text-sm">{row.note}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+              {data?.disclaimer && (
+                <p class="theme-text-subtle text-sm m-0">{data.disclaimer}</p>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .range-card {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    box-shadow: var(--t-shadow-sm);
+  }
+</style>

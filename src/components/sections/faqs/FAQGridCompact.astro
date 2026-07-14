@@ -1,0 +1,81 @@
+---
+import { getCollection } from "astro:content";
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    service?: string;
+    limit?: number;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const allFaqs = await getCollection("faqs");
+
+const faqs = allFaqs
+  .filter((f) => !data?.service || f.data.service === data.service)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, data?.limit ?? allFaqs.length);
+---
+
+<section class:list={["faqs-grid-compact section-wrapper section-py", `theme-${theme}`]}>
+  <div class="section-container">
+    {
+      (data?.eyebrow || data?.heading || data?.subheading) && (
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow && (
+            <div>
+              {data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                  {data.eyebrow.text}
+                </span>
+              )}
+            </div>
+          )}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">
+              {data.subheading}
+            </p>
+          )}
+        </div>
+      )
+    }
+
+    {
+      faqs.length > 0 ? (
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {faqs.map((faq) => (
+            <div
+              class="surface-base p-5 flex flex-col gap-2"
+              style="border-radius: var(--t-radius); box-shadow: var(--t-shadow-sm);"
+            >
+              <h3 class="theme-heading font-semibold text-base m-0 leading-snug">
+                {faq.data.question}
+              </h3>
+              <p class="theme-text-muted text-sm leading-relaxed m-0">
+                {faq.data.answer}
+              </p>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p class="text-center theme-text-muted">No FAQs found.</p>
+      )
+    }
+  </div>
+</section>

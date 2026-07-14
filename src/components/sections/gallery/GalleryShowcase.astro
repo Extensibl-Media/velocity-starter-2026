@@ -1,0 +1,104 @@
+---
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+/**
+ * gallery:showcase — a two-up grid of large showcase images, each with a
+ * work-type label (category) and a written description (caption) beneath it.
+ * Fewer, bigger images for premium project storytelling. No JS.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    images?: { src: string; alt?: string; caption?: string; category?: string }[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const images = data?.images ?? [];
+---
+
+<section class:list={["gallery-showcase section-wrapper section-py", `theme-${theme}`]}>
+  <div class="section-container">
+    {
+      (data?.eyebrow || data?.heading || data?.subheading) && (
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            ))}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>
+          )}
+        </div>
+      )
+    }
+
+    {
+      images.length > 0 && (
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
+          {images.map((img) => (
+            <figure class="showcase-item m-0">
+              <div class="showcase-frame">
+                <SmartImage
+                  src={img.src}
+                  alt={img.alt ?? ""}
+                  widths={[600, 900, 1200]}
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  class="showcase-img"
+                />
+              </div>
+              {(img.category || img.caption) && (
+                <figcaption class="showcase-body">
+                  {img.category && (
+                    <span class="theme-accent text-sm font-semibold uppercase tracking-widest">
+                      {img.category}
+                    </span>
+                  )}
+                  {img.caption && (
+                    <p class="theme-text-muted text-base leading-relaxed m-0">{img.caption}</p>
+                  )}
+                </figcaption>
+              )}
+            </figure>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .showcase-frame {
+    overflow: hidden;
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-md);
+  }
+  .showcase-frame :global(.showcase-img) {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  .showcase-item:hover .showcase-frame :global(.showcase-img) {
+    transform: scale(1.04);
+  }
+  .showcase-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+  }
+</style>

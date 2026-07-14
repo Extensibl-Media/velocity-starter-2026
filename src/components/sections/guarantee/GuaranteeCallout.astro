@@ -1,0 +1,88 @@
+---
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    body?: string;
+    badge?: string;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+---
+
+{
+  (data?.heading || data?.body) && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        <div class="guarantee-panel flex flex-col items-center text-center gap-5 max-w-3xl mx-auto rounded-xl border theme-border p-8 lg:p-12">
+          {/* Icon */}
+          <div class="guarantee-icon flex items-center justify-center w-16 h-16 rounded-full shrink-0">
+            <svg
+              class="w-8 h-8"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="var(--color-primary)"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
+          </div>
+
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">
+                {data.eyebrow.text}
+              </Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            ))}
+
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )}
+
+          {data?.body && (
+            <p class="theme-text-muted text-lg leading-relaxed max-w-2xl m-0">
+              {data.body}
+            </p>
+          )}
+
+          {data?.badge && (
+            <span class="guarantee-chip text-xs font-semibold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">
+              {data.badge}
+            </span>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .guarantee-panel {
+    background: color-mix(in srgb, var(--theme-accent) 6%, transparent);
+  }
+
+  .guarantee-icon {
+    background: color-mix(in srgb, var(--theme-accent) 12%, transparent);
+  }
+
+  .guarantee-chip {
+    background: var(--color-primary);
+    color: var(--color-fg-on-primary);
+  }
+</style>

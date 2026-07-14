@@ -1,19 +1,59 @@
 ---
-// TrustBarLogos — placeholder
-// Replace with full implementation
+import type { Eyebrow, LogoItem } from "@/types/sections";
+import SmartImage from "@/components/media/SmartImage.astro";
 
 interface Props {
   theme?: string;
-  data?: Record<string, unknown>;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    logos?: LogoItem[];
+  };
 }
 
-const { theme = 'default', data } = Astro.props;
+const { theme = "default", data } = Astro.props;
+
+const logos = data?.logos ?? [];
+const heading = data?.heading ?? data?.eyebrow?.text;
 ---
 
-<section class={`section-wrapper section-py-sm theme-${theme}`}>
-  <div class="section-container">
-    <p class="theme-text-muted text-sm">
-      [TrustBarLogos — not yet implemented]
-    </p>
-  </div>
-</section>
+{
+  logos.length > 0 && (
+    <section class={`section-wrapper section-py-sm theme-${theme}`}>
+      <div class="section-container">
+        {heading && (
+          <p class="theme-text-subtle text-sm font-semibold uppercase tracking-widest text-center m-0 mb-8">
+            {heading}
+          </p>
+        )}
+
+        <ul class="flex flex-wrap items-center justify-center gap-x-10 gap-y-8 md:gap-x-14 list-none m-0 p-0">
+          {logos.map((logo) => (
+            <li class="flex items-center justify-center">
+              {logo.href ? (
+                <a
+                  href={logo.href}
+                  class="block opacity-60 hover:opacity-100 grayscale hover:grayscale-0 transition duration-200"
+                >
+                  <SmartImage
+                    src={logo.src}
+                    alt={logo.alt ?? ""}
+                    widths={[120, 240]}
+                    class="h-10 w-auto object-contain"
+                  />
+                </a>
+              ) : (
+                <SmartImage
+                  src={logo.src}
+                  alt={logo.alt ?? ""}
+                  widths={[120, 240]}
+                  class="h-10 w-auto object-contain opacity-60 hover:opacity-100 grayscale hover:grayscale-0 transition duration-200"
+                />
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}

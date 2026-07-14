@@ -1,0 +1,110 @@
+---
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+interface GuaranteeBadgeItem {
+  icon?: string;
+  label: string;
+  description?: string;
+}
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    items?: GuaranteeBadgeItem[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const items = data?.items ?? [];
+
+const count = items.length;
+const gridClass =
+  count === 1
+    ? "grid-cols-1"
+    : count === 2
+      ? "grid-cols-1 sm:grid-cols-2"
+      : count === 3
+        ? "grid-cols-1 sm:grid-cols-3"
+        : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
+---
+
+{
+  items.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Section header */}
+        {(data?.eyebrow || data?.heading || data?.subheading) && (
+          <div class="flex flex-col items-center text-center gap-3 mb-12">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">
+                {data.subheading}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Badge chips */}
+        <div class={`grid ${gridClass} gap-6`}>
+          {items.map((item) => (
+            <div class="guarantee-badge flex flex-col items-center text-center gap-3 rounded-xl border theme-border bg-background p-6">
+              <div class="badge-icon flex items-center justify-center w-14 h-14 rounded-full shrink-0">
+                {item.icon ? (
+                  <Fragment set:html={item.icon} />
+                ) : (
+                  <svg
+                    class="w-7 h-7"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="var(--color-primary)"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg>
+                )}
+              </div>
+              <span class="theme-heading text-base font-semibold leading-tight m-0">
+                {item.label}
+              </span>
+              {item.description && (
+                <span class="theme-text-subtle text-sm leading-relaxed max-w-[16rem]">
+                  {item.description}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .badge-icon {
+    background: color-mix(in srgb, var(--theme-accent) 12%, transparent);
+  }
+</style>

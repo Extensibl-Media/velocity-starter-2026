@@ -1,19 +1,151 @@
 ---
-// ProcessVertical — placeholder
-// Replace with full implementation
+import type { Eyebrow, ProcessStep } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
 
 interface Props {
   theme?: string;
-  data?: Record<string, unknown>;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    steps?: ProcessStep[];
+  };
 }
 
-const { theme = 'default', data } = Astro.props;
+const { theme = "default", data } = Astro.props;
+
+const defaultSteps: ProcessStep[] = [
+  {
+    heading: "Reach Out",
+    body: "Call or send us a message and we respond within the hour.",
+  },
+  {
+    heading: "Free Estimate",
+    body: "We assess the work and give you a clear, honest quote.",
+  },
+  {
+    heading: "Get It Done",
+    body: "We complete the job on schedule and to your standards.",
+  },
+];
+
+const steps = data?.steps ?? defaultSteps;
 ---
 
 <section class={`section-wrapper section-py theme-${theme}`}>
   <div class="section-container">
-    <p class="theme-text-muted text-sm">
-      [ProcessVertical — not yet implemented]
-    </p>
+    {/* Section header */}
+    <div class="flex flex-col items-center text-center gap-3 mb-12">
+      {
+        data?.eyebrow && (
+          <div>
+            {data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">
+                {data.eyebrow.text}
+              </Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            )}
+          </div>
+        )
+      }
+      {
+        data?.heading && (
+          <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+            {data.heading}
+          </h2>
+        )
+      }
+      {
+        data?.subheading && (
+          <p class="theme-text-muted text-lg max-w-2xl m-0">
+            {data.subheading}
+          </p>
+        )
+      }
+    </div>
+
+    {/* Steps — vertical connected column, line runs down the left */}
+    <ol class="process-steps">
+      {
+        steps.map((step, index) => (
+          <li class="process-step">
+            {/* Connector line — hidden on last step */}
+            {index < steps.length - 1 && (
+              <span class="process-connector" aria-hidden="true" />
+            )}
+
+            {/* Numbered circle */}
+            <span class="process-number">{index + 1}</span>
+
+            {/* Content */}
+            <div class="process-content">
+              <h3 class="theme-heading font-bold text-lg m-0">{step.heading}</h3>
+              {step.body && (
+                <p class="theme-text-muted text-sm leading-relaxed m-0 mt-2">
+                  {step.body}
+                </p>
+              )}
+            </div>
+          </li>
+        ))
+      }
+    </ol>
   </div>
 </section>
+
+<style>
+  .process-steps {
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    max-width: 42rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .process-step {
+    display: grid;
+    grid-template-columns: 3.5rem 1fr;
+    column-gap: 1.5rem;
+    position: relative;
+  }
+
+  /* Vertical connector line running down the left column between circles */
+  .process-connector {
+    position: absolute;
+    top: 3.5rem;
+    left: calc(1.75rem - 1px);
+    bottom: -2.5rem;
+    width: 2px;
+    background: var(--color-border);
+    z-index: 0;
+  }
+
+  /* Numbered circle */
+  .process-number {
+    position: relative;
+    z-index: 1;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: var(--color-fg-on-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1;
+    box-shadow: 0 0 0 6px
+      color-mix(in srgb, var(--theme-accent) 10%, transparent);
+    flex-shrink: 0;
+  }
+
+  .process-content {
+    padding-top: 0.5rem;
+  }
+</style>

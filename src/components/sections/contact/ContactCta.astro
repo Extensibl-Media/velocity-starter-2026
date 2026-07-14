@@ -1,0 +1,82 @@
+---
+import { getBusinessData } from "@/lib/utils";
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * contact:cta — a simple centered contact CTA band. Heading + subheading, a big
+ * tappable phone link, and a primary "Request a Quote" button. Lighter than a
+ * full contact form. Phone comes from the `generalSettings` singleton.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    cta?: SectionCTA;
+    showPhone?: boolean;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const business = await getBusinessData();
+
+const showPhone = data?.showPhone ?? true;
+const telHref = business.phone ? `tel:${business.phone.replace(/[^\d+]/g, "")}` : null;
+const cta = data?.cta;
+---
+
+<section class={`section-wrapper section-py theme-${theme}`}>
+  <div class="section-container">
+    <div class="flex flex-col items-center text-center gap-6 max-w-3xl mx-auto">
+      {
+        data?.eyebrow && (
+          <div>
+            {data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            )}
+          </div>
+        )
+      }
+      {
+        data?.heading && (
+          <h2 class="theme-heading text-3xl lg:text-5xl font-black m-0 leading-tight">{data.heading}</h2>
+        )
+      }
+      {data?.subheading && <p class="theme-text-muted text-lg leading-relaxed m-0">{data.subheading}</p>}
+
+      {
+        showPhone && telHref && (
+          <a
+            href={telHref}
+            class="inline-flex items-center gap-3 text-2xl lg:text-3xl font-bold theme-heading hover:text-primary transition-colors no-underline mt-2"
+          >
+            <svg
+              class="w-6 h-6 lg:w-7 lg:h-7 shrink-0 text-primary"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+            </svg>
+            {business.phone}
+          </a>
+        )
+      }
+
+      <div class="mt-2">
+        <Button variant={cta?.variant ?? "primary"} href={cta?.href ?? "/contact"}>
+          {cta?.label ?? "Request a Quote"}
+        </Button>
+      </div>
+    </div>
+  </div>
+</section>

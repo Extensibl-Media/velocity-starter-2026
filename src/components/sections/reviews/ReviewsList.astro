@@ -1,0 +1,145 @@
+---
+import { getCollection } from "astro:content";
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    filter?: string;
+    limit?: number;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const allReviews = await getCollection("reviews");
+
+const reviews = allReviews
+  .filter((r) => (data?.filter === "featured" ? r.data.featured : true))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, data?.limit ?? allReviews.length);
+---
+
+{
+  reviews.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Section header */}
+        {(data?.eyebrow || data?.heading || data?.subheading) && (
+          <div class="flex flex-col items-center text-center gap-3 mb-12">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">
+                {data.subheading}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Vertical list */}
+        <ul class="review-list max-w-3xl mx-auto">
+          {reviews.map((review) => {
+            const stars = Array.from(
+              { length: 5 },
+              (_, i) => i < review.data.rating
+            );
+
+            return (
+              <li class="review-row">
+                {/* Stars */}
+                <div class="flex items-center gap-0.5 mb-3">
+                  {stars.map((filled) => (
+                    <svg
+                      class={`w-4 h-4 ${filled ? "star-filled" : "star-empty"}`}
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                  ))}
+                </div>
+
+                {/* Body */}
+                <p class="review-body theme-text">{review.data.body}</p>
+
+                {/* Author + location */}
+                <div class="flex items-center gap-2 mt-4">
+                  <span class="theme-heading font-semibold text-sm">
+                    {review.data.author}
+                  </span>
+                  {review.data.location && (
+                    <>
+                      <span class="theme-text-subtle text-sm" aria-hidden="true">
+                        &bull;
+                      </span>
+                      <span class="theme-text-subtle text-sm">
+                        {review.data.location}
+                      </span>
+                    </>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .review-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .review-row {
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .review-row:first-child {
+    padding-top: 0;
+  }
+
+  .review-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  /* Stars */
+  .star-filled {
+    color: var(--color-rating);
+  }
+
+  .star-empty {
+    color: var(--color-rating-empty);
+  }
+
+  .review-body {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    margin: 0;
+  }
+</style>

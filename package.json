@@ -10,7 +10,11 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "generate-types": "wrangler types"
+    "generate-types": "wrangler types",
+    "generate:cms": "node scripts/generate-cms.mjs",
+    "check:cms": "node scripts/generate-cms.mjs --check",
+    "cms": "decap-server",
+    "check:contrast": "node scripts/check-contrast.mjs"
   },
   "dependencies": {
     "@astrojs/markdoc": "^1.0.2",
@@ -29,6 +33,7 @@
     "wrangler": "^4.77.0"
   },
   "devDependencies": {
-    "@types/node": "^25.5.0"
+    "@types/node": "^25.5.0",
+    "decap-server": "^3.9.1"
   }
 }

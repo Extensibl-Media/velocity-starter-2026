@@ -1,0 +1,63 @@
+---
+interface Props {
+  theme?: string;
+  data?: {
+    prefix?: string;
+    count?: string;
+    suffix?: string;
+    points?: string[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const prefix = data?.prefix ?? null;
+const count = data?.count ?? null;
+const suffix = data?.suffix ?? null;
+const points = data?.points ?? [];
+---
+
+{
+  count && (
+    <section
+      class:list={[
+        "trust-bar-count-strip section-wrapper section-py-sm",
+        `theme-${theme}`,
+      ]}
+    >
+      <div class="section-container">
+        <div class="flex flex-col items-center text-center gap-4">
+          <p class="text-lg md:text-xl leading-tight m-0">
+            {prefix && <span class="theme-text-muted">{prefix} </span>}
+            <span
+              class="theme-heading font-bold text-3xl md:text-4xl align-middle"
+              style="color: var(--theme-accent);"
+            >
+              {count}
+            </span>
+            {suffix && <span class="theme-text-muted"> {suffix}</span>}
+          </p>
+
+          {points.length > 0 && (
+            <ul class="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 list-none m-0 p-0">
+              {points.map((point, i) => (
+                <li class="flex items-center gap-x-3">
+                  {i > 0 && (
+                    <span
+                      class="w-1 h-1 rounded-full shrink-0"
+                      style="background-color: var(--theme-border);"
+                      aria-hidden="true"
+                    />
+                  )}
+                  <span class="theme-text-subtle text-sm font-medium">
+                    {point}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}

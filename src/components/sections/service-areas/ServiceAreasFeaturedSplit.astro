@@ -1,0 +1,186 @@
+---
+import { getCollection } from "astro:content";
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * service-areas:featured-split — spotlights the primary service area in a large
+ * raised card on the left, with the remaining coverage cities listed compactly
+ * on the right. The featured city is the first `featured` entry (falling back to
+ * the first by order) from the `serviceAreas` collection.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    limit?: number;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const all = await getCollection("serviceAreas");
+const sorted = all.sort((a, b) => a.data.order - b.data.order);
+
+const primary = sorted.find((a) => a.data.featured) ?? sorted[0];
+let rest = sorted.filter((a) => a.data.slug !== primary?.data.slug);
+if (data?.limit) rest = rest.slice(0, data.limit);
+---
+
+<section
+  class:list={["service-areas-featured-split section-wrapper section-py", `theme-${theme}`]}
+>
+  <div class="section-container">
+    <div class="flex flex-col gap-3 mb-10 max-w-2xl">
+      {
+        data?.eyebrow && (
+          <div>
+            {data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="theme-accent text-sm font-semibold uppercase tracking-widest">
+                {data.eyebrow.text}
+              </span>
+            )}
+          </div>
+        )
+      }
+      {
+        data?.heading && (
+          <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+        )
+      }
+      {
+        data?.subheading && (
+          <p class="theme-text-muted text-lg m-0">{data.subheading}</p>
+        )
+      }
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+      {/* Featured city spotlight */}
+      {
+        primary && (
+          <div class="featured-card lg:col-span-2">
+            <span class="featured-flag">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              Primary service area
+            </span>
+            <h3 class="theme-heading text-2xl font-bold m-0">
+              {primary.data.city}, {primary.data.state}
+            </h3>
+            {primary.data.county && (
+              <p class="theme-text-muted text-sm m-0">
+                {primary.data.county} County
+              </p>
+            )}
+            <Button variant="primary" href={`/${primary.data.slug}`} class="mt-2 self-start">
+              View {primary.data.city}
+            </Button>
+          </div>
+        )
+      }
+
+      {/* Surrounding cities */}
+      <div class="lg:col-span-3">
+        <p class="theme-text-subtle text-xs font-semibold uppercase tracking-widest mb-4">
+          Also serving
+        </p>
+        <ul class="rest-grid" role="list">
+          {
+            rest.map((area) => (
+              <li>
+                <a href={`/${area.data.slug}`} class="rest-item group">
+                  <span class="theme-text font-semibold text-sm">{area.data.city}</span>
+                  <span class="rest-arrow theme-accent" aria-hidden="true">→</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .featured-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 2rem;
+    border-radius: var(--t-radius);
+    border: var(--t-border-width) solid var(--theme-border);
+    background-color: var(--card);
+    box-shadow: var(--t-shadow-md);
+  }
+  .featured-flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    align-self: flex-start;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--theme-accent, currentColor) 12%, transparent);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .featured-flag svg {
+    width: 0.85rem;
+    height: 0.85rem;
+  }
+  .rest-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  @media (min-width: 640px) {
+    .rest-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .rest-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: var(--t-radius);
+    border: var(--t-border-width) solid var(--theme-border);
+    text-decoration: none;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+  .rest-item:hover {
+    box-shadow: var(--t-shadow-sm);
+  }
+  .rest-arrow {
+    opacity: 0;
+    transform: translateX(-0.25rem);
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
+  }
+  .rest-item:hover .rest-arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+</style>

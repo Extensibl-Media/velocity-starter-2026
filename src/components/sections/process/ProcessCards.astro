@@ -1,0 +1,118 @@
+---
+import type { Eyebrow, ProcessStep } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    steps?: ProcessStep[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const steps = data?.steps ?? [];
+---
+
+{
+  steps.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Section header */}
+        <div class="flex flex-col items-center text-center gap-3 mb-16">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">
+                {data.eyebrow.text}
+              </Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            ))}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">
+              {data.subheading}
+            </p>
+          )}
+        </div>
+
+        {/* Step cards */}
+        <div class="process-cards">
+          {steps.map((step, index) => (
+            <div class="process-card rounded-xl border theme-border bg-background">
+              <span class="process-card-number" aria-hidden="true">
+                {index + 1}
+              </span>
+              <h3 class="theme-heading font-bold text-lg m-0 mt-5">
+                {step.heading}
+              </h3>
+              {step.body && (
+                <p class="theme-text-muted text-sm leading-relaxed m-0 mt-2">
+                  {step.body}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .process-cards {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .process-cards {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .process-cards {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .process-cards {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .process-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1.75rem;
+  }
+
+  .process-card-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: var(--color-fg-on-primary);
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 6px
+      color-mix(in srgb, var(--theme-accent) 10%, transparent);
+  }
+</style>

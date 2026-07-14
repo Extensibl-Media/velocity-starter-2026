@@ -1,0 +1,100 @@
+---
+import { getCollection } from "astro:content";
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    service?: string;
+    limit?: number;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const allFaqs = await getCollection("faqs");
+
+const faqs = allFaqs
+  .filter((f) => !data?.service || f.data.service === data.service)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, data?.limit ?? allFaqs.length);
+---
+
+<section class:list={["faqs-disclosure section-wrapper section-py", `theme-${theme}`]}>
+  <div class="section-container">
+    {
+      (data?.eyebrow || data?.heading || data?.subheading) && (
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow && (
+            <div>
+              {data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                  {data.eyebrow.text}
+                </span>
+              )}
+            </div>
+          )}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">
+              {data.subheading}
+            </p>
+          )}
+        </div>
+      )
+    }
+
+    {
+      faqs.length > 0 ? (
+        <div class="max-w-3xl mx-auto flex flex-col gap-3">
+          {faqs.map((faq) => (
+            <details
+              class="faq-item group surface-base overflow-hidden"
+              style="border-radius: var(--t-radius);"
+            >
+              <summary class="flex items-center justify-between gap-4 cursor-pointer list-none px-5 py-4 font-semibold theme-heading select-none">
+                <span>{faq.data.question}</span>
+                <svg
+                  class="w-5 h-5 shrink-0 transition-transform duration-200 group-open:rotate-45 theme-text-subtle"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  aria-hidden="true"
+                >
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+              </summary>
+              <div class="px-5 pb-5 -mt-1">
+                <p class="theme-text-muted leading-relaxed m-0">
+                  {faq.data.answer}
+                </p>
+              </div>
+            </details>
+          ))}
+        </div>
+      ) : (
+        <p class="text-center theme-text-muted">No FAQs found.</p>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+</style>

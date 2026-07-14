@@ -1,0 +1,199 @@
+---
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    plans?: {
+      name: string;
+      price?: string;
+      highlighted?: boolean;
+      cta?: SectionCTA;
+    }[];
+    features?: {
+      label: string;
+      values: (boolean | string)[];
+    }[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const plans = data?.plans ?? [];
+const features = data?.features ?? [];
+---
+
+{
+  plans.length > 0 && features.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Section header */}
+        {(data?.eyebrow || data?.heading || data?.subheading) && (
+          <div class="flex flex-col items-center text-center gap-3 mb-12">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">
+                {data.subheading}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Pricing matrix */}
+        <div class="pricing-matrix overflow-x-auto rounded-xl border theme-border">
+          <table class="w-full border-collapse text-left">
+            <thead>
+              <tr>
+                <th
+                  scope="col"
+                  class="pricing-cell pricing-corner theme-text-muted text-sm font-medium align-bottom"
+                >
+                  <span class="sr-only">Feature</span>
+                </th>
+                {plans.map((plan) => (
+                  <th
+                    scope="col"
+                    class:list={[
+                      "pricing-cell pricing-plan-head text-center align-bottom",
+                      plan.highlighted && "is-highlighted",
+                    ]}
+                  >
+                    <div class="flex flex-col items-center gap-1">
+                      <span class="theme-heading text-base font-bold">
+                        {plan.name}
+                      </span>
+                      {plan.price && (
+                        <span class="theme-text-muted text-sm font-medium">
+                          {plan.price}
+                        </span>
+                      )}
+                    </div>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {features.map((feature) => (
+                <tr class="pricing-row">
+                  <th
+                    scope="row"
+                    class="pricing-cell theme-text text-sm font-medium"
+                  >
+                    {feature.label}
+                  </th>
+                  {plans.map((plan, i) => {
+                    const value = feature.values[i];
+                    return (
+                      <td
+                        class:list={[
+                          "pricing-cell text-center",
+                          plan.highlighted && "is-highlighted",
+                        ]}
+                      >
+                        {typeof value === "boolean" ? (
+                          value ? (
+                            <svg
+                              class="inline-block w-5 h-5"
+                              viewBox="0 0 20 20"
+                              fill="none"
+                              stroke="var(--color-primary)"
+                              stroke-width="2.25"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              role="img"
+                              aria-label="Included"
+                            >
+                              <path d="M4 10.5l4 4 8-9" />
+                            </svg>
+                          ) : (
+                            <svg
+                              class="inline-block w-5 h-5 theme-text-subtle"
+                              viewBox="0 0 20 20"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2.25"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              role="img"
+                              aria-label="Not included"
+                            >
+                              <path d="M5 5l10 10M15 5L5 15" />
+                            </svg>
+                          )
+                        ) : (
+                          <span class="theme-text text-sm">{value}</span>
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+              {plans.some((plan) => plan.cta) && (
+                <tr class="pricing-row">
+                  <td class="pricing-cell" aria-hidden="true" />
+                  {plans.map((plan) => (
+                    <td
+                      class:list={[
+                        "pricing-cell text-center",
+                        plan.highlighted && "is-highlighted",
+                      ]}
+                    >
+                      {plan.cta && (
+                        <Button
+                          variant={plan.cta.variant ?? "primary"}
+                          href={plan.cta.href}
+                          class="w-full"
+                        >
+                          {plan.cta.label}
+                        </Button>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .pricing-cell {
+    padding: 0.875rem 1.25rem;
+  }
+  /* Row separators */
+  .pricing-row + .pricing-row .pricing-cell {
+    border-top: 1px solid var(--theme-border);
+  }
+  thead tr .pricing-cell {
+    border-bottom: 1px solid var(--theme-border);
+  }
+  /* Highlighted plan column tint */
+  .pricing-cell.is-highlighted {
+    background: color-mix(in srgb, var(--theme-accent) 6%, transparent);
+  }
+  .pricing-plan-head.is-highlighted {
+    border-top: 2px solid var(--color-primary);
+  }
+</style>

@@ -1,19 +1,135 @@
 ---
-// ServicesGrid — placeholder
-// Replace with full implementation
+import { getCollection } from "astro:content";
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
 
 interface Props {
   theme?: string;
-  data?: Record<string, unknown>;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    limit?: number;
+    showCTA?: boolean;
+    ctaLabel?: string;
+    ctaHref?: string;
+  };
 }
 
-const { theme = 'default', data } = Astro.props;
+const { theme = "default", data } = Astro.props;
+
+const services = await getCollection("services");
+const sorted = services
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, data?.limit ?? services.length);
+
+const count = sorted.length;
+const gridClass =
+  count === 1
+    ? "grid-cols-1"
+    : count === 2
+      ? "grid-cols-1 sm:grid-cols-2"
+      : count === 3
+        ? "grid-cols-1 sm:grid-cols-3"
+        : count === 4
+          ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+          : count === 5
+            ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-5"
+            : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
 ---
 
 <section class={`section-wrapper section-py theme-${theme}`}>
   <div class="section-container">
-    <p class="theme-text-muted text-sm">
-      [ServicesGrid — not yet implemented]
-    </p>
+    {/* Section header */}
+    <div class="flex flex-col items-center text-center gap-3 mb-12">
+      {
+        data?.eyebrow && (
+          <div>
+            {data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">
+                {data.eyebrow.text}
+              </Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            )}
+          </div>
+        )
+      }
+      {
+        data?.heading && (
+          <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+            {data.heading}
+          </h2>
+        )
+      }
+      {
+        data?.subheading && (
+          <p class="theme-text-muted text-lg max-w-2xl m-0">
+            {data.subheading}
+          </p>
+        )
+      }
+    </div>
+
+    {/* Grid */}
+    <div class={`grid ${gridClass} gap-6`}>
+      {
+        sorted.map((service) => (
+          <a
+            href={`/services/${service.data.slug}`}
+            class="group flex flex-col gap-3 p-6 rounded-xl border theme-border bg-background hover:shadow-md transition-all duration-200 no-underline"
+          >
+            <div class="flex items-start justify-between gap-2">
+              <h3 class="theme-heading text-lg font-semibold m-0 group-hover:text-primary transition-colors">
+                {service.data.title}
+              </h3>
+              {service.data.isEmergency && (
+                <span
+                  class="shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full"
+                  style="background: color-mix(in srgb, var(--color-brand-secondary) 15%, transparent); color: var(--color-brand-secondary-fg)"
+                >
+                  Emergency
+                </span>
+              )}
+            </div>
+            {service.data.description && (
+              <p class="theme-text-muted text-sm leading-relaxed m-0 flex-1">
+                {service.data.description}
+              </p>
+            )}
+            <span class="text-sm font-semibold text-primary flex items-center gap-1 mt-auto">
+              Learn more
+              <svg
+                class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </span>
+          </a>
+        ))
+      }
+    </div>
+
+    {/* Optional CTA */}
+    {
+      data?.showCTA && (
+        <div class="flex justify-center mt-10">
+          <a
+            href={data.ctaHref ?? "/services"}
+            class="inline-flex items-center justify-center px-6 py-3 rounded-lg border theme-border theme-text font-semibold text-sm hover:bg-muted transition-colors"
+          >
+            {data.ctaLabel ?? "View All Services"}
+          </a>
+        </div>
+      )
+    }
   </div>
 </section>

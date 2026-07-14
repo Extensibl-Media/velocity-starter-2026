@@ -1,0 +1,358 @@
+---
+import type { FormConfig } from "@/types/sections";
+import { Input } from "@/components/starwind/input";
+import { Label } from "@/components/starwind/label";
+
+/**
+ * QuizForm — a config-driven, multi-step lead form (a drop-in form sub-component
+ * for any form-carrying section, selected via the form registry by `form.type`).
+ *
+ * Vanilla JS, no framework. Answers are held in local client state as the
+ * visitor progresses; the WHOLE payload is submitted once at the end. The
+ * destination is pluggable: on submit it dispatches a `form:submit` DOM event
+ * with the payload, optionally POSTs JSON to `form.submit.endpoint`, and
+ * optionally redirects — otherwise it shows the outcome screen.
+ */
+interface Props {
+  form?: FormConfig;
+  services?: { data: { slug: string; title: string } }[];
+}
+
+const { form = {} } = Astro.props;
+const steps = form.steps ?? [];
+const total = steps.length;
+
+// Minimal inline-icon set for option cards. Unknown keys fall back to a dot.
+const ICONS: Record<string, string> = {
+  drop: '<path d="M12 2.5S5 10 5 14a7 7 0 0 0 14 0c0-4-7-11.5-7-11.5z"/>',
+  shingle: '<path d="M3 10 12 4l9 6"/><path d="M5 10v9h14v-9"/><path d="M9 19v-5h6v5"/>',
+  storm: '<path d="M13 2 4 14h6l-1 8 9-12h-6z"/>',
+  sag: '<path d="M3 7c4 5 14 5 18 0"/><path d="M3 12c4 5 14 5 18 0"/>',
+  question: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.9.4-1.5 1-1.5 2.2"/><path d="M12 17h.01"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  calendar: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
+  home: '<path d="m3 10 9-7 9 7"/><path d="M5 10v10h14V10"/>',
+  wrench: '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2-2z"/>',
+  dollar: '<path d="M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  dot: '<circle cx="12" cy="12" r="4"/>',
+};
+---
+
+<div class="quiz surface-base" data-quiz>
+  {/* Progress */}
+  <div class="quiz-head" data-quiz-head>
+    <div class="quiz-progress"><div class="quiz-progress-bar" data-quiz-bar style="width:0%"></div></div>
+    <p class="quiz-count theme-text-subtle" data-quiz-count>Step 1 of {total}</p>
+  </div>
+
+  {/* Honeypot */}
+  <input type="text" name="company_website" class="quiz-hp" tabindex="-1" autocomplete="off" aria-hidden="true" data-quiz-hp />
+
+  {/* Steps */}
+  {
+    steps.map((step, i) => {
+      const auto = step.autoAdvance ?? step.type === "single-select";
+      return (
+        <div class="quiz-step" data-quiz-step data-step-id={step.id} data-step-type={step.type} data-auto={String(auto)} hidden={i !== 0}>
+          <h3 class="quiz-q theme-heading">{step.question}</h3>
+          {step.help && <p class="quiz-help theme-text-muted">{step.help}</p>}
+
+          {(step.type === "single-select" || step.type === "multi-select" || step.type === "scale") && (
+            <div class:list={["quiz-options", step.type === "scale" && "is-scale"]}>
+              {step.options?.map((opt) => (
+                <button type="button" class="quiz-option" data-value={opt.value ?? opt.label} data-label={opt.label}>
+                  {opt.icon && (
+                    <span class="quiz-option-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={ICONS[opt.icon] ?? ICONS.dot} />
+                    </span>
+                  )}
+                  <span class="quiz-option-text">
+                    <span class="quiz-option-label">{opt.label}</span>
+                    {opt.description && <span class="quiz-option-desc theme-text-subtle">{opt.description}</span>}
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {step.type === "contact" && (
+            <div class="quiz-fields">
+              {step.fields?.map((f) => (
+                <div class="flex flex-col gap-1.5">
+                  <Label for={`q-${step.id}-${f.name}`} class="text-fg">{f.label}</Label>
+                  <Input
+                    id={`q-${step.id}-${f.name}`}
+                    name={f.name}
+                    type={f.type ?? "text"}
+                    placeholder={f.placeholder}
+                    required={f.required}
+                    data-quiz-field={f.name}
+                    class="text-fg-muted placeholder:text-fg-muted border-bg-inverse"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    })
+  }
+
+  {/* Outcome */}
+  <div class="quiz-outcome" data-quiz-outcome hidden>
+    <span class="quiz-outcome-check" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+    </span>
+    <h3 class="theme-heading quiz-outcome-heading" data-quiz-outcome-heading>{form.outcome?.heading ?? "Thanks — you're all set!"}</h3>
+    <p class="theme-text-muted quiz-outcome-body" data-quiz-outcome-body>{form.outcome?.body ?? "A specialist will reach out shortly."}</p>
+  </div>
+
+  {/* Nav */}
+  <div class="quiz-nav" data-quiz-nav>
+    <button type="button" class="quiz-back" data-quiz-back hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4"><path d="m15 18-6-6 6-6" /></svg>
+      Back
+    </button>
+    <button type="button" class="quiz-next" data-quiz-next>Next</button>
+  </div>
+
+  <script type="application/json" data-quiz-config set:html={JSON.stringify({ submit: form.submit ?? {}, outcome: form.outcome ?? {}, submitLabel: form.submitLabel ?? "Get My Free Estimate" })} />
+</div>
+
+<style>
+  /* Solid card surface so the form is readable on ANY hero background
+     (dark/inverse/gradient). The `.surface-base` class on the root resets the
+     section theme's flipped tokens to the base light surface. */
+  .quiz {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    background: var(--t-bg-muted);
+    border: var(--t-border-width) solid var(--t-border);
+    border-radius: var(--radius);
+    box-shadow: var(--t-shadow-lg);
+    padding: 1.5rem;
+    color: var(--t-fg);
+  }
+  .quiz-progress { height: 6px; border-radius: 999px; background: color-mix(in srgb, var(--color-fg) 10%, transparent); overflow: hidden; }
+  .quiz-progress-bar { height: 100%; background: var(--color-primary); border-radius: 999px; transition: width 0.35s ease; }
+  .quiz-count { font-size: 0.75rem; margin: 0.5rem 0 0; }
+  .quiz-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .quiz-q { font-size: 1.25rem; font-weight: 700; margin: 0 0 0.25rem; }
+  .quiz-help { font-size: 0.9rem; margin: 0 0 0.75rem; }
+
+  .quiz-options { display: grid; grid-template-columns: 1fr; gap: 0.625rem; margin-top: 0.75rem; }
+  @media (min-width: 480px) { .quiz-options { grid-template-columns: 1fr 1fr; } }
+  .quiz-options.is-scale { grid-template-columns: repeat(2, 1fr); }
+  @media (min-width: 480px) { .quiz-options.is-scale { grid-template-columns: repeat(4, 1fr); } }
+
+  .quiz-option {
+    display: flex; align-items: center; gap: 0.75rem; text-align: left;
+    padding: 0.85rem 1rem; border-radius: var(--radius);
+    border: var(--t-border-width) solid var(--color-border);
+    background: var(--color-background); cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  }
+  .quiz-options.is-scale .quiz-option { flex-direction: column; align-items: center; text-align: center; gap: 0.35rem; padding: 0.85rem 0.5rem; }
+  .quiz-option:hover { border-color: var(--color-primary); }
+  .quiz-option[data-selected] {
+    border-color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+    box-shadow: 0 0 0 1px var(--color-primary) inset;
+  }
+  .quiz-option-icon {
+    flex-shrink: 0; width: 2.25rem; height: 2.25rem; border-radius: var(--radius);
+    display: inline-flex; align-items: center; justify-content: center;
+    background: color-mix(in srgb, var(--color-primary) 12%, transparent); color: var(--color-primary);
+  }
+  .quiz-option-icon svg { width: 1.25rem; height: 1.25rem; }
+  .quiz-option-text { display: flex; flex-direction: column; }
+  .quiz-option-label { font-weight: 600; color: var(--color-fg); font-size: 0.95rem; }
+  .quiz-option-desc { font-size: 0.8rem; }
+
+  .quiz-fields { display: flex; flex-direction: column; gap: 0.9rem; margin-top: 0.75rem; }
+
+  .quiz-nav { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.25rem; }
+  .quiz-back {
+    display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.6rem 0.9rem;
+    border-radius: var(--radius); border: var(--t-border-width) solid var(--color-border);
+    background: transparent; color: var(--color-fg); font-weight: 600; font-size: 0.9rem; cursor: pointer;
+  }
+  .quiz-back:hover { background: color-mix(in srgb, var(--color-fg) 5%, transparent); }
+  .quiz-next {
+    flex: 1; padding: 0.75rem 1.25rem; border-radius: var(--radius); border: none;
+    background: var(--color-primary); color: var(--color-fg-on-primary);
+    font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: opacity 0.15s ease;
+  }
+  .quiz-next:hover { opacity: 0.9; }
+  .quiz-next:disabled { opacity: 0.6; cursor: default; }
+
+  .quiz-outcome { text-align: center; padding: 1.5rem 0.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+  .quiz-outcome-check {
+    width: 3.5rem; height: 3.5rem; border-radius: 999px;
+    background: color-mix(in srgb, var(--color-primary) 14%, transparent); color: var(--color-primary);
+    display: inline-flex; align-items: center; justify-content: center; margin-bottom: 0.25rem;
+  }
+  .quiz-outcome-check svg { width: 1.75rem; height: 1.75rem; }
+  .quiz-outcome-heading { font-size: 1.3rem; font-weight: 700; margin: 0; }
+  .quiz-outcome-body { margin: 0; max-width: 26rem; }
+</style>
+
+<script>
+  interface QuizConfig {
+    submit?: { endpoint?: string; method?: string; redirect?: string; hiddenFields?: Record<string, string> };
+    outcome?: { heading?: string; body?: string };
+    submitLabel?: string;
+  }
+
+  function initQuiz(root: HTMLElement) {
+    if (root.dataset.quizReady) return;
+    root.dataset.quizReady = "1";
+
+    const cfgEl = root.querySelector<HTMLElement>("[data-quiz-config]");
+    let cfg: QuizConfig = {};
+    try { cfg = JSON.parse(cfgEl?.textContent || "{}"); } catch { cfg = {}; }
+
+    const steps = Array.from(root.querySelectorAll<HTMLElement>("[data-quiz-step]"));
+    const bar = root.querySelector<HTMLElement>("[data-quiz-bar]");
+    const count = root.querySelector<HTMLElement>("[data-quiz-count]");
+    const nav = root.querySelector<HTMLElement>("[data-quiz-nav]");
+    const head = root.querySelector<HTMLElement>("[data-quiz-head]");
+    const backBtn = root.querySelector<HTMLButtonElement>("[data-quiz-back]");
+    const nextBtn = root.querySelector<HTMLButtonElement>("[data-quiz-next]");
+    const outcome = root.querySelector<HTMLElement>("[data-quiz-outcome]");
+    const hp = root.querySelector<HTMLInputElement>("[data-quiz-hp]");
+    if (!steps.length || !nextBtn) return;
+
+    const answers: Record<string, string | string[]> = {};
+    const labels: Record<string, string> = {};
+    let current = 0;
+    const total = steps.length;
+
+    const isLast = () => current === total - 1;
+
+    function render() {
+      steps.forEach((s, i) => (s.hidden = i !== current));
+      if (bar) bar.style.width = `${((current + 1) / total) * 100}%`;
+      if (count) count.textContent = `Step ${current + 1} of ${total}`;
+      if (backBtn) backBtn.hidden = current === 0;
+      nextBtn!.textContent = isLast() ? (cfg.submitLabel || "Submit") : "Next";
+      const focusable = steps[current].querySelector<HTMLElement>("input, .quiz-option");
+      focusable?.focus?.({ preventScroll: true } as FocusOptions);
+    }
+
+    function currentStep() { return steps[current]; }
+
+    function validate(): boolean {
+      const step = currentStep();
+      const type = step.dataset.stepType;
+      if (type === "single-select" || type === "scale") {
+        return !!answers[step.dataset.stepId!];
+      }
+      if (type === "multi-select") {
+        const v = answers[step.dataset.stepId!];
+        return Array.isArray(v) && v.length > 0;
+      }
+      if (type === "contact") {
+        let ok = true;
+        step.querySelectorAll<HTMLInputElement>("[data-quiz-field]").forEach((inp) => {
+          if (inp.required && !inp.value.trim()) { ok = false; inp.setAttribute("aria-invalid", "true"); }
+          else inp.removeAttribute("aria-invalid");
+          if (inp.value.trim()) answers[inp.dataset.quizField!] = inp.value.trim();
+        });
+        return ok;
+      }
+      return true;
+    }
+
+    function goTo(i: number) {
+      current = Math.max(0, Math.min(total - 1, i));
+      render();
+    }
+
+    function next() {
+      if (!validate()) return;
+      if (isLast()) return submit();
+      goTo(current + 1);
+    }
+
+    async function submit() {
+      if (hp && hp.value) { showOutcome(); return; } // honeypot: silently "succeed"
+      // collect any contact fields not yet captured
+      root.querySelectorAll<HTMLInputElement>("[data-quiz-field]").forEach((inp) => {
+        if (inp.value.trim()) answers[inp.dataset.quizField!] = inp.value.trim();
+      });
+      const payload: Record<string, unknown> = { ...answers, ...(cfg.submit?.hiddenFields || {}) };
+      root.dispatchEvent(new CustomEvent("form:submit", { detail: payload, bubbles: true }));
+
+      nextBtn!.disabled = true;
+      nextBtn!.textContent = "Sending…";
+      if (cfg.submit?.endpoint) {
+        try {
+          await fetch(cfg.submit.endpoint, {
+            method: cfg.submit.method || "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+        } catch { /* swallow — event still fired for other integrations */ }
+      }
+      if (cfg.submit?.redirect) { window.location.href = cfg.submit.redirect; return; }
+      showOutcome();
+    }
+
+    function fillTokens(str: string) {
+      return str.replace(/\{\{(\w[\w-]*)\}\}/g, (_, id) => labels[id] ?? "");
+    }
+
+    function showOutcome() {
+      steps.forEach((s) => (s.hidden = true));
+      head?.setAttribute("hidden", "");
+      nav?.setAttribute("hidden", "");
+      if (outcome) {
+        const h = outcome.querySelector<HTMLElement>("[data-quiz-outcome-heading]");
+        const b = outcome.querySelector<HTMLElement>("[data-quiz-outcome-body]");
+        if (h && cfg.outcome?.heading) h.textContent = fillTokens(cfg.outcome.heading);
+        if (b && cfg.outcome?.body) b.textContent = fillTokens(cfg.outcome.body);
+        outcome.hidden = false;
+      }
+    }
+
+    // Option selection
+    root.querySelectorAll<HTMLElement>(".quiz-option").forEach((opt) => {
+      opt.addEventListener("click", () => {
+        const step = opt.closest<HTMLElement>("[data-quiz-step]")!;
+        const id = step.dataset.stepId!;
+        const type = step.dataset.stepType;
+        const value = opt.dataset.value || "";
+        const label = opt.dataset.label || value;
+
+        if (type === "multi-select") {
+          const arr = (answers[id] as string[]) || [];
+          const idx = arr.indexOf(value);
+          if (idx >= 0) { arr.splice(idx, 1); opt.removeAttribute("data-selected"); }
+          else { arr.push(value); opt.setAttribute("data-selected", ""); }
+          answers[id] = arr;
+          labels[id] = arr.join(", ");
+        } else {
+          step.querySelectorAll(".quiz-option").forEach((o) => o.removeAttribute("data-selected"));
+          opt.setAttribute("data-selected", "");
+          answers[id] = value;
+          labels[id] = label;
+          if (step.dataset.auto === "true") { setTimeout(() => { if (!isLast()) goTo(current + 1); }, 220); }
+        }
+      });
+    });
+
+    backBtn?.addEventListener("click", () => goTo(current - 1));
+    nextBtn.addEventListener("click", next);
+    render();
+  }
+
+  function initAllQuizzes() {
+    document.querySelectorAll<HTMLElement>("[data-quiz]").forEach(initQuiz);
+  }
+  initAllQuizzes();
+  document.addEventListener("astro:after-swap", initAllQuizzes);
+</script>

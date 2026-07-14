@@ -1,0 +1,124 @@
+---
+import type { Eyebrow, CertItem, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import SmartImage from "@/components/media/SmartImage.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * certifications:cta-panel — a single raised panel that stacks a centered
+ * header, a horizontal wrap of certification badges, and a call-to-action row
+ * with a primary and optional secondary button. Turns credentials into a
+ * conversion moment: "certified — now book with confidence."
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    cta?: SectionCTA;
+    secondaryCta?: SectionCTA;
+    items?: CertItem[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const items = data?.items ?? [];
+---
+
+<section class:list={["certifications-cta-panel section-wrapper section-py", `theme-${theme}`]}>
+  <div class="section-container">
+    <div class="cta-panel flex flex-col items-center text-center gap-8 p-8 md:p-12">
+      {
+        (data?.eyebrow || data?.heading || data?.subheading) && (
+          <div class="flex flex-col items-center gap-3 max-w-2xl">
+            {data?.eyebrow && (
+              <div>
+                {data.eyebrow.variant === "badge" ? (
+                  <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+                ) : (
+                  <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                    {data.eyebrow.text}
+                  </span>
+                )}
+              </div>
+            )}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg m-0">{data.subheading}</p>
+            )}
+          </div>
+        )
+      }
+
+      {
+        items.length > 0 && (
+          <ul class="flex flex-wrap items-center justify-center gap-x-8 gap-y-6 list-none m-0 p-0">
+            {items.map((item) => (
+              <li class="flex flex-col items-center gap-2">
+                {item.logo ? (
+                  <SmartImage
+                    src={item.logo}
+                    alt={item.label}
+                    width={120}
+                    class="h-12 w-auto object-contain"
+                  />
+                ) : (
+                  <span class="panel-badge-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                      <path d="m9 12 2 2 4-4" />
+                    </svg>
+                  </span>
+                )}
+                <span class="theme-text-subtle text-xs font-medium leading-tight">{item.label}</span>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+
+      {
+        (data?.cta || data?.secondaryCta) && (
+          <div class="flex flex-col sm:flex-row items-center gap-3">
+            {data?.cta && (
+              <Button href={data.cta.href} variant={data.cta.variant ?? "primary"}>
+                {data.cta.label}
+              </Button>
+            )}
+            {data?.secondaryCta && (
+              <Button href={data.secondaryCta.href} variant={data.secondaryCta.variant ?? "outline"}>
+                {data.secondaryCta.label}
+              </Button>
+            )}
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-panel {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-lg);
+  }
+  .panel-badge-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--theme-accent, currentColor) 12%, transparent);
+    color: var(--theme-accent, currentColor);
+  }
+  .panel-badge-icon svg {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+</style>

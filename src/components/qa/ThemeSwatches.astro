@@ -1,0 +1,89 @@
+---
+/**
+ * ThemeSwatches — a compact contrast panel that renders every load-bearing
+ * token/primitive in the CURRENT theme context (place it inside a `.theme-*`
+ * element). Any invisible text, washed button, or unreadable badge/card shows
+ * up instantly. This is the token-level half of the /qa harness.
+ */
+import { Button } from "@/components/starwind/button";
+import Badge from "@/components/starwind/badge/Badge.astro";
+---
+
+<div class="qa-swatches">
+  {/* Surface text tokens */}
+  <div class="qa-row">
+    <span class="theme-heading text-lg font-bold">Heading</span>
+    <span class="theme-text">Body text</span>
+    <span class="theme-text-muted">Muted text</span>
+    <span class="theme-text-subtle">Subtle text</span>
+    <span class="theme-accent font-semibold">Accent text</span>
+    <span class="text-color-brand-secondary font-semibold">Legacy eyebrow class</span>
+  </div>
+
+  {/* Buttons — all variants must be legible + tappable */}
+  <div class="qa-row">
+    <Button variant="primary">Primary</Button>
+    <Button variant="secondary">Secondary</Button>
+    <Button variant="outline">Outline</Button>
+    <Button variant="ghost">Ghost</Button>
+  </div>
+
+  {/* Badges + both eyebrow styles */}
+  <div class="qa-row">
+    <Badge>default badge</Badge>
+    <Badge variant="primary">primary</Badge>
+    <Badge variant="secondary">secondary</Badge>
+    <Badge variant="outline">outline</Badge>
+    <Badge class="uppercase tracking-widest text-xs">badge eyebrow</Badge>
+    <span class="text-xs font-semibold uppercase tracking-widest theme-accent">text eyebrow</span>
+  </div>
+
+  {/* Cards — raised (var(--card)) and surface-base must both be solid + readable */}
+  <div class="qa-row">
+    <div class="qa-card qa-card-raised">
+      <span class="theme-heading font-semibold">Raised card</span>
+      <span class="theme-text-muted text-sm">var(--card) + theme-border</span>
+      <span class="theme-accent text-sm font-semibold">accent on card</span>
+    </div>
+    <div class="qa-card surface-base">
+      <span class="theme-heading font-semibold">surface-base card</span>
+      <span class="theme-text-muted text-sm">reset light surface</span>
+      <span class="theme-accent text-sm font-semibold">accent on card</span>
+    </div>
+    <div class="qa-border-swatch">theme-border</div>
+  </div>
+</div>
+
+<style>
+  .qa-swatches {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  .qa-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 1.25rem;
+  }
+  .qa-card {
+    padding: 0.9rem 1.1rem;
+    border-radius: var(--t-radius);
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 13rem;
+  }
+  .qa-card-raised {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    box-shadow: var(--t-shadow-md);
+  }
+  .qa-border-swatch {
+    padding: 0.9rem 1.1rem;
+    border: 2px solid var(--theme-border);
+    border-radius: var(--t-radius);
+    color: var(--theme-fg-muted);
+    font-size: 0.8rem;
+  }
+</style>

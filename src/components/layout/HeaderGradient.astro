@@ -1,0 +1,115 @@
+---
+import { getBusinessData } from "@/lib/utils";
+import NavItem from "@/components/layout/NavItem.astro";
+import type { NavNode } from "@/lib/utils";
+
+interface Props {
+  navItems: NavNode[];
+}
+
+const { navItems } = Astro.props;
+const business = await getBusinessData();
+---
+
+<header
+  id="site-header"
+  class="on-dark fixed top-0 left-0 right-0 z-50 header-gradient text-fg-on-primary transition-shadow duration-300"
+  data-header
+>
+  <!-- Main nav (single gradient row, light text) -->
+  <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 lg:h-20">
+
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2 font-bold text-xl text-fg-on-primary hover:text-fg-on-primary/80 transition-colors shrink-0">
+        {business.businessName}
+      </a>
+
+      <!-- Desktop nav (center, light links) -->
+      <nav class="hidden lg:flex items-center flex-1 justify-center header-gradient-nav" aria-label="Main navigation">
+        <ul class="flex items-center gap-1 list-none m-0 p-0">
+          {navItems.map((item) => <NavItem node={item} />)}
+        </ul>
+      </nav>
+
+      <!-- Desktop CTA (inverted button) -->
+      <div class="hidden lg:flex items-center gap-4 shrink-0">
+        {business.phone && (
+          <a
+            href={`tel:${business.phone}`}
+            class="text-sm font-semibold text-fg-on-primary/80 hover:text-fg-on-primary transition-colors"
+          >
+            {business.phone}
+          </a>
+        )}
+        <a
+          href="/contact"
+          class="inline-flex items-center justify-center px-5 py-2.5 bg-bg text-primary text-sm font-semibold rounded-lg hover:bg-bg-muted transition-colors"
+        >
+          Get a Free Quote
+        </a>
+      </div>
+
+      <!-- Mobile hamburger (light lines) -->
+      <button
+        class="lg:hidden flex flex-col gap-1.5 p-2 rounded-lg hover:bg-fg-on-primary/10 transition-colors"
+        aria-label="Toggle mobile menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-nav-toggle
+      >
+        <span class="w-6 h-0.5 bg-fg-on-primary transition-all duration-300" data-hamburger-line></span>
+        <span class="w-6 h-0.5 bg-fg-on-primary transition-all duration-300" data-hamburger-line></span>
+        <span class="w-6 h-0.5 bg-fg-on-primary transition-all duration-300" data-hamburger-line></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu (solid primary) -->
+  <div
+    id="mobile-menu"
+    class="lg:hidden hidden border-t border-fg-on-primary/15 bg-primary text-fg-on-primary header-gradient-nav"
+    data-nav-menu
+  >
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 py-4">
+      <ul class="flex flex-col gap-1 list-none m-0 p-0" id="mobile-nav-list">
+        {navItems.map((item) => <NavItem node={item} />)}
+      </ul>
+      <div class="mt-6 pt-6 border-t border-fg-on-primary/15 flex flex-col gap-3">
+        {business.phone && (
+          <a
+            href={`tel:${business.phone}`}
+            class="flex items-center justify-center gap-2 w-full px-5 py-2.5 border border-fg-on-primary/25 rounded-lg text-sm font-semibold text-fg-on-primary hover:bg-fg-on-primary/10 transition-colors"
+          >
+            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+            </svg>
+            {business.phone}
+          </a>
+        )}
+        <a
+          href="/contact"
+          class="flex items-center justify-center w-full px-5 py-2.5 bg-bg text-primary text-sm font-semibold rounded-lg hover:bg-bg-muted transition-colors"
+        >
+          Get a Free Quote
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Spacer to prevent content jumping under fixed header (single row) -->
+<div class="h-16 lg:h-20" aria-hidden="true" id="header-spacer"></div>
+
+<style>
+  .header-gradient {
+    background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
+  }
+  /* Ensure NavItem links inherit the light on-primary color over the gradient/solid bar */
+  .header-gradient-nav :global(.nav-link),
+  .header-gradient-nav :global(.dropdown-item) {
+    color: var(--color-fg-on-primary);
+  }
+</style>
+
+<script>import "@/lib/nav.js";</script>

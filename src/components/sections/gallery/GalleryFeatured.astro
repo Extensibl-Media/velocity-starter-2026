@@ -1,0 +1,173 @@
+---
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+/**
+ * gallery:featured — one large featured image with a horizontal thumbnail
+ * strip beneath. Clicking a thumbnail swaps the main image. Each instance
+ * wires its own state, so multiple can live on one page.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    images?: { src: string; alt?: string; caption?: string }[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const images = data?.images ?? [];
+const first = images[0];
+---
+
+{
+  images.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Header */}
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            ))}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>
+          )}
+        </div>
+
+        <div class="gallery-featured" data-gallery-featured>
+          {/* Main image */}
+          <figure class="gallery-featured-main m-0">
+            <SmartImage
+              src={first.src}
+              alt={first.alt ?? ""}
+              widths={[600, 900, 1200]}
+              sizes="(min-width: 1024px) 66vw, 100vw"
+              class="gallery-featured-img"
+            />
+            <figcaption
+              class="gallery-featured-caption theme-text-subtle text-sm mt-3 text-center"
+              data-featured-caption
+              hidden={!first.caption}
+            >
+              {first.caption ?? ""}
+            </figcaption>
+          </figure>
+
+          {/* Thumbnail strip */}
+          {images.length > 1 && (
+            <div class="gallery-featured-thumbs" role="tablist" aria-label="Gallery thumbnails">
+              {images.map((img, i) => (
+                <button
+                  type="button"
+                  class="gallery-featured-thumb"
+                  data-index={i}
+                  data-caption={img.caption ?? ""}
+                  aria-label={img.caption ?? img.alt ?? `View image ${i + 1}`}
+                  aria-selected={i === 0 ? "true" : "false"}
+                >
+                  <SmartImage
+                    src={img.src}
+                    alt={img.alt ?? ""}
+                    widths={[120, 240]}
+                    sizes="120px"
+                    class="gallery-featured-thumb-img"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .gallery-featured-main :global(.gallery-featured-img) {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: var(--radius);
+    display: block;
+  }
+  .gallery-featured-thumbs {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    scrollbar-width: thin;
+  }
+  .gallery-featured-thumb {
+    flex: 0 0 auto;
+    width: 6rem;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: var(--radius);
+    overflow: hidden;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 0 var(--color-primary);
+    transition: box-shadow 0.2s ease;
+  }
+  .gallery-featured-thumb:hover {
+    box-shadow: 0 0 0 2px var(--color-border);
+  }
+  .gallery-featured-thumb[aria-selected="true"] {
+    box-shadow: 0 0 0 2px var(--color-primary);
+  }
+  .gallery-featured-thumb :global(.gallery-featured-thumb-img) {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+  }
+</style>
+
+<script>
+  function initFeatured(root: HTMLElement) {
+    if (root.dataset.ready) return;
+    root.dataset.ready = "1";
+    const mainImg = root.querySelector<HTMLImageElement>(".gallery-featured-img");
+    const caption = root.querySelector<HTMLElement>("[data-featured-caption]");
+    const thumbs = root.querySelectorAll<HTMLButtonElement>(".gallery-featured-thumb");
+    if (!mainImg) return;
+
+    thumbs.forEach((thumb) => {
+      thumb.addEventListener("click", () => {
+        const img = thumb.querySelector("img");
+        if (!img) return;
+        mainImg.src = img.currentSrc || img.src;
+        mainImg.srcset = img.srcset || "";
+        mainImg.alt = img.alt;
+
+        if (caption) {
+          const text = thumb.getAttribute("data-caption") ?? "";
+          caption.textContent = text;
+          caption.hidden = text.length === 0;
+        }
+
+        thumbs.forEach((t) => t.setAttribute("aria-selected", "false"));
+        thumb.setAttribute("aria-selected", "true");
+      });
+    });
+  }
+
+  function initAllFeatured() {
+    document.querySelectorAll<HTMLElement>("[data-gallery-featured]").forEach(initFeatured);
+  }
+  initAllFeatured();
+  document.addEventListener("astro:after-swap", initAllFeatured);
+</script>

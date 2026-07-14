@@ -1,0 +1,160 @@
+---
+import type { Eyebrow, FeatureItem } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+/**
+ * feature:strip — a slim horizontal value-prop strip. Features sit in one raised
+ * band, split by hairline dividers, each an icon over a short title + line of
+ * body. Reads as a single confident row on desktop and reflows to a 2-up grid on
+ * mobile. Deliberately compact — no cards, no images.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    items?: FeatureItem[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const items = data?.items ?? [];
+const hasHeader = data?.eyebrow || data?.heading || data?.subheading;
+
+const iconPaths: Record<string, string> = {
+  shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
+  star: '<path d="M12 3l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 18.8 6.2 21.9l1.1-6.5L2.6 9.8l6.5-.9L12 3z"/>',
+  home: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/>',
+  award: '<circle cx="12" cy="9" r="6"/><path d="M8.5 13.5 7 22l5-3 5 3-1.5-8.5"/>',
+  wrench: '<path d="M14.5 6.5a4 4 0 0 0-5 5L3 18l3 3 6.5-6.5a4 4 0 0 0 5-5l-2.5 2.5-2-2 2.5-2.5z"/>',
+  droplet: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>',
+  bolt: '<path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/>',
+  dollar: '<path d="M12 2v20"/><path d="M17 6.5C17 4.6 14.8 3.5 12 3.5S7 4.6 7 6.5 9.2 9.5 12 9.5s5 1.1 5 3-2.2 3-5 3-5-1.1-5-3"/>',
+  check:
+    '<circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/>',
+};
+---
+
+{
+  items.length > 0 && (
+    <section
+      class:list={["feature-strip section-wrapper section-py", `theme-${theme}`]}
+    >
+      <div class="section-container">
+        {hasHeader && (
+          <div class="flex flex-col items-center text-center gap-3 mb-10">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">
+                {data.subheading}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Strip band */}
+        <div class="strip-band grid grid-cols-2 md:grid-cols-4">
+          {items.map((item) => (
+            <div class="strip-cell flex flex-col items-center text-center gap-3 p-6">
+              <span class="strip-icon" aria-hidden="true">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <Fragment
+                    set:html={iconPaths[item.icon ?? ""] ?? iconPaths.check}
+                  />
+                </svg>
+              </span>
+              <h3 class="theme-heading text-base font-semibold m-0 leading-snug">
+                {item.title}
+              </h3>
+              {item.body && (
+                <p class="theme-text-muted text-sm leading-relaxed m-0">
+                  {item.body}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .strip-band {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-md);
+    overflow: hidden;
+  }
+
+  /* Hairline dividers between cells (theme-aware), without doubling on edges. */
+  .strip-cell {
+    border-top: var(--t-border-width) solid var(--theme-border);
+    border-left: var(--t-border-width) solid var(--theme-border);
+  }
+
+  /* First row: no top border. */
+  .strip-cell:nth-child(-n + 2) {
+    border-top: 0;
+  }
+
+  /* First column (2-up mobile): no left border. */
+  .strip-cell:nth-child(odd) {
+    border-left: 0;
+  }
+
+  @media (min-width: 768px) {
+    /* Reset mobile rules, apply 4-up logic. */
+    .strip-cell {
+      border-top: 0;
+    }
+    .strip-cell:nth-child(odd) {
+      border-left: var(--t-border-width) solid var(--theme-border);
+    }
+    .strip-cell:nth-child(4n + 1) {
+      border-left: 0;
+    }
+  }
+
+  .strip-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--theme-accent) 14%, transparent);
+    color: var(--theme-accent);
+  }
+
+  .strip-icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+</style>

@@ -1,0 +1,92 @@
+---
+import type { Eyebrow, FeatureItem } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    items?: FeatureItem[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const items = data?.items ?? [];
+const hasHeader = data?.eyebrow || data?.heading || data?.subheading;
+---
+
+{
+  items.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Section header */}
+        {hasHeader && (
+          <div class="flex flex-col items-center text-center gap-3 mb-12">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">
+                {data.subheading}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Two-column checklist */}
+        <ul class="checklist grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-5 list-none m-0 p-0 max-w-4xl mx-auto">
+          {items.map((item) => (
+            <li class="flex items-start gap-3">
+              <svg
+                class="check-icon shrink-0"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="var(--color-primary)"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M20 6L9 17l-5-5" />
+              </svg>
+              <div class="flex flex-col gap-1">
+                <span class="theme-heading font-semibold text-base leading-snug">
+                  {item.title}
+                </span>
+                {item.body && (
+                  <span class="theme-text-muted text-sm leading-relaxed">
+                    {item.body}
+                  </span>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .check-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-top: 0.125rem;
+  }
+</style>

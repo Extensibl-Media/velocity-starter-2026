@@ -1,0 +1,114 @@
+---
+import type { Eyebrow, TeamMember } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    members?: TeamMember[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const members = data?.members ?? [];
+
+/** Derive up to two initials from a member's name. */
+function initials(name: string): string {
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join("");
+}
+---
+
+{
+  members.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Section header */}
+        {(data?.eyebrow || data?.heading || data?.subheading) && (
+          <div class="flex flex-col items-center text-center gap-3 mb-10">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">
+                {data.subheading}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Compact avatar row */}
+        <div class="flex flex-wrap justify-center gap-x-10 gap-y-8">
+          {members.map((member) => (
+            <div class="flex flex-col items-center text-center gap-2 w-24">
+              {member.photo ? (
+                <SmartImage
+                  src={member.photo}
+                  alt={member.name}
+                  widths={[112, 224]}
+                  class="compact-photo w-16 h-16 object-cover rounded-full"
+                />
+              ) : (
+                <div class="compact-avatar" aria-hidden="true">
+                  <span>{initials(member.name)}</span>
+                </div>
+              )}
+              <div class="flex flex-col gap-0.5">
+                <span class="theme-heading font-semibold text-sm leading-tight">
+                  {member.name}
+                </span>
+                {member.role && (
+                  <span class="theme-text-subtle text-xs leading-tight">
+                    {member.role}
+                  </span>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .compact-photo {
+    box-shadow: var(--t-shadow-md);
+  }
+
+  .compact-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--theme-accent) 12%, transparent);
+    color: var(--theme-accent);
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+</style>

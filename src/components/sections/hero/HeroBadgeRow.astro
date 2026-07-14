@@ -1,0 +1,94 @@
+---
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * hero:badge-row — a centered hero that closes with a row of trust badges
+ * (licensed / insured / rating / years). Adds credibility right under the CTA
+ * without a heavy section. Each badge is an optional icon + short label.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    cta?: SectionCTA;
+    secondaryCta?: SectionCTA;
+    ctas?: SectionCTA[];
+    badges?: { icon?: string; label: string }[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const ctas = (
+  data?.ctas?.length ? data.ctas : [data?.cta, data?.secondaryCta].filter(Boolean)
+) as SectionCTA[];
+const badges = data?.badges ?? [];
+---
+
+<section class:list={["hero-badge-row section-wrapper section-py-lg", `theme-${theme}`]}>
+  <div class="section-container">
+    <div class="flex flex-col items-center text-center gap-5 max-w-3xl mx-auto">
+      {data?.eyebrow &&
+        (data.eyebrow.variant === "badge" ? (
+          <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+        ) : (
+          <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+            {data.eyebrow.text}
+          </span>
+        ))}
+
+      {data?.heading && (
+        <h1 class="hero-heading theme-heading font-extrabold m-0">{data.heading}</h1>
+      )}
+
+      {data?.subheading && (
+        <p class="hero-subheading theme-text-muted leading-relaxed m-0">{data.subheading}</p>
+      )}
+
+      {ctas.length > 0 && (
+        <div class="flex flex-wrap items-center justify-center gap-4 mt-1">
+          {ctas.map((cta, i) => (
+            <Button variant={cta.variant ?? (i === 0 ? "primary" : "outline")} href={cta.href}>
+              {cta.label}
+            </Button>
+          ))}
+        </div>
+      )}
+
+      {badges.length > 0 && (
+        <ul class="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 mt-6 pt-6 badge-divider list-none m-0 p-0">
+          {badges.map((b) => (
+            <li class="inline-flex items-center gap-2 text-sm font-semibold theme-text">
+              {b.icon ? (
+                <span class="text-lg theme-accent leading-none" aria-hidden="true">{b.icon}</span>
+              ) : (
+                <svg class="w-4 h-4 theme-accent shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+              )}
+              {b.label}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-heading {
+    font-size: clamp(2.25rem, 5.5vw, 4rem);
+    line-height: 1.05;
+  }
+  .hero-subheading {
+    font-size: clamp(1.05rem, 2vw, 1.35rem);
+  }
+  .badge-divider {
+    border-top: var(--t-border-width) solid var(--theme-border);
+    max-width: 42rem;
+  }
+</style>

@@ -1,0 +1,102 @@
+---
+import type { Eyebrow, FeatureItem } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+/**
+ * guarantee:card-grid — a grid of raised guarantee cards (satisfaction, price,
+ * workmanship, etc.), each with an icon, title, and body. Distinct from the
+ * flat badge chips: these are elevated surface cards with a header row.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    items?: FeatureItem[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const items = data?.items ?? [];
+const count = items.length;
+const gridClass =
+  count === 2
+    ? "sm:grid-cols-2"
+    : count === 4
+      ? "sm:grid-cols-2 lg:grid-cols-4"
+      : "sm:grid-cols-2 lg:grid-cols-3";
+---
+
+{
+  items.length > 0 && (
+    <section class:list={["guarantee-card-grid section-wrapper section-py", `theme-${theme}`]}>
+      <div class="section-container">
+        {(data?.eyebrow || data?.heading || data?.subheading) && (
+          <div class="flex flex-col items-center text-center gap-3 mb-12">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>
+            )}
+          </div>
+        )}
+
+        <div class:list={["grid grid-cols-1 gap-6", gridClass]}>
+          {items.map((item, i) => (
+            <div class="guarantee-card flex flex-col gap-4 p-7">
+              <div class="flex items-center gap-4">
+                <div class="card-seal flex items-center justify-center w-12 h-12 rounded-xl shrink-0">
+                  {item.icon ? (
+                    <Fragment set:html={item.icon} />
+                  ) : (
+                    <span class="text-lg font-bold leading-none">{i + 1}</span>
+                  )}
+                </div>
+                <h3 class="theme-heading text-lg font-bold leading-tight m-0">{item.title}</h3>
+              </div>
+              {item.body && (
+                <p class="theme-text-muted text-base leading-relaxed m-0">{item.body}</p>
+              )}
+              {item.bullets && item.bullets.length > 0 && (
+                <ul class="flex flex-col gap-2 list-none m-0 p-0 mt-1">
+                  {item.bullets.map((b) => (
+                    <li class="flex items-start gap-2 theme-text text-sm">
+                      <svg class="w-4 h-4 theme-accent shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
+                        <path d="M20 6 9 17l-5-5" />
+                      </svg>
+                      <span class="leading-snug">{b}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .guarantee-card {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-sm);
+  }
+  .card-seal {
+    background-color: var(--theme-accent, var(--color-primary));
+    color: var(--color-fg-on-primary, #fff);
+  }
+</style>

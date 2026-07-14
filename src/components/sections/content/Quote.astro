@@ -1,0 +1,81 @@
+---
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+/**
+ * content:quote — a large standalone pull-quote. A decorative quote mark in a
+ * primary tint sits above oversized centered quote text, followed by an
+ * optional attribution (name + role). Theme-pure: colors derive from tokens.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    quote?: string;
+    attribution?: string;
+    role?: string;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+---
+
+{
+  data?.quote && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        <figure class="max-w-3xl mx-auto text-center m-0 flex flex-col items-center gap-6">
+          {data.eyebrow && (
+            <div>
+              {data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              )}
+            </div>
+          )}
+
+          <span class="quote-mark" aria-hidden="true">
+            &ldquo;
+          </span>
+
+          <blockquote class="quote-text theme-heading text-2xl lg:text-3xl font-medium m-0">
+            {data.quote}
+          </blockquote>
+
+          {(data.attribution || data.role) && (
+            <figcaption class="flex flex-col gap-1">
+              {data.attribution && (
+                <span class="theme-heading font-semibold">
+                  {data.attribution}
+                </span>
+              )}
+              {data.role && (
+                <span class="theme-text-muted text-sm">{data.role}</span>
+              )}
+            </figcaption>
+          )}
+        </figure>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .quote-mark {
+    font-family: var(--font-heading);
+    font-size: 5rem;
+    line-height: 0.5;
+    font-weight: 700;
+    color: color-mix(in srgb, var(--theme-accent) 35%, transparent);
+    height: 2.5rem;
+  }
+  .quote-text {
+    line-height: 1.35;
+    text-wrap: balance;
+  }
+</style>

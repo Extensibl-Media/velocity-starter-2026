@@ -1,0 +1,105 @@
+---
+import type { Eyebrow, StatItem, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * stats:band — a contained panel washed in a subtle accent tint, with a centered
+ * header and an inline row of stats sitting on the tinted surface. Reads as a
+ * highlighted "by the numbers" block within a page. No client JS.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    stats?: StatItem[];
+    cta?: SectionCTA;
+    secondaryCta?: SectionCTA;
+    ctas?: SectionCTA[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const stats = data?.stats ?? [];
+
+const ctas = (
+  data?.ctas?.length ? data.ctas : [data?.cta, data?.secondaryCta].filter(Boolean)
+) as SectionCTA[];
+
+const count = stats.length;
+const gridClass =
+  count === 1
+    ? "grid-cols-1"
+    : count === 2
+      ? "grid-cols-2"
+      : count === 3
+        ? "grid-cols-1 sm:grid-cols-3"
+        : "grid-cols-2 lg:grid-cols-4";
+---
+
+{
+  stats.length > 0 && (
+    <section class:list={["stats-band section-wrapper section-py", `theme-${theme}`]}>
+      <div class="section-container">
+        <div class="band-panel px-6 py-12 sm:px-10 lg:px-16 lg:py-16">
+          {(data?.eyebrow || data?.heading || data?.subheading) && (
+            <div class="flex flex-col items-center text-center gap-3 mb-10">
+              {data?.eyebrow &&
+                (data.eyebrow.variant === "badge" ? (
+                  <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+                ) : (
+                  <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                    {data.eyebrow.text}
+                  </span>
+                ))}
+              {data?.heading && (
+                <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+              )}
+              {data?.subheading && (
+                <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>
+              )}
+            </div>
+          )}
+
+          <div class:list={["grid gap-8", gridClass]}>
+            {stats.map((stat) => (
+              <div class="flex flex-col items-center text-center gap-1.5">
+                <span class="theme-accent text-4xl lg:text-5xl font-extrabold leading-none tabular-nums">
+                  {stat.value}
+                </span>
+                <span class="theme-text-muted text-sm font-medium leading-tight">{stat.label}</span>
+                {stat.description && (
+                  <span class="theme-text-subtle text-xs leading-relaxed max-w-[16rem]">
+                    {stat.description}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {ctas.length > 0 && (
+            <div class="flex flex-wrap justify-center gap-4 mt-10">
+              {ctas.map((cta, i) => (
+                <Button variant={cta.variant ?? (i === 0 ? "primary" : "outline")} href={cta.href}>
+                  {cta.label}
+                </Button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .band-panel {
+    background: color-mix(in srgb, var(--theme-accent) 8%, transparent);
+    border: var(--t-border-width) solid
+      color-mix(in srgb, var(--theme-accent) 22%, transparent);
+    border-radius: var(--t-radius);
+  }
+</style>

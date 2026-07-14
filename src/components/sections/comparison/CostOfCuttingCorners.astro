@@ -1,0 +1,251 @@
+---
+import type { Eyebrow, ComparisonRow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    usLabel?: string;
+    themLabel?: string;
+    usPrice?: string;
+    themPrice?: string;
+    usNote?: string;
+    themNote?: string;
+    rows?: ComparisonRow[];
+    ctas?: SectionCTA[];
+    cta?: SectionCTA;
+    secondaryCta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const usLabel = data?.usLabel ?? "The Done-Right Roof";
+const themLabel = data?.themLabel ?? "The Cheap Roof";
+const rows = data?.rows ?? [];
+const ctas = (data?.ctas?.length
+  ? data.ctas
+  : [data?.cta, data?.secondaryCta].filter(Boolean)) as SectionCTA[];
+---
+
+<section
+  class:list={[
+    "comparison-corners section-wrapper section-py",
+    `theme-${theme}`,
+  ]}
+>
+  <div class="section-container">
+    {
+      (data?.eyebrow || data?.heading || data?.subheading) && (
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">
+                {data.eyebrow.text}
+              </Badge>
+            ) : (
+              <span class="theme-accent text-sm font-semibold uppercase tracking-widest">
+                {data.eyebrow.text}
+              </span>
+            ))}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">
+              {data.subheading}
+            </p>
+          )}
+        </div>
+      )
+    }
+
+    <div class="corners-grid max-w-4xl mx-auto">
+      {/* Them — the cheap route */}
+      <div class="corners-col corners-them">
+        <div class="corners-head">
+          <h3 class="theme-text text-lg font-bold m-0">{themLabel}</h3>
+          {
+            data?.themPrice && (
+              <p class="theme-text text-2xl font-extrabold m-0 mt-1">
+                {data.themPrice}
+              </p>
+            )
+          }
+          {
+            data?.themNote && (
+              <p class="theme-text-subtle text-sm m-0 mt-1">{data.themNote}</p>
+            )
+          }
+        </div>
+        <ul class="corners-list">
+          {
+            rows.map((row) => (
+              <li class="corners-item">
+                <svg
+                  class="corners-icon theme-text-subtle"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.25"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  role="img"
+                  aria-label="Downside"
+                >
+                  <path d="M5 5l10 10M15 5L5 15" />
+                </svg>
+                <div>
+                  <span class="theme-text-muted text-sm font-medium block">
+                    {row.feature}
+                  </span>
+                  {typeof row.them === "string" && (
+                    <span class="theme-text-subtle text-sm">{row.them}</span>
+                  )}
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      {/* Us — the done-right route */}
+      <div class="corners-col corners-us surface-base">
+        <div class="corners-head">
+          <span class="theme-accent text-xs font-bold uppercase tracking-widest"
+            >Worth it</span
+          >
+          <h3 class="theme-heading text-lg font-bold m-0 mt-1">{usLabel}</h3>
+          {
+            data?.usPrice && (
+              <p class="theme-heading text-2xl font-extrabold m-0 mt-1">
+                {data.usPrice}
+              </p>
+            )
+          }
+          {
+            data?.usNote && (
+              <p class="theme-text-muted text-sm m-0 mt-1">{data.usNote}</p>
+            )
+          }
+        </div>
+        <ul class="corners-list">
+          {
+            rows.map((row) => (
+              <li class="corners-item">
+                <svg
+                  class="corners-icon"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="var(--theme-accent, var(--color-primary))"
+                  stroke-width="2.25"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  role="img"
+                  aria-label="Benefit"
+                >
+                  <path d="M4 10.5l4 4 8-9" />
+                </svg>
+                <div>
+                  <span class="theme-text text-sm font-medium block">
+                    {row.feature}
+                  </span>
+                  {typeof row.us === "string" && (
+                    <span class="theme-text-muted text-sm">{row.us}</span>
+                  )}
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+        {
+          ctas.length > 0 && (
+            <div class="mt-2">
+              <Button
+                href={ctas[0].href}
+                variant={ctas[0].variant ?? "primary"}
+                class="w-full"
+              >
+                {ctas[0].label}
+              </Button>
+            </div>
+          )
+        }
+      </div>
+    </div>
+
+    {
+      ctas.length > 1 && (
+        <div class="flex justify-center mt-8">
+          <Button href={ctas[1].href} variant={ctas[1].variant ?? "ghost"}>
+            {ctas[1].label}
+          </Button>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .corners-grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 768px) {
+    .corners-grid {
+      grid-template-columns: 1fr 1fr;
+      align-items: stretch;
+    }
+  }
+  .corners-col {
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .corners-them {
+    background: color-mix(in srgb, var(--theme-border) 18%, transparent);
+    opacity: 0.92;
+  }
+  .corners-us {
+    background-color: var(--card);
+    box-shadow: var(--t-shadow-lg);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, var(--color-primary)) 45%,
+      var(--theme-border)
+    );
+  }
+  .corners-head {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--theme-border);
+  }
+  .corners-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    flex: 1;
+  }
+  .corners-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+  }
+  .corners-icon {
+    width: 1.2rem;
+    height: 1.2rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+</style>

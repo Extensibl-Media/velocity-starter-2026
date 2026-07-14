@@ -1,0 +1,157 @@
+---
+import type { Eyebrow, LogoItem } from "@/types/sections";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    logos?: LogoItem[];
+    items?: string[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const logos = data?.logos ?? [];
+const items = data?.items ?? [];
+const heading = data?.heading ?? data?.eyebrow?.text;
+
+const useLogos = logos.length > 0;
+const hasContent = useLogos || items.length > 0;
+---
+
+{
+  hasContent && (
+    <section class={`section-wrapper section-py-sm theme-${theme}`}>
+      <div class="section-container">
+        {heading && (
+          <p class="theme-text-subtle text-sm font-semibold uppercase tracking-widest text-center m-0 mb-8">
+            {heading}
+          </p>
+        )}
+
+        <div class="marquee">
+          <div class="marquee-track">
+            {[0, 1].map((copy) => (
+              <ul
+                class="marquee-group list-none m-0 p-0"
+                aria-hidden={copy === 1 ? "true" : undefined}
+              >
+                {useLogos
+                  ? logos.map((logo) => (
+                      <li class="flex items-center justify-center shrink-0">
+                        {logo.href ? (
+                          <a
+                            href={logo.href}
+                            class="block opacity-60 hover:opacity-100 grayscale hover:grayscale-0 transition duration-200"
+                          >
+                            <SmartImage
+                              src={logo.src}
+                              alt={logo.alt ?? ""}
+                              widths={[120, 240]}
+                              class="h-10 w-auto object-contain"
+                            />
+                          </a>
+                        ) : (
+                          <SmartImage
+                            src={logo.src}
+                            alt={logo.alt ?? ""}
+                            widths={[120, 240]}
+                            class="h-10 w-auto object-contain opacity-60 hover:opacity-100 grayscale hover:grayscale-0 transition duration-200"
+                          />
+                        )}
+                      </li>
+                    ))
+                  : items.map((item) => (
+                      <li class="flex items-center shrink-0">
+                        <span class="text-sm font-semibold uppercase tracking-widest theme-text-muted whitespace-nowrap">
+                          {item}
+                        </span>
+                        <span
+                          class="marquee-dot ml-8 md:ml-12"
+                          aria-hidden="true"
+                        />
+                      </li>
+                    ))}
+              </ul>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .marquee {
+    overflow: hidden;
+    width: 100%;
+    /* fade edges */
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 8%,
+      #000 92%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 8%,
+      #000 92%,
+      transparent
+    );
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-scroll 40s linear infinite;
+  }
+
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+
+  .marquee-group {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    padding-right: 2.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .marquee-group {
+      gap: 3.5rem;
+      padding-right: 3.5rem;
+    }
+  }
+
+  .marquee-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 9999px;
+    background-color: var(--theme-border);
+  }
+
+  @keyframes marquee-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      /* each of the two groups is half the track width */
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      animation: none;
+    }
+    .marquee {
+      overflow-x: auto;
+    }
+  }
+</style>

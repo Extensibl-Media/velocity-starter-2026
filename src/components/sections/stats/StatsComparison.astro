@@ -1,0 +1,146 @@
+---
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * stats:comparison — a before/after metric board. Each row states a metric with
+ * its "before" value (muted) transformed into its "after" value (accent),
+ * making the improvement legible at a glance. No client JS.
+ */
+interface CompareMetric {
+  label: string;
+  before: string;
+  after: string;
+  description?: string;
+}
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    beforeLabel?: string;
+    afterLabel?: string;
+    metrics?: CompareMetric[];
+    cta?: SectionCTA;
+    secondaryCta?: SectionCTA;
+    ctas?: SectionCTA[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const metrics = data?.metrics ?? [];
+const beforeLabel = data?.beforeLabel ?? "Before";
+const afterLabel = data?.afterLabel ?? "After";
+
+const ctas = (
+  data?.ctas?.length ? data.ctas : [data?.cta, data?.secondaryCta].filter(Boolean)
+) as SectionCTA[];
+---
+
+{
+  metrics.length > 0 && (
+    <section class:list={["stats-comparison section-wrapper section-py", `theme-${theme}`]}>
+      <div class="section-container">
+        {(data?.eyebrow || data?.heading || data?.subheading) && (
+          <div class="flex flex-col items-center text-center gap-3 mb-12">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>
+            )}
+          </div>
+        )}
+
+        <div class="compare-board max-w-3xl mx-auto flex flex-col">
+          {metrics.map((metric, i) => (
+            <div
+              class:list={[
+                "flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 py-6 px-5 sm:px-7",
+                i !== 0 && "compare-row-divided",
+              ]}
+            >
+              <div class="sm:flex-1 min-w-0">
+                <span class="theme-heading text-base font-semibold leading-tight block">
+                  {metric.label}
+                </span>
+                {metric.description && (
+                  <span class="theme-text-subtle text-xs leading-relaxed block mt-1">
+                    {metric.description}
+                  </span>
+                )}
+              </div>
+              <div class="flex items-center gap-3 sm:gap-4 shrink-0">
+                <div class="flex flex-col items-center">
+                  <span class="theme-text-muted text-2xl font-bold leading-none tabular-nums line-through decoration-1 opacity-70">
+                    {metric.before}
+                  </span>
+                  <span class="theme-text-subtle text-[0.65rem] uppercase tracking-wider mt-1">
+                    {beforeLabel}
+                  </span>
+                </div>
+                <svg
+                  class="w-5 h-5 shrink-0 theme-accent"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h14" />
+                  <path d="m13 6 6 6-6 6" />
+                </svg>
+                <div class="flex flex-col items-center">
+                  <span class="theme-accent text-3xl font-extrabold leading-none tabular-nums">
+                    {metric.after}
+                  </span>
+                  <span class="theme-text-subtle text-[0.65rem] uppercase tracking-wider mt-1">
+                    {afterLabel}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {ctas.length > 0 && (
+          <div class="flex flex-wrap justify-center gap-4 mt-12">
+            {ctas.map((cta, i) => (
+              <Button variant={cta.variant ?? (i === 0 ? "primary" : "outline")} href={cta.href}>
+                {cta.label}
+              </Button>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .compare-board {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-sm);
+    overflow: hidden;
+  }
+  .compare-row-divided {
+    border-top: var(--t-border-width) solid var(--theme-border);
+  }
+</style>

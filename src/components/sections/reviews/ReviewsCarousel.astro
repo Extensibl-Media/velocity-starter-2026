@@ -1,0 +1,285 @@
+---
+import { getCollection } from "astro:content";
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    filter?: string;
+    limit?: number;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const allReviews = await getCollection("reviews");
+
+const reviews = allReviews
+  .filter((r) => (data?.filter === "featured" ? r.data.featured : true))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, data?.limit ?? allReviews.length);
+
+// Unique id so multiple instances on one page stay independent
+const carouselId = `carousel-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+{
+  reviews.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Section header */}
+        {(data?.eyebrow || data?.heading || data?.subheading) && (
+          <div class="flex flex-col items-center text-center gap-3 mb-12">
+            {data?.eyebrow && (
+              <div>
+                {data.eyebrow.variant === "badge" ? (
+                  <Badge class="uppercase tracking-widest text-xs">
+                    {data.eyebrow.text}
+                  </Badge>
+                ) : (
+                  <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                    {data.eyebrow.text}
+                  </span>
+                )}
+              </div>
+            )}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">
+                {data.subheading}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Carousel */}
+        <div class="carousel" data-carousel id={carouselId}>
+          {/* Track */}
+          <div class="carousel-track" data-carousel-track>
+            {reviews.map((review) => {
+              const stars = Array.from(
+                { length: 5 },
+                (_, i) => i < review.data.rating
+              );
+
+              return (
+                <article class="carousel-card rounded-xl border theme-border bg-background">
+                  {/* Stars */}
+                  <div class="flex items-center gap-0.5 mb-4">
+                    {stars.map((filled) => (
+                      <svg
+                        class={`w-4 h-4 ${filled ? "star-filled" : "star-empty"}`}
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                      </svg>
+                    ))}
+                  </div>
+
+                  {/* Body */}
+                  <p class="carousel-body theme-text">{review.data.body}</p>
+
+                  {/* Author */}
+                  <div class="carousel-author">
+                    <span class="theme-heading font-semibold text-sm leading-tight">
+                      {review.data.author}
+                    </span>
+                    {review.data.location && (
+                      <span class="theme-text-subtle text-xs">
+                        {review.data.location}
+                      </span>
+                    )}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+
+          {/* Controls */}
+          <div class="carousel-controls">
+            <button
+              type="button"
+              class="carousel-arrow border theme-border bg-background hover:bg-muted"
+              data-carousel-prev
+              aria-label="Previous review"
+            >
+              <svg
+                class="w-5 h-5"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="carousel-arrow border theme-border bg-background hover:bg-muted"
+              data-carousel-next
+              aria-label="Next review"
+            >
+              <svg
+                class="w-5 h-5"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<script>
+  function initCarousels() {
+    const carousels = document.querySelectorAll<HTMLElement>("[data-carousel]");
+
+    carousels.forEach((root) => {
+      if (root.dataset.carouselReady === "true") return;
+      root.dataset.carouselReady = "true";
+
+      const track = root.querySelector<HTMLElement>("[data-carousel-track]");
+      const prev = root.querySelector<HTMLElement>("[data-carousel-prev]");
+      const next = root.querySelector<HTMLElement>("[data-carousel-next]");
+      if (!track) return;
+
+      const scrollByCard = (dir: number) => {
+        const card = track.querySelector<HTMLElement>(".carousel-card");
+        const gap = parseFloat(getComputedStyle(track).columnGap || "0") || 0;
+        const amount = card ? card.offsetWidth + gap : track.clientWidth * 0.85;
+        track.scrollBy({ left: amount * dir, behavior: "smooth" });
+      };
+
+      prev?.addEventListener("click", () => scrollByCard(-1));
+      next?.addEventListener("click", () => scrollByCard(1));
+
+      const updateArrows = () => {
+        const maxScroll = track.scrollWidth - track.clientWidth - 1;
+        if (prev) (prev as HTMLButtonElement).disabled = track.scrollLeft <= 0;
+        if (next)
+          (next as HTMLButtonElement).disabled = track.scrollLeft >= maxScroll;
+      };
+
+      track.addEventListener("scroll", updateArrows, { passive: true });
+      window.addEventListener("resize", updateArrows);
+      updateArrows();
+    });
+  }
+
+  initCarousels();
+  document.addEventListener("astro:page-load", initCarousels);
+</script>
+
+<style>
+  .carousel {
+    position: relative;
+  }
+
+  .carousel-track {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding-bottom: 0.25rem;
+    /* Hide scrollbar — Firefox */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  /* Hide scrollbar — WebKit */
+  .carousel-track::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  .carousel-card {
+    scroll-snap-align: start;
+    flex: 0 0 auto;
+    min-width: 85%;
+    padding: 1.75rem;
+    box-shadow: var(--t-shadow-md);
+  }
+
+  @media (min-width: 640px) {
+    .carousel-card {
+      min-width: 45%;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .carousel-card {
+      min-width: 31%;
+    }
+  }
+
+  .star-filled {
+    fill: var(--color-rating);
+  }
+
+  .star-empty {
+    fill: var(--color-rating-empty);
+  }
+
+  .carousel-body {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    margin: 0 0 1.25rem 0;
+  }
+
+  .carousel-author {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border-muted);
+  }
+
+  .carousel-controls {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+  }
+
+  .carousel-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 999px;
+    color: var(--color-fg);
+    cursor: pointer;
+    transition:
+      background 0.2s ease,
+      opacity 0.2s ease;
+  }
+
+  .carousel-arrow:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+</style>

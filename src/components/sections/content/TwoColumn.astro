@@ -1,0 +1,110 @@
+---
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+/**
+ * content:two-column — a heading plus long-form prose that flows across two
+ * columns on desktop and stacks on mobile. `bodyLeft`/`bodyRight` are HTML
+ * strings authored in the CMS/JSON, rendered as themed `.rich-text` blocks.
+ * Theme-pure: typography derives from design tokens.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    bodyLeft?: string;
+    bodyRight?: string;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const hasHeader = Boolean(data?.eyebrow || data?.heading || data?.subheading);
+const hasBody = Boolean(data?.bodyLeft || data?.bodyRight);
+---
+
+{
+  (hasHeader || hasBody) && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {hasHeader && (
+          <div class="flex flex-col items-center text-center gap-3 mb-12">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">
+                {data.subheading}
+              </p>
+            )}
+          </div>
+        )}
+
+        {hasBody && (
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 max-w-5xl mx-auto">
+            {data?.bodyLeft && (
+              <div class="rich-text theme-text" set:html={data.bodyLeft} />
+            )}
+            {data?.bodyRight && (
+              <div class="rich-text theme-text" set:html={data.bodyRight} />
+            )}
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .rich-text {
+    line-height: 1.75;
+  }
+  .rich-text :global(> * + *) {
+    margin-top: 1.25em;
+  }
+  .rich-text :global(h2),
+  .rich-text :global(h3),
+  .rich-text :global(h4) {
+    color: var(--theme-heading);
+    font-family: var(--font-heading);
+    font-weight: var(--t-font-weight-heading);
+    line-height: 1.25;
+    margin-top: 2em;
+  }
+  .rich-text :global(h2) { font-size: 1.5rem; }
+  .rich-text :global(h3) { font-size: 1.25rem; }
+  .rich-text :global(a) {
+    color: var(--theme-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .rich-text :global(ul),
+  .rich-text :global(ol) {
+    padding-left: 1.5rem;
+  }
+  .rich-text :global(ul) { list-style: disc; }
+  .rich-text :global(ol) { list-style: decimal; }
+  .rich-text :global(li + li) { margin-top: 0.5rem; }
+  .rich-text :global(blockquote) {
+    border-left: 3px solid var(--color-primary);
+    padding-left: 1rem;
+    color: var(--theme-fg-muted);
+    font-style: italic;
+  }
+  .rich-text :global(strong) { font-weight: 600; }
+  .rich-text :global(img) { border-radius: var(--radius); }
+</style>

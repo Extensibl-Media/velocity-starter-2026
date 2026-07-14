@@ -1,0 +1,113 @@
+---
+import type { SectionCTA } from "@/types/sections";
+import { Button } from "@/components/starwind/button";
+
+interface Props {
+  theme?: string;
+  data?: {
+    seal?: string;
+    heading?: string;
+    body?: string;
+    points?: string[];
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const seal = data?.seal ?? null;
+const heading = data?.heading ?? null;
+const body = data?.body ?? null;
+const points = data?.points ?? [];
+const cta = data?.cta ?? null;
+---
+
+{
+  (heading || seal) && (
+    <section
+      class:list={[
+        "trust-bar-guarantee-strip section-wrapper section-py-sm",
+        `theme-${theme}`,
+      ]}
+    >
+      <div class="section-container">
+        <div class="flex flex-col md:flex-row md:items-center gap-6 md:gap-8">
+          <div
+            class="shrink-0 mx-auto md:mx-0 flex flex-col items-center justify-center text-center w-24 h-24 rounded-full"
+            style="border: 2px solid var(--theme-accent); color: var(--theme-accent);"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-7 h-7"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="1.5"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            {seal && (
+              <span class="text-[0.65rem] font-bold uppercase tracking-wide leading-tight mt-1 px-1">
+                {seal}
+              </span>
+            )}
+          </div>
+
+          <span
+            class="hidden md:block w-px self-stretch shrink-0"
+            style="background-color: var(--theme-border);"
+            aria-hidden="true"
+          />
+
+          <div class="flex-1 text-center md:text-left">
+            {heading && (
+              <h2 class="theme-heading text-xl md:text-2xl font-bold m-0">
+                {heading}
+              </h2>
+            )}
+            {body && (
+              <p class="theme-text-muted text-sm md:text-base m-0 mt-1.5">
+                {body}
+              </p>
+            )}
+            {points.length > 0 && (
+              <ul class="flex flex-wrap justify-center md:justify-start gap-x-5 gap-y-2 list-none m-0 mt-3 p-0">
+                {points.map((point) => (
+                  <li class="flex items-center gap-1.5">
+                    <svg
+                      class="w-4 h-4 shrink-0"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      style="color: var(--theme-accent);"
+                      aria-hidden="true"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    <span class="theme-text text-sm font-medium">{point}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {cta?.href && cta?.label && (
+            <div class="shrink-0 mx-auto md:mx-0">
+              <Button href={cta.href} variant={cta.variant ?? "primary"}>
+                {cta.label}
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}

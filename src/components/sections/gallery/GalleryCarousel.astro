@@ -1,0 +1,225 @@
+---
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+/**
+ * gallery:carousel — a horizontal scroll-snap photo carousel with
+ * Prev/Next arrow controls. Each slide is a large image with an optional
+ * caption. Works with multiple instances on one page.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    images?: { src: string; alt?: string; caption?: string }[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const images = data?.images ?? [];
+---
+
+{
+  images.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Header */}
+        {(data?.eyebrow || data?.heading || data?.subheading) && (
+          <div class="flex flex-col items-center text-center gap-3 mb-12">
+            {data?.eyebrow && (
+              <div>
+                {data.eyebrow.variant === "badge" ? (
+                  <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+                ) : (
+                  <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                    {data.eyebrow.text}
+                  </span>
+                )}
+              </div>
+            )}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>
+            )}
+          </div>
+        )}
+
+        <div class="photo-carousel" data-carousel data-photo-carousel>
+          {/* Track */}
+          <div class="photo-carousel-track">
+            {images.map((img) => (
+              <figure class="photo-carousel-slide m-0">
+                <SmartImage
+                  src={img.src}
+                  alt={img.alt ?? ""}
+                  widths={[600, 900, 1200]}
+                  sizes="(min-width: 1024px) 66vw, (min-width: 640px) 80vw, 100vw"
+                  class="photo-carousel-img"
+                />
+                {img.caption && (
+                  <figcaption class="theme-text-subtle text-sm mt-3 text-center">
+                    {img.caption}
+                  </figcaption>
+                )}
+              </figure>
+            ))}
+          </div>
+
+          {/* Controls */}
+          <div class="photo-carousel-controls">
+            <button
+              type="button"
+              class="photo-carousel-arrow border theme-border bg-background hover:bg-muted"
+              data-photo-prev
+              aria-label="Previous image"
+            >
+              <svg
+                class="w-5 h-5"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="photo-carousel-arrow border theme-border bg-background hover:bg-muted"
+              data-photo-next
+              aria-label="Next image"
+            >
+              <svg
+                class="w-5 h-5"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .photo-carousel {
+    position: relative;
+  }
+
+  .photo-carousel-track {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding-bottom: 0.25rem;
+    /* Hide scrollbar — Firefox */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  /* Hide scrollbar — WebKit */
+  .photo-carousel-track::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  .photo-carousel-slide {
+    scroll-snap-align: start;
+    flex: 0 0 auto;
+    min-width: 85%;
+  }
+
+  @media (min-width: 640px) {
+    .photo-carousel-slide {
+      min-width: 66%;
+    }
+  }
+
+  .photo-carousel-slide :global(.photo-carousel-img) {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: var(--radius);
+    box-shadow: var(--t-shadow-md);
+  }
+
+  .photo-carousel-controls {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+  }
+
+  .photo-carousel-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 999px;
+    color: var(--color-fg);
+    cursor: pointer;
+    transition:
+      background 0.2s ease,
+      opacity 0.2s ease;
+  }
+
+  .photo-carousel-arrow:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+</style>
+
+<script>
+  function initPhotoCarousels() {
+    document.querySelectorAll<HTMLElement>("[data-photo-carousel]").forEach((root) => {
+      const track = root.querySelector<HTMLElement>(".photo-carousel-track");
+      if (!track) return;
+      if (root.dataset.photoCarouselReady === "true") return;
+      root.dataset.photoCarouselReady = "true";
+
+      const prev = root.querySelector<HTMLElement>("[data-photo-prev]");
+      const next = root.querySelector<HTMLElement>("[data-photo-next]");
+
+      const scrollBySlide = (dir: number) => {
+        const slide = track.querySelector<HTMLElement>(".photo-carousel-slide");
+        const gap = parseFloat(getComputedStyle(track).columnGap || "0") || 0;
+        const amount = slide ? slide.offsetWidth + gap : track.clientWidth * 0.85;
+        track.scrollBy({ left: amount * dir, behavior: "smooth" });
+      };
+
+      prev?.addEventListener("click", () => scrollBySlide(-1));
+      next?.addEventListener("click", () => scrollBySlide(1));
+
+      const updateArrows = () => {
+        const maxScroll = track.scrollWidth - track.clientWidth - 1;
+        if (prev) (prev as HTMLButtonElement).disabled = track.scrollLeft <= 0;
+        if (next) (next as HTMLButtonElement).disabled = track.scrollLeft >= maxScroll;
+      };
+
+      track.addEventListener("scroll", updateArrows, { passive: true });
+      window.addEventListener("resize", updateArrows);
+      updateArrows();
+    });
+  }
+
+  initPhotoCarousels();
+  document.addEventListener("astro:page-load", initPhotoCarousels);
+</script>

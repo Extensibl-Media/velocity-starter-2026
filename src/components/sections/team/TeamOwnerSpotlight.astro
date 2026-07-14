@@ -1,0 +1,140 @@
+---
+import type { Eyebrow, SectionCTA, TeamMember } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import SmartImage from "@/components/media/SmartImage.astro";
+import { Button } from "@/components/starwind/button";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    owner?: TeamMember & { quote?: string; signature?: string };
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const owner = data?.owner;
+
+/** Derive up to two initials from a member's name. */
+function initials(name: string): string {
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join("");
+}
+---
+
+{
+  owner && (
+    <section
+      class:list={[
+        "team-owner-spotlight section-wrapper section-py",
+        `theme-${theme}`,
+      ]}
+    >
+      <div class="section-container">
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-14 items-center">
+          {/* Portrait */}
+          <div class="lg:col-span-2">
+            {owner.photo ? (
+              <SmartImage
+                src={owner.photo}
+                alt={owner.name}
+                widths={[480, 720, 960]}
+                class="owner-photo w-full aspect-[4/5] object-cover"
+              />
+            ) : (
+              <div class="owner-avatar" aria-hidden="true">
+                <span>{initials(owner.name)}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Bio */}
+          <div class="lg:col-span-3 flex flex-col gap-4">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="self-start uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="theme-accent text-sm font-semibold uppercase tracking-widest">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+
+            {owner.quote && (
+              <p class="theme-heading text-xl lg:text-2xl font-medium leading-snug m-0">
+                &ldquo;{owner.quote}&rdquo;
+              </p>
+            )}
+
+            {owner.bio && (
+              <p class="theme-text-muted text-lg leading-relaxed m-0">
+                {owner.bio}
+              </p>
+            )}
+
+            <div class="flex flex-col gap-1 mt-2">
+              <span class="theme-heading text-lg font-bold">{owner.name}</span>
+              {owner.role && (
+                <span class="theme-accent text-sm font-semibold uppercase tracking-wide">
+                  {owner.role}
+                </span>
+              )}
+              {owner.signature && (
+                <span class="theme-text-subtle italic mt-1">
+                  {owner.signature}
+                </span>
+              )}
+            </div>
+
+            {data?.cta?.href && data?.cta?.label && (
+              <div class="mt-4">
+                <Button
+                  variant={data.cta.variant ?? "primary"}
+                  href={data.cta.href}
+                >
+                  {data.cta.label}
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .owner-photo {
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-lg);
+  }
+
+  .owner-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    border-radius: var(--t-radius);
+    background: color-mix(in srgb, var(--theme-accent) 12%, transparent);
+    color: var(--theme-accent);
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+</style>

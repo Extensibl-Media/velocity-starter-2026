@@ -1,0 +1,75 @@
+---
+import { getCollection } from "astro:content";
+import { getBusinessData } from "@/lib/utils";
+import type { Eyebrow, FormConfig } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import FormRenderer from "@/components/forms/FormRenderer.astro";
+
+/**
+ * contact:callback — a compact, single-column "request a callback" block. A
+ * centered header sits above a narrow lead-form card (rendered via FormRenderer)
+ * with an optional "or call now" phone link beneath it. Deliberately tighter and
+ * more focused than the two-column contact:form — a low-friction callback ask.
+ * Phone comes from the `generalSettings` singleton.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    showPhone?: boolean;
+    form?: FormConfig;
+  };
+}
+
+const { theme = "muted", data } = Astro.props;
+const business = await getBusinessData();
+const services = await getCollection("services");
+const sortedServices = services.sort((a, b) => a.data.order - b.data.order);
+
+const showPhone = data?.showPhone ?? true;
+const telHref =
+  showPhone && business.phone
+    ? `tel:${business.phone.replace(/[^\d+]/g, "")}`
+    : null;
+---
+
+<section class:list={["contact-callback section-wrapper section-py", `theme-${theme}`]}>
+  <div class="section-container">
+    <div class="mx-auto max-w-xl">
+      {/* Header */}
+      <div class="flex flex-col items-center text-center gap-3 mb-8">
+        {
+          data?.eyebrow && (
+            <div>
+              {data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+              ) : (
+                <span class="theme-accent text-sm font-semibold uppercase tracking-widest">
+                  {data.eyebrow.text}
+                </span>
+              )}
+            </div>
+          )
+        }
+        {data?.heading && <h2 class="theme-heading text-2xl lg:text-3xl font-bold m-0">{data.heading}</h2>}
+        {data?.subheading && <p class="theme-text-muted text-base m-0">{data.subheading}</p>}
+      </div>
+
+      {/* Form */}
+      <FormRenderer form={data?.form} services={sortedServices} />
+
+      {
+        telHref && (
+          <p class="text-center theme-text-muted text-sm m-0 mt-6">
+            Prefer to talk now?{" "}
+            <a href={telHref} class="theme-accent font-semibold no-underline hover:underline">
+              Call {business.phone}
+            </a>
+          </p>
+        )
+      }
+    </div>
+  </div>
+</section>

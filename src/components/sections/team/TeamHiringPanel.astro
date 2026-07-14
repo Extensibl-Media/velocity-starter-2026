@@ -1,0 +1,163 @@
+---
+import type { Eyebrow, SectionCTA, TeamMember } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import SmartImage from "@/components/media/SmartImage.astro";
+import { Button } from "@/components/starwind/button";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    members?: TeamMember[];
+    hiringHeading?: string;
+    hiringBody?: string;
+    cta?: SectionCTA;
+    secondaryCta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const members = data?.members ?? [];
+
+/** Derive up to two initials from a member's name. */
+function initials(name: string): string {
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join("");
+}
+---
+
+{
+  members.length > 0 && (
+    <section
+      class:list={[
+        "team-hiring-panel section-wrapper section-py",
+        `theme-${theme}`,
+      ]}
+    >
+      <div class="section-container">
+        {/* Section header */}
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">
+                {data.eyebrow.text}
+              </Badge>
+            ) : (
+              <span class="theme-accent text-sm font-semibold uppercase tracking-widest">
+                {data.eyebrow.text}
+              </span>
+            ))}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">
+              {data.subheading}
+            </p>
+          )}
+        </div>
+
+        {/* Team grid */}
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 mb-12">
+          {members.map((member) => (
+            <div class="flex flex-col items-center text-center gap-2">
+              {member.photo ? (
+                <SmartImage
+                  src={member.photo}
+                  alt={member.name}
+                  widths={[200, 400]}
+                  class="hiring-photo w-full aspect-square object-cover"
+                />
+              ) : (
+                <div class="hiring-avatar w-full aspect-square" aria-hidden="true">
+                  <span>{initials(member.name)}</span>
+                </div>
+              )}
+              <div class="flex flex-col gap-0.5">
+                <span class="theme-heading text-sm font-semibold leading-tight">
+                  {member.name}
+                </span>
+                {member.role && (
+                  <span class="theme-text-subtle text-xs leading-tight">
+                    {member.role}
+                  </span>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Hiring CTA panel */}
+        {(data?.hiringHeading || data?.hiringBody || data?.cta?.href) && (
+          <div class="hiring-cta flex flex-col md:flex-row md:items-center md:justify-between gap-6 p-8">
+            <div class="flex flex-col gap-2">
+              {data?.hiringHeading && (
+                <h3 class="theme-heading text-2xl font-bold m-0">
+                  {data.hiringHeading}
+                </h3>
+              )}
+              {data?.hiringBody && (
+                <p class="theme-text-muted m-0 max-w-xl">{data.hiringBody}</p>
+              )}
+            </div>
+            {(data?.cta?.href || data?.secondaryCta?.href) && (
+              <div class="flex flex-wrap gap-3 shrink-0">
+                {data?.cta?.href && data?.cta?.label && (
+                  <Button
+                    variant={data.cta.variant ?? "primary"}
+                    href={data.cta.href}
+                  >
+                    {data.cta.label}
+                  </Button>
+                )}
+                {data?.secondaryCta?.href && data?.secondaryCta?.label && (
+                  <Button
+                    variant={data.secondaryCta.variant ?? "outline"}
+                    href={data.secondaryCta.href}
+                  >
+                    {data.secondaryCta.label}
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .hiring-photo {
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-sm);
+  }
+
+  .hiring-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--t-radius);
+    background: color-mix(in srgb, var(--theme-accent) 12%, transparent);
+    color: var(--theme-accent);
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+
+  .hiring-cta {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-md);
+  }
+</style>

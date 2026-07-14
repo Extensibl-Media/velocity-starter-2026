@@ -1,19 +1,69 @@
 ---
-// TrustBarStats — placeholder
-// Replace with full implementation
+import type { Eyebrow, StatItem } from "@/types/sections";
 
 interface Props {
   theme?: string;
-  data?: Record<string, unknown>;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    stats?: StatItem[];
+  };
 }
 
-const { theme = 'default', data } = Astro.props;
+const { theme = "default", data } = Astro.props;
+
+const stats = data?.stats ?? [];
 ---
 
-<section class={`section-wrapper section-py-sm theme-${theme}`}>
-  <div class="section-container">
-    <p class="theme-text-muted text-sm">
-      [TrustBarStats — not yet implemented]
-    </p>
-  </div>
-</section>
+{
+  stats.length > 0 && (
+    <section class={`section-wrapper section-py-sm theme-${theme}`}>
+      <div class="section-container">
+        {(data?.eyebrow || data?.heading) && (
+          <div class="flex flex-col items-center text-center gap-2 mb-10">
+            {data?.eyebrow && (
+              <span class="theme-text-subtle text-sm font-semibold uppercase tracking-widest">
+                {data.eyebrow.text}
+              </span>
+            )}
+            {data?.heading && (
+              <h2 class="theme-heading text-2xl lg:text-3xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+          </div>
+        )}
+
+        <dl class="grid grid-cols-2 lg:grid-cols-4 gap-y-10">
+          {stats.map((stat, i) => (
+            <div
+              class="flex flex-col items-center text-center px-4"
+              class:list={[
+                {
+                  "border-l": i % 2 !== 0,
+                  "lg:border-l": i % 4 !== 0,
+                },
+              ]}
+              style="border-color: var(--theme-border);"
+            >
+              <dt
+                class="theme-heading text-4xl lg:text-5xl font-bold leading-none order-1"
+                style="color: var(--theme-accent);"
+              >
+                {stat.value}
+              </dt>
+              <dd class="theme-text-muted text-sm m-0 mt-2 order-2">
+                {stat.label}
+              </dd>
+              {stat.description && (
+                <p class="theme-text-subtle text-xs m-0 mt-1 order-3">
+                  {stat.description}
+                </p>
+              )}
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+  )
+}

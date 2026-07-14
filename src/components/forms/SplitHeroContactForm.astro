@@ -1,0 +1,161 @@
+---
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/starwind/card";
+import { Button } from "@/components/starwind/button";
+import { Input } from "@/components/starwind/input";
+import { Label } from "@/components/starwind/label";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+  SelectGroup,
+} from "@/components/starwind/select";
+import Textarea from "../starwind/textarea";
+import type { FormConfig } from "@/types/sections";
+
+/**
+ * The "simple" lead form — single-step contact capture. A drop-in form
+ * sub-component selected via the form registry when `form.type` is "simple"
+ * (or unset). Destination-agnostic: submits the whole form once, dispatching a
+ * `form:submit` DOM event, optionally POSTing to `form.submit.endpoint`, and
+ * optionally redirecting — otherwise it shows an inline success state.
+ */
+interface Props {
+  form?: FormConfig;
+  services?: { data: { slug: string; title: string } }[];
+}
+
+const { form = {}, services = [] } = Astro.props;
+const title = form.title ?? "Get a Free Quote";
+const description = form.description ?? "We'll get back to you within the hour.";
+const submitLabel = form.submitLabel ?? "Request a Free Quote";
+---
+
+<Card class="bg-bg-muted surface-base" data-lead-form>
+  <CardHeader>
+    <CardTitle class="text-fg">{title}</CardTitle>
+    <CardDescription class="text-fg-muted">{description}</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <form class="flex flex-col gap-4" name="hero-quote" data-lead-form-el>
+      {/* Honeypot */}
+      <input type="text" name="company_website" tabindex="-1" autocomplete="off" aria-hidden="true" class="lead-hp" data-lead-hp />
+
+      <div class="flex flex-col gap-1.5">
+        <Label for="hero-name" class="text-fg">Full Name</Label>
+        <Input type="text" id="hero-name" name="name" placeholder="John Smith" required class="text-fg-muted placeholder:text-fg-muted border-bg-inverse" />
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <Label for="hero-phone" class="text-fg">Phone Number</Label>
+        <Input type="tel" id="hero-phone" name="phone" placeholder="(555) 555-5555" required class="text-fg-muted placeholder:text-fg-muted border-bg-inverse" />
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <Label for="hero-email" class="text-fg">Email</Label>
+        <Input type="email" id="hero-email" name="email" placeholder="you@example.com" class="text-fg-muted placeholder:text-fg-muted border-bg-inverse" />
+      </div>
+      {
+        services.length > 0 && (
+          <div class="flex flex-col gap-1.5">
+            <Label for="hero-service" class="text-fg">Service Needed</Label>
+            <Select id="hero-service" name="service">
+              <SelectTrigger class="w-full text-fg-muted placeholder:text-fg-muted border-bg-inverse">
+                <SelectValue placeholder="Select a service" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {services.map((service) => (
+                    <SelectItem value={service.data.slug}>{service.data.title}</SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        )
+      }
+      <div class="flex flex-col gap-1.5">
+        <Label for="hero-message" class="text-fg">Message (optional)</Label>
+        <Textarea id="hero-message" name="message" placeholder="Tell us about your project" class="text-fg-muted placeholder:text-fg-muted border-bg-inverse" />
+      </div>
+
+      <Button variant="primary" type="submit" class="w-full mt-1" data-lead-submit>{submitLabel}</Button>
+    </form>
+
+    {/* Success state */}
+    <div class="lead-success" data-lead-success hidden>
+      <span class="lead-success-check" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+      </span>
+      <p class="text-fg font-semibold m-0">Thanks — we got your request!</p>
+      <p class="text-fg-muted text-sm m-0">A team member will reach out within the hour.</p>
+    </div>
+
+    <script type="application/json" data-lead-config set:html={JSON.stringify(form.submit ?? {})} />
+  </CardContent>
+</Card>
+
+<style>
+  .lead-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .lead-success { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.4rem; padding: 1.5rem 0.5rem; }
+  .lead-success-check {
+    width: 3rem; height: 3rem; border-radius: 999px; margin-bottom: 0.25rem;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: color-mix(in srgb, var(--color-primary) 14%, transparent); color: var(--color-primary);
+  }
+  .lead-success-check svg { width: 1.5rem; height: 1.5rem; }
+</style>
+
+<script>
+  function initLeadForm(root: HTMLElement) {
+    if (root.dataset.leadReady) return;
+    root.dataset.leadReady = "1";
+    const formEl = root.querySelector<HTMLFormElement>("[data-lead-form-el]");
+    const success = root.querySelector<HTMLElement>("[data-lead-success]");
+    const hp = root.querySelector<HTMLInputElement>("[data-lead-hp]");
+    const submitBtn = root.querySelector<HTMLButtonElement>("[data-lead-submit]");
+    const cfgEl = root.querySelector<HTMLElement>("[data-lead-config]");
+    if (!formEl) return;
+
+    let cfg: { endpoint?: string; method?: string; redirect?: string; hiddenFields?: Record<string, string> } = {};
+    try { cfg = JSON.parse(cfgEl?.textContent || "{}"); } catch { cfg = {}; }
+
+    formEl.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (hp && hp.value) { done(); return; } // honeypot
+      const data = Object.fromEntries(new FormData(formEl).entries());
+      delete (data as Record<string, unknown>).company_website;
+      const payload = { ...data, ...(cfg.hiddenFields || {}) };
+      root.dispatchEvent(new CustomEvent("form:submit", { detail: payload, bubbles: true }));
+
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Sending…"; }
+      if (cfg.endpoint) {
+        try {
+          await fetch(cfg.endpoint, {
+            method: cfg.method || "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+        } catch { /* event already fired */ }
+      }
+      if (cfg.redirect) { window.location.href = cfg.redirect; return; }
+      done();
+    });
+
+    function done() {
+      formEl!.hidden = true;
+      if (success) success.hidden = false;
+    }
+  }
+
+  function initAllLeadForms() {
+    document.querySelectorAll<HTMLElement>("[data-lead-form]").forEach(initLeadForm);
+  }
+  initAllLeadForms();
+  document.addEventListener("astro:after-swap", initAllLeadForms);
+</script>

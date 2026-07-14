@@ -1,0 +1,129 @@
+---
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+/**
+ * gallery:strip — a full-bleed, edge-to-edge horizontal band of photos. Images
+ * sit flush against one another in one equal-width row that scrolls on small
+ * screens. Optional captions surface on hover as a scrim overlay. No JS.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    images?: { src: string; alt?: string; caption?: string }[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const images = data?.images ?? [];
+---
+
+<section class:list={["gallery-strip section-wrapper section-py", `theme-${theme}`]}>
+  <div class="section-container">
+    {
+      (data?.eyebrow || data?.heading || data?.subheading) && (
+        <div class="flex flex-col items-center text-center gap-3 mb-10">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            ))}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>
+          )}
+        </div>
+      )
+    }
+  </div>
+
+  {
+    images.length > 0 && (
+      <div class="gallery-strip-band">
+        {images.map((img) => (
+          <figure class="gallery-strip-item m-0">
+            <SmartImage
+              src={img.src}
+              alt={img.alt ?? ""}
+              widths={[400, 600, 800]}
+              sizes="(min-width: 1024px) 25vw, (min-width: 640px) 40vw, 70vw"
+              class="gallery-strip-img"
+            />
+            {img.caption && (
+              <figcaption class="gallery-strip-caption">{img.caption}</figcaption>
+            )}
+          </figure>
+        ))}
+      </div>
+    )
+  }
+</section>
+
+<style>
+  .gallery-strip-band {
+    display: flex;
+    width: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .gallery-strip-band::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+  .gallery-strip-item {
+    position: relative;
+    flex: 1 0 70%;
+    scroll-snap-align: start;
+    overflow: hidden;
+  }
+  @media (min-width: 640px) {
+    .gallery-strip-item {
+      flex-basis: 40%;
+    }
+  }
+  @media (min-width: 1024px) {
+    .gallery-strip-item {
+      flex-basis: 0;
+    }
+  }
+  .gallery-strip-item :global(.gallery-strip-img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  .gallery-strip-item:hover :global(.gallery-strip-img) {
+    transform: scale(1.05);
+  }
+  .gallery-strip-caption {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    padding: 1.5rem 1rem 1rem;
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.35;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+  .gallery-strip-item:hover .gallery-strip-caption,
+  .gallery-strip-item:focus-within .gallery-strip-caption {
+    opacity: 1;
+  }
+</style>

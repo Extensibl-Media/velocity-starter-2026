@@ -1,0 +1,162 @@
+---
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * content:sidebar — long-form `body` (HTML string) with a sticky companion
+ * sidebar for an "on this page" / key-facts navigation card. The aside uses
+ * pure CSS position:sticky (no client JS) and stacks above the body on mobile.
+ * Distinct from content:two-column — one wide reading column plus a persistent
+ * rail. Theme-pure: the card surface and border derive from tokens.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    body?: string;
+    sidebarTitle?: string;
+    links?: { label?: string; href?: string }[];
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const links = data?.links ?? [];
+const hasHeader = Boolean(data?.eyebrow || data?.heading || data?.subheading);
+const hasAside = Boolean(data?.sidebarTitle || links.length > 0 || data?.cta);
+---
+
+{
+  (hasHeader || data?.body || hasAside) && (
+    <section class:list={["content-sidebar section-wrapper section-py", `theme-${theme}`]}>
+      <div class="section-container">
+        {hasHeader && (
+          <div class="flex flex-col gap-3 mb-10 max-w-2xl">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <div>
+                  <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+                </div>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg m-0">{data.subheading}</p>
+            )}
+          </div>
+        )}
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+          {hasAside && (
+            <aside class="lg:col-span-4 lg:order-2">
+              <div class="sidebar-card">
+                {data?.sidebarTitle && (
+                  <h3 class="theme-heading text-sm font-bold uppercase tracking-widest m-0 mb-4">
+                    {data.sidebarTitle}
+                  </h3>
+                )}
+                {links.length > 0 && (
+                  <ul class="flex flex-col gap-2 list-none m-0 p-0">
+                    {links.map((link) => (
+                      <li>
+                        <a
+                          href={link.href ?? "#"}
+                          class="sidebar-link theme-text no-underline"
+                        >
+                          {link.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {data?.cta && (
+                  <div class="mt-5">
+                    <Button href={data.cta.href} variant={data.cta.variant ?? "primary"} class="w-full">
+                      {data.cta.label}
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </aside>
+          )}
+
+          {data?.body && (
+            <div class:list={["rich-text theme-text lg:order-1", hasAside ? "lg:col-span-8" : "lg:col-span-12 max-w-2xl"]} set:html={data.body} />
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .sidebar-card {
+    position: sticky;
+    top: 6rem;
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    padding: 1.5rem;
+    box-shadow: var(--t-shadow-sm);
+  }
+  .sidebar-link {
+    display: block;
+    padding: 0.375rem 0.75rem;
+    border-left: 2px solid var(--theme-border);
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  .sidebar-link:hover {
+    border-left-color: var(--theme-accent);
+    color: var(--theme-accent);
+  }
+
+  .rich-text {
+    line-height: 1.75;
+  }
+  .rich-text :global(> * + *) {
+    margin-top: 1.25em;
+  }
+  .rich-text :global(h2),
+  .rich-text :global(h3),
+  .rich-text :global(h4) {
+    color: var(--theme-heading);
+    font-family: var(--font-heading);
+    font-weight: var(--t-font-weight-heading);
+    line-height: 1.25;
+    margin-top: 2em;
+    scroll-margin-top: 6rem;
+  }
+  .rich-text :global(h2) { font-size: 1.5rem; }
+  .rich-text :global(h3) { font-size: 1.25rem; }
+  .rich-text :global(a) {
+    color: var(--theme-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .rich-text :global(ul),
+  .rich-text :global(ol) {
+    padding-left: 1.5rem;
+  }
+  .rich-text :global(ul) { list-style: disc; }
+  .rich-text :global(ol) { list-style: decimal; }
+  .rich-text :global(li + li) { margin-top: 0.5rem; }
+  .rich-text :global(blockquote) {
+    border-left: 3px solid var(--theme-accent);
+    padding-left: 1rem;
+    color: var(--theme-fg-muted);
+    font-style: italic;
+  }
+  .rich-text :global(strong) { font-weight: 600; }
+  .rich-text :global(img) { border-radius: var(--t-radius); }
+</style>

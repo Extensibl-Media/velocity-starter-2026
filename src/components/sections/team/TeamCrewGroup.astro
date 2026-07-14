@@ -1,0 +1,106 @@
+---
+import type { Eyebrow, ImageRef, TeamMember } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    groupPhoto?: ImageRef;
+    members?: TeamMember[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const members = data?.members ?? [];
+const groupPhoto = data?.groupPhoto;
+---
+
+{
+  (members.length > 0 || groupPhoto) && (
+    <section
+      class:list={[
+        "team-crew-group section-wrapper section-py",
+        `theme-${theme}`,
+      ]}
+    >
+      <div class="section-container">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+          {/* Group photo */}
+          {groupPhoto?.src && (
+            <div class="order-1">
+              <SmartImage
+                src={groupPhoto.src}
+                alt={groupPhoto.alt ?? data?.heading ?? "Our crew"}
+                widths={[560, 840, 1120]}
+                class="group-photo w-full aspect-[4/3] object-cover"
+              />
+            </div>
+          )}
+
+          {/* Copy + roster list */}
+          <div class="order-2 flex flex-col gap-5">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="self-start uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="theme-accent text-sm font-semibold uppercase tracking-widest">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg leading-relaxed m-0">
+                {data.subheading}
+              </p>
+            )}
+
+            {members.length > 0 && (
+              <ul class="flex flex-col gap-3 m-0 mt-2 p-0 list-none">
+                {members.map((member) => (
+                  <li class="crew-row flex items-baseline justify-between gap-4 pb-3">
+                    <span class="theme-heading font-semibold">
+                      {member.name}
+                    </span>
+                    {member.role && (
+                      <span class="theme-text-subtle text-sm text-right">
+                        {member.role}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .group-photo {
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-lg);
+  }
+
+  .crew-row {
+    border-bottom: var(--t-border-width) solid var(--theme-border);
+  }
+
+  .crew-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+</style>

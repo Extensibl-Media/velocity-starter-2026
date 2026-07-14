@@ -1,0 +1,106 @@
+---
+import type { Eyebrow, StatItem } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    stats?: StatItem[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const stats = data?.stats ?? [];
+
+const count = stats.length;
+const gridClass =
+  count === 1
+    ? "grid-cols-1"
+    : count === 2
+      ? "grid-cols-1 sm:grid-cols-2"
+      : count === 3
+        ? "grid-cols-1 sm:grid-cols-3"
+        : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
+---
+
+{
+  stats.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Section header */}
+        {(data?.eyebrow || data?.heading || data?.subheading) && (
+          <div class="flex flex-col items-center text-center gap-3 mb-12">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">
+                {data.subheading}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Stat cards */}
+        <div class={`grid ${gridClass} gap-6`}>
+          {stats.map((stat) => (
+            <div class="stat-card flex flex-col items-center text-center gap-3 rounded-xl border theme-border bg-background p-6 lg:p-8">
+              <div class="stat-icon flex items-center justify-center w-14 h-14 rounded-full shrink-0">
+                <svg
+                  class="w-7 h-7"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="var(--color-primary)"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M3 3v16a2 2 0 0 0 2 2h16" />
+                  <path d="m19 9-5 5-4-4-3 3" />
+                </svg>
+              </div>
+              <span
+                class="theme-heading text-3xl lg:text-4xl font-bold m-0 leading-none tabular-nums"
+                style="color: var(--theme-accent)"
+              >
+                {stat.value}
+              </span>
+              <span class="theme-text-muted text-sm font-medium leading-tight">
+                {stat.label}
+              </span>
+              {stat.description && (
+                <span class="theme-text-subtle text-xs leading-relaxed max-w-[16rem]">
+                  {stat.description}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .stat-icon {
+    background: color-mix(in srgb, var(--theme-accent) 12%, transparent);
+  }
+</style>

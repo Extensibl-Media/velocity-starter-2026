@@ -1,0 +1,113 @@
+---
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+/**
+ * gallery:project-cards — a grid of raised project cards. Each card pairs a
+ * cover photo with a project name (caption) and a work-type tag (category),
+ * turning a photo wall into scannable project proof. No JS.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    columns?: 2 | 3;
+    images?: { src: string; alt?: string; caption?: string; category?: string }[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const images = data?.images ?? [];
+const cols = data?.columns === 2 ? "sm:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3";
+---
+
+<section class:list={["gallery-project-cards section-wrapper section-py", `theme-${theme}`]}>
+  <div class="section-container">
+    {
+      (data?.eyebrow || data?.heading || data?.subheading) && (
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            ))}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>
+          )}
+        </div>
+      )
+    }
+
+    {
+      images.length > 0 && (
+        <div class={`grid grid-cols-1 ${cols} gap-6`}>
+          {images.map((img) => (
+            <figure class="project-card m-0">
+              <div class="project-card-frame">
+                <SmartImage
+                  src={img.src}
+                  alt={img.alt ?? ""}
+                  widths={[400, 600, 800]}
+                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  class="project-card-img"
+                />
+              </div>
+              <figcaption class="project-card-body">
+                {img.category && (
+                  <Badge class="uppercase tracking-wide text-xs mb-2">{img.category}</Badge>
+                )}
+                {img.caption && (
+                  <p class="theme-heading font-semibold text-lg m-0">{img.caption}</p>
+                )}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .project-card {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-sm);
+    overflow: hidden;
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+  .project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--t-shadow-md);
+  }
+  .project-card-frame {
+    overflow: hidden;
+  }
+  .project-card-frame :global(.project-card-img) {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+  }
+  .project-card:hover .project-card-frame :global(.project-card-img) {
+    transform: scale(1.05);
+  }
+  .project-card-body {
+    padding: 1.25rem 1.25rem 1.5rem;
+  }
+</style>

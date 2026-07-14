@@ -1,3 +1,5 @@
+import type { FormConfig } from "@/types/sections";
+
 export interface HeroData {
   // Eyebrow
   eyebrow?: {
@@ -47,6 +49,8 @@ export interface HeroData {
     position?: "right" | "left" | "bottom" | "float";
   };
 
-  // Form
+  // Form — the lead-form slot. `form.type` selects which form renders
+  // (simple | quiz) via the form registry; omit to show the simple form.
   showForm?: boolean;
+  form?: FormConfig;
 }

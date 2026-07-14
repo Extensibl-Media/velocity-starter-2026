@@ -1,0 +1,86 @@
+---
+import { getCollection } from "astro:content";
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    service?: string;
+    limit?: number;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const allFaqs = await getCollection("faqs");
+
+const faqs = allFaqs
+  .filter((f) => !data?.service || f.data.service === data.service)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, data?.limit ?? allFaqs.length);
+---
+
+<section class:list={["faqs-numbered section-wrapper section-py", `theme-${theme}`]}>
+  <div class="section-container">
+    {
+      (data?.eyebrow || data?.heading || data?.subheading) && (
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow && (
+            <div>
+              {data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                  {data.eyebrow.text}
+                </span>
+              )}
+            </div>
+          )}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">
+              {data.subheading}
+            </p>
+          )}
+        </div>
+      )
+    }
+
+    {
+      faqs.length > 0 ? (
+        <ol class="max-w-3xl mx-auto flex flex-col gap-8 list-none p-0 m-0">
+          {faqs.map((faq, index) => (
+            <li class="flex gap-5">
+              <span
+                class="shrink-0 text-2xl font-bold leading-none tabular-nums theme-accent"
+                aria-hidden="true"
+              >
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <div class="flex-1 pt-0.5">
+                <h3 class="theme-heading font-semibold text-lg m-0">
+                  {faq.data.question}
+                </h3>
+                <p class="theme-text-muted leading-relaxed mt-2 mb-0">
+                  {faq.data.answer}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <p class="text-center theme-text-muted">No FAQs found.</p>
+      )
+    }
+  </div>
+</section>

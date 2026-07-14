@@ -30,8 +30,11 @@ export default defineConfig({
     layout: 'constrained',
   },
 
-  integrations: [markdoc(), 
-    sitemap(),
+  integrations: [markdoc(),
+    sitemap({
+      // Keep internal/dev preview pages out of the sitemap (they are noindex).
+      filter: (page) => !/\/(components|section-preview)(\/|$)/.test(page),
+    }),
     icon(),
   ],
 

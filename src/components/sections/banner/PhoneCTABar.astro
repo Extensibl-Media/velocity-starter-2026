@@ -1,0 +1,76 @@
+---
+import { getBusinessData } from "@/lib/utils";
+import type { SectionCTA } from "@/types/sections";
+import { Button } from "@/components/starwind/button";
+
+interface Props {
+  theme?: string;
+  data?: {
+    text?: string;
+    hoursNote?: string;
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "inverse", data } = Astro.props;
+const business = await getBusinessData();
+
+const text = data?.text ?? "Talk to a local roofer today";
+---
+
+<section class:list={["banner-phone-cta", `theme-${theme}`]}>
+  <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-4 gap-y-1 px-4 py-3 text-sm sm:justify-between">
+    <div class="flex items-center gap-2 text-center sm:text-left">
+      <svg
+        class="hidden h-4 w-4 shrink-0 theme-accent sm:block"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        aria-hidden="true"
+      >
+        <path d="M12 22s8-4.5 8-11a8 8 0 1 0-16 0c0 6.5 8 11 8 11z" />
+        <circle cx="12" cy="11" r="3" />
+      </svg>
+      <span class="theme-text font-semibold">{text}</span>
+      {data?.hoursNote && (
+        <span class="theme-text-muted hidden sm:inline">· {data.hoursNote}</span>
+      )}
+    </div>
+
+    <div class="flex items-center gap-3">
+      {business.phone && (
+        <a
+          href={`tel:${business.phone}`}
+          class="theme-text inline-flex items-center gap-2 text-base font-bold no-underline transition-opacity hover:opacity-80"
+        >
+          <svg
+            class="h-5 w-5 shrink-0"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+          </svg>
+          {business.phone}
+        </a>
+      )}
+      {data?.cta && (
+        <Button variant={data.cta.variant ?? "primary"} href={data.cta.href} size="sm">
+          {data.cta.label}
+        </Button>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .banner-phone-cta {
+    width: 100%;
+    border-bottom: var(--t-border-width) solid var(--theme-border);
+  }
+</style>

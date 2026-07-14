@@ -1,0 +1,108 @@
+---
+import type { Eyebrow, CertItem } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+/**
+ * certifications:detail-cards — a row of raised "what this means" cards. Each
+ * card leads with the certification logo/badge, then the credential name, then a
+ * short plain-language explanation of what the certification signals to the
+ * customer. Credibility-focused: turns an abstract badge into a benefit.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    items?: CertItem[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const items = data?.items ?? [];
+---
+
+<section class:list={["certifications-detail-cards section-wrapper section-py", `theme-${theme}`]}>
+  <div class="section-container">
+    {
+      (data?.eyebrow || data?.heading || data?.subheading) && (
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow && (
+            <div>
+              {data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                  {data.eyebrow.text}
+                </span>
+              )}
+            </div>
+          )}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>
+          )}
+        </div>
+      )
+    }
+
+    {
+      items.length > 0 && (
+        <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 list-none m-0 p-0">
+          {items.map((item) => (
+            <li class="cert-card flex flex-col gap-4 p-6">
+              <div class="flex items-center gap-4">
+                <span class="cert-logo-wrap">
+                  {item.logo ? (
+                    <SmartImage
+                      src={item.logo}
+                      alt={item.label}
+                      width={64}
+                      class="h-10 w-auto object-contain"
+                    />
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                      <path d="m9 12 2 2 4-4" />
+                    </svg>
+                  )}
+                </span>
+                <span class="theme-heading text-base font-semibold leading-tight">{item.label}</span>
+              </div>
+              {item.description && (
+                <p class="theme-text-muted text-sm leading-relaxed m-0">{item.description}</p>
+              )}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .cert-card {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-sm);
+  }
+  .cert-logo-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: var(--t-radius);
+    background: color-mix(in srgb, var(--theme-accent, currentColor) 12%, transparent);
+    color: var(--theme-accent, currentColor);
+  }
+  .cert-logo-wrap svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+</style>

@@ -1,0 +1,161 @@
+---
+import { getCollection } from "astro:content";
+import { getBusinessData } from "@/lib/utils";
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * location:map-hours-cta — a three-column layout: the embedded map, the full
+ * business-hours table (from the hoursSettings singleton), and a stacked CTA
+ * column (address + call + directions). Reads hours live so edits stay in sync.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    mapEmbedUrl?: string;
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const business = await getBusinessData();
+
+const h = await getCollection("hoursSettings");
+const hours = h[0]?.data.hours ?? [];
+
+const fullAddress = [
+  business.address,
+  [business.city, business.state].filter(Boolean).join(", "),
+  business.zip,
+]
+  .filter(Boolean)
+  .join(" ");
+
+const telHref = business.phone ? `tel:${business.phone.replace(/[^\d+]/g, "")}` : null;
+const directionsHref = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+  fullAddress
+)}`;
+const mapEmbedUrl =
+  data?.mapEmbedUrl ??
+  `https://www.google.com/maps?q=${encodeURIComponent(fullAddress)}&output=embed`;
+---
+
+<section class:list={["location-map-hours-cta section-wrapper section-py", `theme-${theme}`]}>
+  <div class="section-container">
+    {
+      (data?.eyebrow || data?.heading || data?.subheading) && (
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                {data.eyebrow.text}
+              </span>
+            ))}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>
+          )}
+        </div>
+      )
+    }
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+      {/* Map */}
+      <div class="col-tile overflow-hidden p-0">
+        <iframe
+          src={mapEmbedUrl}
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title={`Map of ${business.city}, ${business.state}`}
+          class="w-full h-full min-h-[300px] border-0 block"></iframe>
+      </div>
+
+      {/* Hours */}
+      <div class="col-tile flex flex-col">
+        <h3 class="theme-heading text-sm font-semibold uppercase tracking-widest m-0 mb-4">
+          Hours
+        </h3>
+        {
+          hours.length > 0 ? (
+            <dl class="flex flex-col m-0">
+              {hours.map((row: any, i: number) => (
+                <div
+                  class:list={[
+                    "flex items-center justify-between gap-4 py-2.5",
+                    i > 0 && "border-t",
+                  ]}
+                  style={i > 0 ? "border-color: var(--theme-border)" : ""}
+                >
+                  <dt class="theme-text font-medium m-0">{row.day}</dt>
+                  <dd class="m-0">
+                    {row.closedAllDay ? (
+                      <span class="theme-text-subtle font-medium">Closed</span>
+                    ) : (
+                      <span class="theme-text-muted font-medium tabular-nums">
+                        {row.open} – {row.close}
+                      </span>
+                    )}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          ) : (
+            <p class="theme-text-muted m-0">Call for current hours.</p>
+          )
+        }
+      </div>
+
+      {/* CTA / contact */}
+      <div class="col-tile flex flex-col">
+        <span class="theme-text-subtle text-xs font-semibold uppercase tracking-widest">
+          Find us
+        </span>
+        <p class="theme-heading text-lg font-bold m-0 mt-1">{business.businessName}</p>
+        {fullAddress && <p class="theme-text-muted m-0 mt-2">{fullAddress}</p>}
+        {
+          telHref && (
+            <a
+              href={telHref}
+              class="theme-heading font-semibold mt-3 inline-block hover:text-primary transition-colors"
+            >
+              {business.phone}
+            </a>
+          )
+        }
+        <div class="mt-auto pt-6 flex flex-col gap-3">
+          <Button variant={data?.cta?.variant ?? "primary"} href={data?.cta?.href ?? directionsHref} class="w-full">
+            {data?.cta?.label ?? "Get directions"}
+          </Button>
+          {
+            telHref && (
+              <Button variant="outline" href={telHref} class="w-full">
+                Call now
+              </Button>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .col-tile {
+    padding: 1.75rem;
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-sm);
+  }
+  .col-tile.p-0 {
+    padding: 0;
+  }
+</style>

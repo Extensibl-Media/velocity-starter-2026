@@ -43,7 +43,7 @@ const siteConfig: SiteConfig = {
   description: "Quality contracting services you can trust.",
   url: import.meta.env.SITE || "https://example.com",
   ogImage: "/og-default.png",
-  author: "Extensibl Media",
+  author: "Velocity Web Studio",
   branding: {
     logo: {
       alt: "Demo Contractor",

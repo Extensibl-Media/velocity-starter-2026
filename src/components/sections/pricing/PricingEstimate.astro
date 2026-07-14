@@ -1,0 +1,101 @@
+---
+import type { Eyebrow, EstimateRow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    rows?: EstimateRow[];
+    disclaimer?: string;
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const rows = data?.rows ?? [];
+const disclaimer =
+  data?.disclaimer ??
+  "Final pricing depends on scope — request a free estimate.";
+---
+
+{
+  rows.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Section header */}
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow && (
+            <div>
+              {data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              )}
+            </div>
+          )}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">
+              {data.subheading}
+            </p>
+          )}
+        </div>
+
+        {/* Estimate table */}
+        <div class="max-w-3xl mx-auto rounded-xl border theme-border bg-background overflow-hidden">
+          <ul class="estimate-list m-0 p-0 list-none">
+            {rows.map((row) => (
+              <li class="estimate-row flex items-start justify-between gap-4 px-5 py-4 sm:px-6 sm:py-5">
+                <div class="flex flex-col gap-1 min-w-0">
+                  <span class="theme-heading font-semibold">
+                    {row.service}
+                  </span>
+                  {row.note && (
+                    <span class="theme-text-subtle text-sm">{row.note}</span>
+                  )}
+                </div>
+                <div class="shrink-0 text-right whitespace-nowrap">
+                  <span class="theme-text-subtle text-sm mr-1">from</span>
+                  <span class="text-primary font-bold text-xl">{row.from}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Disclaimer */}
+        <p class="theme-text-subtle text-sm text-center max-w-3xl mx-auto mt-4 m-0">
+          {disclaimer}
+        </p>
+
+        {/* Optional CTA */}
+        {data?.cta && (
+          <div class="flex justify-center mt-8">
+            <Button variant={data.cta.variant ?? "primary"} href={data.cta.href}>
+              {data.cta.label}
+            </Button>
+          </div>
+        )}
+      </div>
+
+      <style>
+        .estimate-row + .estimate-row {
+          border-top: 1px solid var(--color-border);
+        }
+      </style>
+    </section>
+  )
+}

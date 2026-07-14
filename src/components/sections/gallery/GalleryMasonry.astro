@@ -1,0 +1,185 @@
+---
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+/**
+ * gallery:masonry — a masonry photo wall using CSS columns, with a
+ * click-to-expand lightbox (mirrors gallery:grid). Optional captions.
+ * Works with multiple instances on one page (each wires its own lightbox).
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    images?: { src: string; alt?: string; caption?: string }[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const images = data?.images ?? [];
+---
+
+{
+  images.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Header */}
+        {(data?.eyebrow || data?.heading || data?.subheading) && (
+          <div class="flex flex-col items-center text-center gap-3 mb-12">
+            {data?.eyebrow && (
+              <div>
+                {data.eyebrow.variant === "badge" ? (
+                  <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+                ) : (
+                  <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                    {data.eyebrow.text}
+                  </span>
+                )}
+              </div>
+            )}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>
+            )}
+          </div>
+        )}
+
+        <div class="masonry" data-gallery>
+          <div class="columns-1 sm:columns-2 lg:columns-3 gap-4">
+            {images.map((img, i) => (
+              <figure class="masonry-item break-inside-avoid mb-4 m-0">
+                <button
+                  type="button"
+                  class="masonry-trigger"
+                  data-index={i}
+                  aria-label={img.caption ?? img.alt ?? "View image"}
+                >
+                  <SmartImage
+                    src={img.src}
+                    alt={img.alt ?? ""}
+                    widths={[400, 600, 800]}
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    class="masonry-img"
+                  />
+                </button>
+                {img.caption && (
+                  <figcaption class="theme-text-subtle text-sm mt-2 text-center">
+                    {img.caption}
+                  </figcaption>
+                )}
+              </figure>
+            ))}
+          </div>
+
+          <dialog class="masonry-lightbox" aria-label="Image viewer">
+            <button type="button" class="masonry-close" aria-label="Close">
+              &times;
+            </button>
+            <img class="masonry-lightbox-img" src="" alt="" />
+          </dialog>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .masonry-item .masonry-trigger {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: zoom-in;
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .masonry-item :global(.masonry-img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: transform 0.3s ease;
+  }
+  .masonry-item .masonry-trigger:hover :global(.masonry-img) {
+    transform: scale(1.04);
+  }
+  .masonry-lightbox {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: fit-content;
+    height: fit-content;
+    max-width: min(92vw, 1100px);
+    max-height: 90vh;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius);
+    background: transparent;
+    overflow: visible;
+  }
+  .masonry-lightbox::backdrop {
+    background: rgba(0, 0, 0, 0.85);
+  }
+  .masonry-lightbox-img {
+    display: block;
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: var(--radius);
+  }
+  .masonry-close {
+    position: absolute;
+    top: -0.5rem;
+    right: -0.5rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 9999px;
+    border: none;
+    background: var(--color-fg);
+    color: var(--color-bg);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 1;
+  }
+</style>
+
+<script>
+  function initMasonry(root: HTMLElement) {
+    if (root.dataset.masonryReady === "true") return;
+    root.dataset.masonryReady = "true";
+
+    const dialog = root.querySelector<HTMLDialogElement>(".masonry-lightbox");
+    const lightImg = root.querySelector<HTMLImageElement>(".masonry-lightbox-img");
+    const closeBtn = root.querySelector<HTMLButtonElement>(".masonry-close");
+    if (!dialog || !lightImg) return;
+
+    root.querySelectorAll<HTMLButtonElement>(".masonry-trigger").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const img = btn.querySelector("img");
+        if (!img) return;
+        lightImg.src = img.currentSrc || img.src;
+        lightImg.alt = img.alt;
+        dialog.showModal();
+      });
+    });
+
+    const close = () => dialog.close();
+    closeBtn?.addEventListener("click", close);
+    dialog.addEventListener("click", (e) => {
+      if (e.target === dialog) close();
+    });
+  }
+
+  function initMasonryGalleries() {
+    document.querySelectorAll<HTMLElement>("[data-gallery]").forEach(initMasonry);
+  }
+
+  initMasonryGalleries();
+  document.addEventListener("astro:page-load", initMasonryGalleries);
+</script>

@@ -23,6 +23,14 @@ export interface BusinessData {
     instagram?: string;
     youtube?: string;
   };
+  /** Which header layout variant to render. Defaults to "classic". */
+  headerVariant?:
+    | "classic" | "centered" | "minimal" | "transparent" | "inverse"
+    | "two-row" | "pill" | "compact" | "cta-prominent" | "gradient";
+  /** Which footer layout variant to render. Defaults to "columns". */
+  footerVariant?:
+    | "columns" | "simple" | "cta" | "newsletter" | "map"
+    | "mega" | "centered" | "hours" | "social" | "bar";
 }
 
 export interface SiteData {

@@ -1,13 +1,53 @@
 ---
+import { getCollection } from "astro:content";
+import type { Eyebrow, FormConfig } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import FormRenderer from "@/components/forms/FormRenderer.astro";
+
+/**
+ * hero:stacked-form — centered heading/subheading with the lead form stacked
+ * beneath. Good for single-CTA landing pages.
+ */
 interface Props {
   theme?: string;
-  data?: Record<string, unknown>;
+  data?: {
+    eyebrow?: Eyebrow;
+    headline?: string;
+    heading?: string;
+    subheadline?: string;
+    subheading?: string;
+    form?: FormConfig;
+  };
 }
-const { theme = 'default', data } = Astro.props;
+
+const { theme = "default", data } = Astro.props;
+const headline = data?.headline ?? data?.heading;
+const subheadline = data?.subheadline ?? data?.subheading;
+
+const services = await getCollection("services");
+const sortedServices = services.sort((a, b) => a.data.order - b.data.order);
 ---
-<section class={`section-wrapper section-py theme-${theme}`}>
+
+<section class={`hero-stacked section-wrapper section-py theme-${theme}`}>
   <div class="section-container">
-    <h1 class="theme-heading text-4xl font-bold">{data?.headline as string}</h1>
-    {data?.subheadline && <p class="theme-text-muted mt-4">{data.subheadline as string}</p>}
+    <div class="flex flex-col items-center text-center gap-4 max-w-2xl mx-auto mb-10">
+      {
+        data?.eyebrow && (
+          data.eyebrow.variant === "badge" ? (
+            <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+          ) : (
+            <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+              {data.eyebrow.text}
+            </span>
+          )
+        )
+      }
+      {headline && <h1 class="theme-heading text-4xl lg:text-5xl font-bold m-0">{headline}</h1>}
+      {subheadline && <p class="theme-text-muted text-lg m-0">{subheadline}</p>}
+    </div>
+
+    <div class="max-w-xl mx-auto">
+      <FormRenderer form={data?.form} services={sortedServices} />
+    </div>
   </div>
 </section>

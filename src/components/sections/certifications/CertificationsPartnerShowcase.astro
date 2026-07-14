@@ -1,0 +1,121 @@
+---
+import type { Eyebrow, CertItem } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+/**
+ * certifications:partner-showcase — a manufacturer / brand-partner showcase.
+ * One featured partner is spotlighted in a large panel on the left (big logo +
+ * description); the remaining partners tile in a compact logo grid on the right.
+ * Communicates "we're a certified installer for the brands you trust."
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    items?: CertItem[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const items = data?.items ?? [];
+const featured = items[0];
+const rest = items.slice(1);
+---
+
+<section class:list={["certifications-partner-showcase section-wrapper section-py", `theme-${theme}`]}>
+  <div class="section-container">
+    {
+      (data?.eyebrow || data?.heading || data?.subheading) && (
+        <div class="flex flex-col gap-3 mb-10 max-w-2xl">
+          {data?.eyebrow && (
+            <div>
+              {data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                  {data.eyebrow.text}
+                </span>
+              )}
+            </div>
+          )}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg m-0">{data.subheading}</p>
+          )}
+        </div>
+      )
+    }
+
+    {
+      featured && (
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="featured-partner flex flex-col justify-center gap-5 p-8">
+            <span class="featured-logo-wrap">
+              {featured.logo ? (
+                <SmartImage
+                  src={featured.logo}
+                  alt={featured.label}
+                  width={200}
+                  class="h-16 w-auto object-contain"
+                />
+              ) : (
+                <span class="theme-heading text-2xl font-bold">{featured.label}</span>
+              )}
+            </span>
+            <div class="flex flex-col gap-2">
+              <span class="theme-accent text-xs font-semibold uppercase tracking-widest">
+                Featured Partner
+              </span>
+              <span class="theme-heading text-xl font-bold leading-tight">{featured.label}</span>
+              {featured.description && (
+                <p class="theme-text-muted text-sm leading-relaxed m-0">{featured.description}</p>
+              )}
+            </div>
+          </div>
+
+          {rest.length > 0 && (
+            <ul class="grid grid-cols-2 sm:grid-cols-3 gap-4 list-none m-0 p-0">
+              {rest.map((item) => (
+                <li class="partner-tile flex flex-col items-center justify-center text-center gap-2 p-4">
+                  {item.logo ? (
+                    <SmartImage
+                      src={item.logo}
+                      alt={item.label}
+                      width={120}
+                      class="h-10 w-auto object-contain"
+                    />
+                  ) : (
+                    <span class="theme-heading text-sm font-semibold">{item.label}</span>
+                  )}
+                  <span class="theme-text-subtle text-xs leading-tight">{item.label}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .featured-partner {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-md);
+  }
+  .featured-logo-wrap {
+    display: inline-flex;
+    align-items: center;
+  }
+  .partner-tile {
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+  }
+</style>

@@ -1,13 +1,89 @@
 ---
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import { getBackgroundImage } from "@/lib/images";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * hero:full — full-viewport, centered hero. Bold brand landing.
+ */
 interface Props {
   theme?: string;
-  data?: Record<string, unknown>;
+  data?: {
+    eyebrow?: Eyebrow;
+    headline?: string;
+    heading?: string;
+    subheadline?: string;
+    subheading?: string;
+    ctas?: SectionCTA[];
+    backgroundImage?: { src: string; overlayOpacity?: number };
+  };
 }
-const { theme = 'default', data } = Astro.props;
+
+const { theme = "default", data } = Astro.props;
+const headline = data?.headline ?? data?.heading;
+const subheadline = data?.subheadline ?? data?.subheading;
+
+const bgUrl = await getBackgroundImage(data?.backgroundImage?.src, { width: 2200 });
+const overlayOpacity = (data?.backgroundImage?.overlayOpacity ?? 60) / 100;
 ---
-<section class={`section-wrapper section-py theme-${theme}`}>
-  <div class="section-container">
-    <h1 class="theme-heading text-4xl font-bold">{data?.headline as string}</h1>
-    {data?.subheadline && <p class="theme-text-muted mt-4">{data.subheadline as string}</p>}
+
+<section
+  class:list={[
+    "hero-full section-wrapper relative overflow-hidden flex items-center",
+    `theme-${theme}`,
+    bgUrl ? "has-bg" : "",
+  ]}
+  style={bgUrl ? `--hero-image: url('${bgUrl}'); --hero-overlay: ${overlayOpacity}` : ""}
+>
+  <div class="section-container relative z-10 py-24 lg:py-32">
+    <div class="flex flex-col items-center text-center gap-5 max-w-3xl mx-auto">
+      {
+        data?.eyebrow && (
+          data.eyebrow.variant === "badge" ? (
+            <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+          ) : (
+            <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+              {data.eyebrow.text}
+            </span>
+          )
+        )
+      }
+      {headline && <h1 class="theme-heading text-4xl sm:text-5xl lg:text-6xl font-bold m-0">{headline}</h1>}
+      {subheadline && <p class="theme-text-muted text-lg lg:text-xl max-w-2xl m-0">{subheadline}</p>}
+      {
+        data?.ctas && data.ctas.length > 0 && (
+          <div class="flex flex-wrap items-center justify-center gap-3 mt-2">
+            {data.ctas.map((cta) => (
+              <Button variant={cta.variant ?? "primary"} href={cta.href}>
+                {cta.label}
+              </Button>
+            ))}
+          </div>
+        )
+      }
+    </div>
   </div>
 </section>
+
+<style>
+  .hero-full {
+    min-height: 70vh;
+  }
+  .hero-full.has-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: var(--hero-image);
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+  }
+  .hero-full.has-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, var(--hero-overlay, 0.6));
+    z-index: 1;
+  }
+</style>

@@ -1,0 +1,115 @@
+---
+import type { Eyebrow, TeamMember } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    members?: TeamMember[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const members = data?.members ?? [];
+
+/** Derive up to two initials from a member's name. */
+function initials(name: string): string {
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join("");
+}
+---
+
+{
+  members.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Section header */}
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">
+                {data.eyebrow.text}
+              </Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            ))}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">
+              {data.subheading}
+            </p>
+          )}
+        </div>
+
+        {/* Grid */}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {members.map((member) => (
+            <div class="flex flex-col items-center text-center gap-3">
+              {member.photo ? (
+                <SmartImage
+                  src={member.photo}
+                  alt={member.name}
+                  widths={[240, 480]}
+                  class="member-photo w-full aspect-square object-cover rounded-2xl"
+                />
+              ) : (
+                <div class="member-avatar" aria-hidden="true">
+                  <span>{initials(member.name)}</span>
+                </div>
+              )}
+              <div class="flex flex-col gap-1">
+                <h3 class="theme-heading font-semibold m-0">{member.name}</h3>
+                {member.role && (
+                  <p class="text-primary text-sm font-medium m-0">
+                    {member.role}
+                  </p>
+                )}
+                {member.bio && (
+                  <p class="theme-text-muted text-sm leading-relaxed m-0 mt-1">
+                    {member.bio}
+                  </p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .member-photo {
+    box-shadow: var(--t-shadow-md);
+  }
+
+  .member-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 7rem;
+    height: 7rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--theme-accent) 12%, transparent);
+    color: var(--theme-accent);
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+</style>

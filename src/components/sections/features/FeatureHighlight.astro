@@ -1,0 +1,136 @@
+---
+import type { Eyebrow, ImageRef, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    body?: string;
+    image?: ImageRef;
+    imagePosition?: "left" | "right";
+    bullets?: string[];
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const bullets = data?.bullets ?? [];
+const hasContent = data?.heading || data?.body || bullets.length > 0 || data?.cta;
+const imagePosition = data?.imagePosition ?? "left";
+// Image left → image column first (order-1); image right → content first.
+const imageOrderClass = imagePosition === "right" ? "lg:order-2" : "lg:order-1";
+const contentOrderClass = imagePosition === "right" ? "lg:order-1" : "lg:order-2";
+---
+
+{
+  (data?.image || hasContent) && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Image */}
+          {data?.image && (
+            <div class={`image-wrapper ${imageOrderClass}`}>
+              <SmartImage
+                src={data.image.src}
+                alt={data.image.alt ?? ""}
+                widths={[480, 768, 1024]}
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                class="w-full h-full object-cover"
+              />
+            </div>
+          )}
+
+          {/* Content */}
+          {hasContent && (
+            <div class={`flex flex-col gap-6 ${contentOrderClass}`}>
+              {data?.eyebrow &&
+                (data.eyebrow.variant === "badge" ? (
+                  <div>
+                    <Badge class="uppercase tracking-widest text-xs">
+                      {data.eyebrow.text}
+                    </Badge>
+                  </div>
+                ) : (
+                  <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                    {data.eyebrow.text}
+                  </span>
+                ))}
+
+              {data?.heading && (
+                <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                  {data.heading}
+                </h2>
+              )}
+
+              {data?.body && (
+                <p class="theme-text-muted text-lg leading-relaxed m-0">
+                  {data.body}
+                </p>
+              )}
+
+              {bullets.length > 0 && (
+                <ul class="flex flex-col gap-3 list-none m-0 p-0">
+                  {bullets.map((bullet) => (
+                    <li class="flex items-start gap-3">
+                      <svg
+                        class="check-icon shrink-0"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="var(--color-primary)"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M20 6L9 17l-5-5" />
+                      </svg>
+                      <span class="theme-text text-base leading-relaxed">
+                        {bullet}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {data?.cta && (
+                <div class="mt-2">
+                  <Button
+                    variant={data.cta.variant ?? "primary"}
+                    href={data.cta.href}
+                  >
+                    {data.cta.label}
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .check-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-top: 0.125rem;
+  }
+
+  .image-wrapper {
+    position: relative;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+  }
+
+  .image-wrapper img {
+    border-radius: 1.5rem;
+  }
+</style>

@@ -1,0 +1,142 @@
+---
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+/**
+ * gallery:instagram — a uniform square grid styled like an Instagram feed.
+ * Each tile is an aspect-square cover image with a hover scrim, glyph, and
+ * optional caption. An optional handle renders as @handle in the header.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    handle?: string;
+    images?: { src: string; alt?: string; caption?: string }[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const images = data?.images ?? [];
+const handle = data?.handle?.replace(/^@/, "");
+---
+
+{
+  images.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Header */}
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            ))}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>
+          )}
+          {handle && (
+            <a
+              href={`https://instagram.com/${handle}`}
+              class="text-primary font-semibold no-underline hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              @{handle}
+            </a>
+          )}
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-1.5">
+          {images.map((img) => (
+            <figure class="gallery-ig-item m-0">
+              <SmartImage
+                src={img.src}
+                alt={img.alt ?? ""}
+                widths={[300, 500]}
+                sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+                class="gallery-ig-img"
+              />
+              <div class="gallery-ig-overlay">
+                {img.caption ? (
+                  <span class="gallery-ig-caption">{img.caption}</span>
+                ) : (
+                  <svg
+                    class="gallery-ig-glyph"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                  </svg>
+                )}
+              </div>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .gallery-ig-item {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: var(--radius);
+  }
+  .gallery-ig-item :global(.gallery-ig-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .gallery-ig-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem;
+    text-align: center;
+    color: #fff;
+    background: rgba(0, 0, 0, 0);
+    opacity: 0;
+    transition:
+      opacity 0.25s ease,
+      background-color 0.25s ease;
+  }
+  .gallery-ig-item:hover .gallery-ig-overlay,
+  .gallery-ig-item:focus-within .gallery-ig-overlay {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.45);
+  }
+  .gallery-ig-glyph {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+  .gallery-ig-caption {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

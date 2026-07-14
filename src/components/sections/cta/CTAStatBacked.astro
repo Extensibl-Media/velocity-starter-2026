@@ -1,0 +1,93 @@
+---
+import type { Eyebrow, SectionCTA, StatItem } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * cta:stat-backed — a conversion push that leads with proof. Message + button
+ * on the left, a compact grid of headline stats on the right so the ask lands
+ * next to the evidence. No counters/JS — static numbers.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    stats?: StatItem[];
+    cta?: SectionCTA;
+    secondaryCta?: SectionCTA;
+    ctas?: SectionCTA[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const ctas = (
+  data?.ctas?.length ? data.ctas : [data?.cta, data?.secondaryCta].filter(Boolean)
+) as SectionCTA[];
+const stats = data?.stats ?? [];
+---
+
+<section class:list={["cta-stat-backed section-wrapper section-py", `theme-${theme}`]}>
+  <div class="section-container">
+    <div class="grid gap-10 lg:grid-cols-2 lg:items-center">
+      <div class="flex flex-col items-start gap-4">
+        {data?.eyebrow &&
+          (data.eyebrow.variant === "badge" ? (
+            <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+          ) : (
+            <span class="text-sm font-bold uppercase tracking-widest theme-accent">
+              {data.eyebrow.text}
+            </span>
+          ))}
+
+        {data?.heading && (
+          <h2 class="theme-heading text-3xl lg:text-4xl font-black m-0 leading-tight">
+            {data.heading}
+          </h2>
+        )}
+
+        {data?.subheading && (
+          <p class="theme-text-muted text-lg leading-relaxed m-0">{data.subheading}</p>
+        )}
+
+        {ctas.length > 0 && (
+          <div class="flex flex-wrap gap-3 mt-2">
+            {ctas.map((cta, i) => (
+              <Button variant={cta.variant ?? (i === 0 ? "primary" : "outline")} href={cta.href}>
+                {cta.label}
+              </Button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {stats.length > 0 && (
+        <dl class="grid grid-cols-2 gap-4 m-0">
+          {stats.map((stat) => (
+            <div class="stat-cell flex flex-col gap-1">
+              <dt class="stat-value theme-accent text-3xl lg:text-4xl font-black leading-none order-1">
+                {stat.value}
+              </dt>
+              <dd class="theme-heading font-semibold m-0 order-2">{stat.label}</dd>
+              {stat.description && (
+                <dd class="theme-text-muted text-sm m-0 order-3">{stat.description}</dd>
+              )}
+            </div>
+          ))}
+        </dl>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .stat-cell {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-sm);
+    padding: 1.25rem 1.5rem;
+  }
+</style>

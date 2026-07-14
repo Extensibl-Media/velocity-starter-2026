@@ -1,0 +1,140 @@
+---
+import type { Eyebrow, SectionCTA, ImageRef } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+/**
+ * about:owner-letter — a personal letter from the owner. Portrait sits on the
+ * left as a raised card; the letter prose runs on the right and closes with a
+ * signature block (name + role). Warm, high-trust, conversion-friendly.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    body?: string;
+    image?: ImageRef;
+    signatureName?: string;
+    signatureRole?: string;
+    cta?: SectionCTA;
+    secondaryCta?: SectionCTA;
+    ctas?: SectionCTA[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const ctas = (
+  data?.ctas?.length ? data.ctas : [data?.cta, data?.secondaryCta].filter(Boolean)
+) as SectionCTA[];
+
+const hasContent = Boolean(
+  data?.heading || data?.subheading || data?.body || data?.signatureName,
+);
+---
+
+{
+  hasContent && (
+    <section class:list={["about-owner-letter section-wrapper section-py", `theme-${theme}`]}>
+      <div class="section-container">
+        <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,18rem)_1fr] gap-10 lg:gap-14 items-start">
+          {/* Portrait */}
+          {data?.image?.src && (
+            <figure class="portrait-card m-0 order-1 lg:order-none">
+              <SmartImage
+                src={data.image.src}
+                alt={data.image.alt ?? data?.signatureName ?? ""}
+                widths={[288, 576]}
+                sizes="(min-width: 1024px) 18rem, 100vw"
+                class="w-full h-full object-cover"
+              />
+            </figure>
+          )}
+
+          {/* Letter */}
+          <div class="flex flex-col gap-5 order-2 lg:order-none">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs self-start">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg leading-relaxed m-0">
+                {data.subheading}
+              </p>
+            )}
+
+            {data?.body && (
+              <p class="theme-text text-lg leading-relaxed m-0 whitespace-pre-line">
+                {data.body}
+              </p>
+            )}
+
+            {(data?.signatureName || data?.signatureRole) && (
+              <div class="signature flex flex-col gap-0.5 mt-2">
+                {data?.signatureName && (
+                  <span class="signature-name">{data.signatureName}</span>
+                )}
+                {data?.signatureRole && (
+                  <span class="theme-text-subtle text-sm font-semibold uppercase tracking-widest">
+                    {data.signatureRole}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {ctas.length > 0 && (
+              <div class="flex flex-wrap gap-4 mt-2">
+                {ctas.map((cta, i) => (
+                  <Button variant={cta.variant ?? (i === 0 ? "primary" : "outline")} href={cta.href}>
+                    {cta.label}
+                  </Button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .portrait-card {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-lg);
+  }
+
+  .signature {
+    padding-top: 1.25rem;
+    border-top: var(--t-border-width) solid var(--theme-border);
+  }
+
+  .signature-name {
+    font-family: Georgia, "Times New Roman", serif;
+    font-style: italic;
+    font-size: 1.75rem;
+    line-height: 1.1;
+    color: var(--theme-accent);
+  }
+</style>

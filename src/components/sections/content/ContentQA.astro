@@ -1,0 +1,125 @@
+---
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * content:qa — a static, accordion-free question-and-answer block. Every answer
+ * is always visible (no client JS), each row numbered and rule-separated for a
+ * clean editorial read. Answers are HTML strings rendered as themed prose.
+ * Distinct from the collection-backed faqs:* accordions — this is inline,
+ * page-authored Q&A. Theme-pure: numerals, rules, and links derive from tokens.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    items?: { question?: string; answer?: string }[];
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const items = (data?.items ?? []).filter((i) => i?.question || i?.answer);
+const hasHeader = Boolean(data?.eyebrow || data?.heading || data?.subheading);
+---
+
+{
+  (hasHeader || items.length > 0) && (
+    <section class:list={["content-qa section-wrapper section-py", `theme-${theme}`]}>
+      <div class="section-container">
+        <div class="max-w-3xl mx-auto">
+          {hasHeader && (
+            <div class="flex flex-col gap-3 mb-10">
+              {data?.eyebrow &&
+                (data.eyebrow.variant === "badge" ? (
+                  <div>
+                    <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+                  </div>
+                ) : (
+                  <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                    {data.eyebrow.text}
+                  </span>
+                ))}
+              {data?.heading && (
+                <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+              )}
+              {data?.subheading && (
+                <p class="theme-text-muted text-lg m-0">{data.subheading}</p>
+              )}
+            </div>
+          )}
+
+          {items.length > 0 && (
+            <div class="qa-list flex flex-col">
+              {items.map((item, i) => (
+                <div class="qa-item flex gap-5 py-7">
+                  <span class="qa-num theme-accent" aria-hidden="true">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div class="flex flex-col gap-2 flex-1">
+                    {item.question && (
+                      <h3 class="theme-heading text-lg lg:text-xl font-semibold m-0">
+                        {item.question}
+                      </h3>
+                    )}
+                    {item.answer && (
+                      <div class="rich-text theme-text-muted" set:html={item.answer} />
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {data?.cta && (
+            <div class="mt-10">
+              <Button href={data.cta.href} variant={data.cta.variant ?? "primary"}>
+                {data.cta.label}
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .qa-item {
+    border-top: var(--t-border-width) solid var(--theme-border);
+  }
+  .qa-item:last-child {
+    border-bottom: var(--t-border-width) solid var(--theme-border);
+  }
+  .qa-num {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 1.125rem;
+    line-height: 1.6;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .rich-text {
+    line-height: 1.7;
+  }
+  .rich-text :global(> * + *) {
+    margin-top: 0.75em;
+  }
+  .rich-text :global(a) {
+    color: var(--theme-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .rich-text :global(ul),
+  .rich-text :global(ol) {
+    padding-left: 1.5rem;
+  }
+  .rich-text :global(ul) { list-style: disc; }
+  .rich-text :global(ol) { list-style: decimal; }
+  .rich-text :global(li + li) { margin-top: 0.375rem; }
+  .rich-text :global(strong) { font-weight: 600; color: var(--theme-fg); }
+</style>

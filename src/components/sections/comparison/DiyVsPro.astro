@@ -1,0 +1,236 @@
+---
+import type { Eyebrow, ComparisonRow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    usLabel?: string;
+    themLabel?: string;
+    footnote?: string;
+    rows?: ComparisonRow[];
+    ctas?: SectionCTA[];
+    cta?: SectionCTA;
+    secondaryCta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const usLabel = data?.usLabel ?? "Hiring a Pro";
+const themLabel = data?.themLabel ?? "Doing It Yourself";
+const rows = data?.rows ?? [];
+const ctas = (data?.ctas?.length
+  ? data.ctas
+  : [data?.cta, data?.secondaryCta].filter(Boolean)) as SectionCTA[];
+
+function renderKind(value?: boolean | string): "yes" | "no" | "text" {
+  if (typeof value === "boolean") return value === true ? "yes" : "no";
+  return "text";
+}
+---
+
+<section
+  class:list={["comparison-diy section-wrapper section-py", `theme-${theme}`]}
+>
+  <div class="section-container">
+    {
+      (data?.eyebrow || data?.heading || data?.subheading) && (
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">
+                {data.eyebrow.text}
+              </Badge>
+            ) : (
+              <span class="theme-accent text-sm font-semibold uppercase tracking-widest">
+                {data.eyebrow.text}
+              </span>
+            ))}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">
+              {data.subheading}
+            </p>
+          )}
+        </div>
+      )
+    }
+
+    <div class="diy-list max-w-3xl mx-auto">
+      {
+        rows.map((row) => (
+          <div class="diy-row surface-base">
+            <div class="diy-feature">
+              <span class="theme-heading text-sm font-bold">{row.feature}</span>
+            </div>
+            <div class="diy-sides">
+              {/* Them / DIY side */}
+              <div class="diy-side diy-side-them">
+                <span class="diy-side-label theme-text-subtle">{themLabel}</span>
+                <div class="diy-side-value">
+                  {renderKind(row.them) === "no" && (
+                    <svg
+                      class="diy-icon theme-text-subtle"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.25"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      role="img"
+                      aria-label="No"
+                    >
+                      <path d="M5 5l10 10M15 5L5 15" />
+                    </svg>
+                  )}
+                  {renderKind(row.them) === "yes" && (
+                    <svg
+                      class="diy-icon theme-text-subtle"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.25"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      role="img"
+                      aria-label="Yes"
+                    >
+                      <path d="M4 10.5l4 4 8-9" />
+                    </svg>
+                  )}
+                  {renderKind(row.them) === "text" && (
+                    <span class="theme-text-muted text-sm">{row.them}</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Us / Pro side */}
+              <div class="diy-side diy-side-us">
+                <span class="diy-side-label theme-accent">{usLabel}</span>
+                <div class="diy-side-value">
+                  {renderKind(row.us) === "yes" && (
+                    <svg
+                      class="diy-icon"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      stroke="var(--theme-accent, var(--color-primary))"
+                      stroke-width="2.25"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      role="img"
+                      aria-label="Yes"
+                    >
+                      <path d="M4 10.5l4 4 8-9" />
+                    </svg>
+                  )}
+                  {renderKind(row.us) === "no" && (
+                    <svg
+                      class="diy-icon theme-text-subtle"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.25"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      role="img"
+                      aria-label="No"
+                    >
+                      <path d="M5 5l10 10M15 5L5 15" />
+                    </svg>
+                  )}
+                  {renderKind(row.us) === "text" && (
+                    <span class="theme-text text-sm font-medium">{row.us}</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    {
+      data?.footnote && (
+        <p class="theme-text-subtle text-sm text-center max-w-2xl mx-auto mt-6 m-0">
+          {data.footnote}
+        </p>
+      )
+    }
+
+    {
+      ctas.length > 0 && (
+        <div class="flex flex-wrap justify-center gap-3 mt-8">
+          {ctas.map((cta, i) => (
+            <Button
+              href={cta.href}
+              variant={cta.variant ?? (i === 0 ? "primary" : "outline")}
+            >
+              {cta.label}
+            </Button>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .diy-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .diy-row {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    padding: 1.15rem 1.25rem;
+    box-shadow: var(--t-shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .diy-feature {
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--theme-border);
+  }
+  .diy-sides {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .diy-side {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .diy-side-us {
+    padding-left: 1rem;
+    border-left: 1px solid var(--theme-border);
+  }
+  .diy-side-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .diy-side-value {
+    display: flex;
+    align-items: center;
+    min-height: 1.5rem;
+  }
+  .diy-icon {
+    width: 1.2rem;
+    height: 1.2rem;
+    flex-shrink: 0;
+  }
+</style>

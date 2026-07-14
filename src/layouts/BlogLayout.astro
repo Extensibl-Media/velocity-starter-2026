@@ -1,0 +1,68 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getResolvedNav, getBusinessData } from "@/lib/utils";
+import { resolveHeader, resolveFooter } from "@/lib/layoutRegistry";
+
+interface Props {
+  page: {
+    id: string;
+    data: Record<string, any>;
+  };
+  title?: string;
+  description?: string;
+  image?: string;
+  imageAlt?: string;
+  article?: {
+    publishedTime?: Date;
+    modifiedTime?: Date;
+    authors?: string[];
+    tags?: string[];
+  };
+  noindex?: boolean;
+  nofollow?: boolean;
+  includeLocalBusinessSchema?: boolean;
+  businessType?: string;
+  openingHours?: string[];
+  areaServed?: string[];
+}
+
+const {
+  page,
+  title,
+  description,
+  image,
+  imageAlt,
+  article,
+  noindex = false,
+  nofollow = false,
+  includeLocalBusinessSchema = true,
+  businessType = "GeneralContractor",
+  openingHours,
+  areaServed,
+} = Astro.props;
+
+const navItems = await getResolvedNav();
+const business = await getBusinessData();
+const Header = resolveHeader(business.headerVariant);
+const Footer = resolveFooter(business.footerVariant);
+---
+
+<BaseLayout
+  page={page}
+  title={title}
+  description={description}
+  image={image}
+  imageAlt={imageAlt}
+  article={article}
+  noindex={noindex}
+  nofollow={nofollow}
+  includeLocalBusinessSchema={includeLocalBusinessSchema}
+  includeBlogSchema={true}
+  businessType={businessType}
+  openingHours={openingHours}
+  areaServed={areaServed}
+>
+  <Header slot="header" navItems={navItems} />
+  <slot />
+  <Footer slot="footer" />
+</BaseLayout>

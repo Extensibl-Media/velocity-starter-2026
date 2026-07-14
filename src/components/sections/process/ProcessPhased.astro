@@ -1,0 +1,226 @@
+---
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+/**
+ * process:phased — a "Day 1 / Week 1 / Done" phased timeline. Each phase is a
+ * card with a time-marker label (phase) and a body describing what happens.
+ * Cards sit in a horizontal band on desktop connected by a rail, and stack
+ * vertically on mobile. Emphasizes speed and predictability of the timeline.
+ */
+interface PhaseStep {
+  phase?: string;
+  heading: string;
+  body?: string;
+}
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    steps?: PhaseStep[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const defaultSteps: PhaseStep[] = [
+  {
+    phase: "Day 1",
+    heading: "Emergency Response",
+    body: "We tarp active leaks and stop the damage within hours of your call.",
+  },
+  {
+    phase: "Day 2–3",
+    heading: "Inspection & Estimate",
+    body: "Full roof assessment, photo report, and a written, itemized quote.",
+  },
+  {
+    phase: "Week 1",
+    heading: "Repairs Begin",
+    body: "Materials ordered and crews scheduled — most jobs start within days.",
+  },
+  {
+    phase: "Done",
+    heading: "Final Walkthrough",
+    body: "We inspect together, clean up completely, and hand over your warranty.",
+  },
+];
+
+const steps = data?.steps?.length ? data.steps : defaultSteps;
+---
+
+<section
+  class:list={["process-phased section-wrapper section-py", `theme-${theme}`]}
+>
+  <div class="section-container">
+    {/* Section header */}
+    <div class="flex flex-col items-center text-center gap-3 mb-16">
+      {
+        data?.eyebrow &&
+          (data.eyebrow.variant === "badge" ? (
+            <Badge class="uppercase tracking-widest text-xs">
+              {data.eyebrow.text}
+            </Badge>
+          ) : (
+            <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+              {data.eyebrow.text}
+            </span>
+          ))
+      }
+      {
+        data?.heading && (
+          <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+            {data.heading}
+          </h2>
+        )
+      }
+      {
+        data?.subheading && (
+          <p class="theme-text-muted text-lg max-w-2xl m-0">
+            {data.subheading}
+          </p>
+        )
+      }
+    </div>
+
+    {/* Phased band */}
+    <ol class="ph-list" style={`--phase-count:${steps.length}`}>
+      {
+        steps.map((step, index) => (
+          <li class="ph-item">
+            <div class="ph-marker" aria-hidden="true">
+              <span class="ph-dot" />
+              {index < steps.length - 1 && <span class="ph-line" />}
+            </div>
+            {step.phase && <span class="ph-phase">{step.phase}</span>}
+            <div class="ph-card">
+              <h3 class="theme-heading font-bold text-lg m-0">
+                {step.heading}
+              </h3>
+              {step.body && (
+                <p class="theme-text-muted text-sm leading-relaxed m-0 mt-2">
+                  {step.body}
+                </p>
+              )}
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .ph-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .ph-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto 1fr;
+    column-gap: 1.25rem;
+  }
+
+  .ph-marker {
+    grid-row: 1 / 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+  .ph-dot {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background: var(--color-primary);
+    box-shadow: 0 0 0 5px
+      color-mix(in srgb, var(--theme-accent) 12%, transparent);
+    flex-shrink: 0;
+    margin-top: 0.35rem;
+  }
+
+  .ph-line {
+    flex: 1;
+    width: 2px;
+    background: var(--theme-border);
+    margin-top: 0.25rem;
+  }
+
+  .ph-phase {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--theme-accent);
+    align-self: center;
+  }
+
+  .ph-card {
+    grid-column: 2;
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    padding: 1.25rem 1.5rem;
+    box-shadow: var(--t-shadow-sm);
+    margin-top: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Horizontal band on desktop */
+  @media (min-width: 900px) {
+    .ph-list {
+      grid-template-columns: repeat(var(--phase-count), 1fr);
+      gap: 0;
+    }
+
+    .ph-item {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto auto;
+      row-gap: 1rem;
+      padding: 0 1rem;
+      text-align: center;
+    }
+
+    .ph-marker {
+      grid-row: 1;
+      flex-direction: row;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .ph-dot {
+      margin-top: 0;
+    }
+
+    .ph-line {
+      position: absolute;
+      top: 0.5rem;
+      left: calc(50% + 0.5rem);
+      width: auto;
+      right: calc(-50% + 0.5rem);
+      height: 2px;
+      margin-top: 0;
+    }
+
+    .ph-phase {
+      grid-row: 2;
+    }
+
+    .ph-card {
+      grid-column: 1;
+      grid-row: 3;
+      margin-top: 0;
+      text-align: left;
+    }
+  }
+</style>

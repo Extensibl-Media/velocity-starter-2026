@@ -1,0 +1,79 @@
+---
+import type { Eyebrow } from "@/types/sections";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    items?: string[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const items = data?.items ?? [];
+const heading = data?.eyebrow?.text;
+---
+
+{
+  items.length > 0 && (
+    <section class={`section-wrapper section-py-xs theme-${theme}`}>
+      <div class="section-container">
+        {heading && (
+          <p class="theme-text-subtle text-sm font-semibold uppercase tracking-widest text-center m-0 mb-6">
+            {heading}
+          </p>
+        )}
+
+        <ul class="flex flex-wrap items-center justify-center gap-y-3 list-none m-0 p-0">
+          {items.map((item, i) => (
+            <li class="flex items-center">
+              <span class="flex items-center gap-2 px-4">
+                <svg
+                  class="check-icon shrink-0 w-4 h-4"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.25"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M4 10.5l3.5 3.5L16 5.5"
+                  />
+                </svg>
+                <span class="text-sm font-medium theme-text whitespace-nowrap">
+                  {item}
+                </span>
+              </span>
+
+              {i < items.length - 1 && (
+                <span class="inline-divider shrink-0" aria-hidden="true" />
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .check-icon {
+    color: var(--theme-accent, var(--theme-fg));
+  }
+
+  .inline-divider {
+    display: none;
+    width: 1px;
+    height: 1rem;
+    background-color: var(--theme-border);
+  }
+
+  @media (min-width: 640px) {
+    .inline-divider {
+      display: block;
+    }
+  }
+</style>

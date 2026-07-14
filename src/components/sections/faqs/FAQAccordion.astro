@@ -1,19 +1,119 @@
 ---
-// FAQAccordion — placeholder
-// Replace with full implementation
+import { getCollection } from "astro:content";
+import { getBusinessData } from "@/lib/utils";
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/starwind/accordion";
 
 interface Props {
   theme?: string;
-  data?: Record<string, unknown>;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    service?: string;
+    limit?: number;
+  };
 }
 
-const { theme = 'default', data } = Astro.props;
+const { theme = "default", data } = Astro.props;
+
+const business = await getBusinessData();
+const allFaqs = await getCollection("faqs");
+
+const faqs = allFaqs
+  .filter((f) => !data?.service || f.data.service === data.service)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, data?.limit ?? allFaqs.length);
 ---
 
 <section class={`section-wrapper section-py theme-${theme}`}>
   <div class="section-container">
-    <p class="theme-text-muted text-sm">
-      [FAQAccordion — not yet implemented]
-    </p>
+    {/* Section header */}
+    {
+      (data?.eyebrow || data?.heading || data?.subheading) && (
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow && (
+            <div>
+              {data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              )}
+            </div>
+          )}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">
+              {data.subheading}
+            </p>
+          )}
+        </div>
+      )
+    }
+
+    {/* Accordion */}
+    {
+      faqs.length > 0 ? (
+        <div class="max-w-3xl mx-auto">
+          <Accordion type="single">
+            {faqs.map((faq, index) => (
+              <AccordionItem value={`faq-${index}`}>
+                <AccordionTrigger class="text-left font-semibold theme-heading">
+                  {faq.data.question}
+                </AccordionTrigger>
+                <AccordionContent class="theme-text-muted leading-relaxed">
+                  {faq.data.answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+      ) : (
+        <p class="text-center theme-text-muted">No FAQs found.</p>
+      )
+    }
+
+    {/* Still have questions CTA */}
+    {
+      business.phone && (
+        <div class="flex flex-col items-center gap-3 mt-12">
+          <p class="theme-text-muted text-sm m-0">Still have questions?</p>
+          <a
+            href={`tel:${business.phone}`}
+            class="inline-flex items-center gap-2 font-semibold text-primary hover:underline text-base"
+          >
+            <svg
+              class="w-4 h-4 shrink-0"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+            </svg>
+            {business.phone}
+          </a>
+          <p class="theme-text-subtle text-xs m-0">
+            We typically respond within the hour
+          </p>
+        </div>
+      )
+    }
   </div>
 </section>

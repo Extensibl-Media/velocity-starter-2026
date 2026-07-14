@@ -1,0 +1,89 @@
+---
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * cta:urgency-band — a horizontal urgency/deadline strip. Static copy only
+ * (no timer JS): an urgency pill + headline on the left, a standout deadline
+ * note and action button on the right. Drives scarcity without hurting UX.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    deadlineNote?: string;
+    cta?: SectionCTA;
+    secondaryCta?: SectionCTA;
+    ctas?: SectionCTA[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const ctas = (
+  data?.ctas?.length ? data.ctas : [data?.cta, data?.secondaryCta].filter(Boolean)
+) as SectionCTA[];
+---
+
+<section class:list={["cta-urgency-band section-wrapper section-py", `theme-${theme}`]}>
+  <div class="section-container">
+    <div class="urgency-inner flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-12">
+      <div class="flex flex-col gap-3 flex-1 min-w-0">
+        {data?.eyebrow &&
+          (data.eyebrow.variant === "badge" ? (
+            <Badge class="uppercase tracking-widest text-xs w-fit">{data.eyebrow.text}</Badge>
+          ) : (
+            <span class="text-sm font-bold uppercase tracking-widest theme-accent">
+              {data.eyebrow.text}
+            </span>
+          ))}
+
+        {data?.heading && (
+          <h2 class="theme-heading text-2xl lg:text-4xl font-black m-0 leading-tight">
+            {data.heading}
+          </h2>
+        )}
+
+        {data?.subheading && (
+          <p class="theme-text-muted text-base lg:text-lg leading-relaxed m-0 max-w-2xl">
+            {data.subheading}
+          </p>
+        )}
+      </div>
+
+      <div class="flex flex-col items-start lg:items-end gap-4 shrink-0">
+        {data?.deadlineNote && (
+          <span class="deadline-note inline-flex items-center gap-2 font-bold text-sm uppercase tracking-wide">
+            <svg class="w-4 h-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 7v5l3 2" />
+            </svg>
+            {data.deadlineNote}
+          </span>
+        )}
+        {ctas.length > 0 && (
+          <div class="flex flex-wrap gap-3">
+            {ctas.map((cta, i) => (
+              <Button variant={cta.variant ?? (i === 0 ? "primary" : "outline")} href={cta.href}>
+                {cta.label}
+              </Button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .urgency-inner {
+    border-left: 4px solid var(--theme-accent);
+    padding-left: 1.5rem;
+  }
+  .deadline-note {
+    color: var(--theme-accent);
+  }
+</style>

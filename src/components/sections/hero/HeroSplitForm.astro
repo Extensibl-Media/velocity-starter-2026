@@ -1,26 +1,10 @@
 ---
+import FormRenderer from "@/components/forms/FormRenderer.astro";
 import type { HeroData } from "./types";
 import Badge from "@/components/starwind/badge/Badge.astro";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardFooter,
-} from "@/components/starwind/card";
 import { Button } from "@/components/starwind/button";
-import { Input } from "@/components/starwind/input";
-import { Label } from "@/components/starwind/label";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-  SelectGroup,
-} from "@/components/starwind/select";
 import { getBusinessData } from "@/lib/utils";
+import { getBackgroundImage } from "@/lib/images";
 import { getCollection } from "astro:content";
 
 interface Props {
@@ -33,7 +17,8 @@ const business = await getBusinessData();
 const services = await getCollection("services");
 const sortedServices = services.sort((a, b) => a.data.order - b.data.order);
 
-const hasBackground = !!data?.backgroundImage?.src;
+const bgUrl = await getBackgroundImage(data?.backgroundImage?.src, { width: 2000 });
+const hasBackground = !!bgUrl;
 const overlayOpacity = (data?.backgroundImage?.overlayOpacity ?? 60) / 100;
 ---
 
@@ -44,13 +29,13 @@ const overlayOpacity = (data?.backgroundImage?.overlayOpacity ?? 60) / 100;
     hasBackground ? "has-bg" : "no-bg",
   ]}
   style={hasBackground
-    ? `--hero-image: url('${data?.backgroundImage?.src}'); --hero-overlay: ${overlayOpacity}`
+    ? `--hero-image: url('${bgUrl}'); --hero-overlay: ${overlayOpacity}`
     : ""}
 >
   <div class="section-container relative z-10">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
       <!-- Left — content -->
-      <div class="flex flex-col gap-5">
+      <div class="col-span-2 md:col-span-1 flex flex-col gap-5">
         {
           data?.eyebrow && (
             <div>
@@ -121,7 +106,7 @@ const overlayOpacity = (data?.backgroundImage?.overlayOpacity ?? 60) / 100;
           data?.offer && (
             <div
               class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm"
-              style="background: rgba(244,162,97,0.12); border-color: rgba(244,162,97,0.3)"
+              style="background: color-mix(in srgb, var(--color-brand-secondary) 12%, transparent); border-color: color-mix(in srgb, var(--color-brand-secondary) 30%, transparent)"
             >
               {data.offer.label && (
                 <span class="font-bold text-xs uppercase tracking-wide text-color-brand-secondary">
@@ -166,81 +151,8 @@ const overlayOpacity = (data?.backgroundImage?.overlayOpacity ?? 60) / 100;
       </div>
 
       <!-- Right — form -->
-      <div class="w-full">
-        <Card>
-          <CardHeader>
-            <CardTitle>Get a Free Quote</CardTitle>
-            <CardDescription>
-              We'll get back to you within the hour.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form class="flex flex-col gap-4" name="hero-quote" method="POST">
-              <div class="flex flex-col gap-1.5">
-                <Label for="hero-name">Full Name</Label>
-                <Input
-                  type="text"
-                  id="hero-name"
-                  name="name"
-                  placeholder="John Smith"
-                  required
-                />
-              </div>
-              <div class="flex flex-col gap-1.5">
-                <Label for="hero-phone">Phone Number</Label>
-                <Input
-                  type="tel"
-                  id="hero-phone"
-                  name="phone"
-                  placeholder="(555) 555-5555"
-                  required
-                />
-              </div>
-              <div class="flex flex-col gap-1.5">
-                <Label for="hero-email">Email</Label>
-                <Input
-                  type="email"
-                  id="hero-email"
-                  name="email"
-                  placeholder="you@example.com"
-                />
-              </div>
-              <div class="flex flex-col gap-1.5">
-                <Label for="hero-service">Service Needed</Label>
-                <Select id="hero-service" name="service">
-                  <SelectTrigger class="w-full">
-                    <SelectValue placeholder="Select a service" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {
-                        sortedServices.map((service) => (
-                          <SelectItem value={service.data.slug}>
-                            {service.data.title}
-                          </SelectItem>
-                        ))
-                      }
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div class="flex flex-col gap-1.5">
-                <Label for="hero-message">Message (optional)</Label>
-                <Input
-                  type="text"
-                  id="hero-message"
-                  name="message"
-                  placeholder="Tell us about your project"
-                />
-              </div>
-            </form>
-          </CardContent>
-          <CardFooter>
-            <Button variant="primary" type="submit" class="w-full">
-              Request a Free Quote
-            </Button>
-          </CardFooter>
-        </Card>
+      <div class="w-full col-span-2 md:col-span-1">
+        <FormRenderer form={data?.form} services={sortedServices} />
       </div>
     </div>
   </div>

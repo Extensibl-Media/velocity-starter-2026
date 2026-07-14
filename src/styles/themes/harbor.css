@@ -1,0 +1,57 @@
+/* =====================================================================
+   THEME: "Harbor" — an alternate reskin example.
+   ---------------------------------------------------------------------
+   Demonstrates a genuinely different feel from the same section bones:
+   navy + coral palette, SHARP corners, HARD offset shadows, serif
+   headings. To use this theme, copy its :root block over the one in
+   ../theme.css (or point global.css's import here). Nothing else changes.
+   ===================================================================== */
+
+:root {
+  /* BRAND */
+  --t-primary: #0d3b66;
+  --t-primary-light: #1d5a8f;
+  --t-primary-muted: #e3edf5;
+
+  --t-secondary: #ee6c4d;
+  --t-secondary-light: #f7c4b6;
+  --t-secondary-fg: #5c1e0f;
+
+  /* NEUTRALS */
+  --t-bg: #fdfcf7;
+  --t-bg-alt: #f4f1e8;
+  --t-bg-muted: #ebe7db;
+  --t-bg-inverse: #0d1b2a;
+
+  --t-fg: #1b263b;
+  --t-fg-muted: #4a5568;
+  --t-fg-subtle: #8a94a6;
+  --t-fg-inverse: #fdfcf7;
+
+  --t-border: #d8d2c2;
+
+  /* RATING */
+  --t-rating: #f4a261;
+  --t-rating-empty: #d8d2c2;
+
+  /* TYPOGRAPHY — serif headings for an editorial feel */
+  --t-font-sans: "Inter", system-ui, sans-serif;
+  --t-font-heading: Georgia, "Times New Roman", serif;
+  --t-font-weight-heading: 700;
+
+  /* SHAPE — sharp, chunky */
+  --t-radius: 0rem;
+  --t-border-width: 2px;
+
+  /* ELEVATION — hard offset shadows (brutalist) */
+  --t-shadow-sm: 2px 2px 0 0 rgba(13, 27, 42, 0.9);
+  --t-shadow-md: 4px 4px 0 0 rgba(13, 27, 42, 0.9);
+  --t-shadow-lg: 6px 6px 0 0 rgba(13, 27, 42, 0.9);
+
+  /* DENSITY — a touch airier */
+  --t-section-xs: 1.25rem;
+  --t-section-sm: 2.5rem;
+  --t-section: 5rem;
+  --t-section-lg: 7rem;
+  --t-section-xl: 9rem;
+}

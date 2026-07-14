@@ -1,0 +1,123 @@
+---
+import { getBusinessData } from "@/lib/utils";
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * location:map-overlay — a full-bleed embedded map with a floating info card
+ * overlaid on top (address / phone / directions CTA). Distinct from the plain
+ * side-by-side map-embed: here the map is the backdrop and the details sit on it.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    mapEmbedUrl?: string;
+    cardTitle?: string;
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const business = await getBusinessData();
+
+const fullAddress = [
+  business.address,
+  [business.city, business.state].filter(Boolean).join(", "),
+  business.zip,
+]
+  .filter(Boolean)
+  .join(" ");
+
+const telHref = business.phone ? `tel:${business.phone.replace(/[^\d+]/g, "")}` : null;
+const mapEmbedUrl =
+  data?.mapEmbedUrl ??
+  `https://www.google.com/maps?q=${encodeURIComponent(fullAddress)}&output=embed`;
+---
+
+<section class:list={["location-map-overlay section-wrapper section-py", `theme-${theme}`]}>
+  <div class="section-container">
+    {
+      (data?.eyebrow || data?.heading || data?.subheading) && (
+        <div class="flex flex-col items-center text-center gap-3 mb-10">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                {data.eyebrow.text}
+              </span>
+            ))}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>
+          )}
+        </div>
+      )
+    }
+
+    <div class="relative overflow-hidden map-frame">
+      <iframe
+        src={mapEmbedUrl}
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title={`Map of ${business.city}, ${business.state}`}
+        class="w-full h-full min-h-[420px] lg:min-h-[520px] border-0 block"></iframe>
+
+      <div class="info-card">
+        <span class="theme-text-subtle text-xs font-semibold uppercase tracking-widest">
+          {data?.cardTitle ?? "Visit us"}
+        </span>
+        <p class="theme-heading text-xl font-bold m-0 mt-1">{business.businessName}</p>
+        {fullAddress && <p class="theme-text-muted m-0 mt-2">{fullAddress}</p>}
+        {
+          telHref && (
+            <a href={telHref} class="theme-heading font-semibold mt-2 inline-block hover:text-primary transition-colors">
+              {business.phone}
+            </a>
+          )
+        }
+        {
+          data?.cta && (
+            <Button variant={data.cta.variant ?? "primary"} href={data.cta.href} class="w-full mt-4">
+              {data.cta.label}
+            </Button>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .map-frame {
+    border-radius: var(--t-radius);
+    border: var(--t-border-width) solid var(--theme-border);
+    box-shadow: var(--t-shadow-lg);
+  }
+  .info-card {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    max-width: 22rem;
+    padding: 1.5rem;
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-md);
+  }
+  @media (max-width: 640px) {
+    .info-card {
+      position: static;
+      max-width: none;
+      margin: -1px;
+      border-radius: 0 0 var(--t-radius) var(--t-radius);
+      box-shadow: none;
+    }
+  }
+</style>

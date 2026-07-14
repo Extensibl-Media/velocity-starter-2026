@@ -1,0 +1,180 @@
+---
+import { getBusinessData } from "@/lib/utils";
+import type { Eyebrow, ProcessStep, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * process:big-number — oversized step numerals paired with detail. Each row is
+ * a two-column split: a huge, bold numeral on one side and the step heading +
+ * body on the other, divided by a rule. Reads as an editorial, confident
+ * "here's exactly how it goes" list. Optional CTA row at the bottom.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    steps?: ProcessStep[];
+    cta?: SectionCTA;
+    secondaryCta?: SectionCTA;
+    ctas?: SectionCTA[];
+    showPhone?: boolean;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const business = await getBusinessData();
+
+const defaultSteps: ProcessStep[] = [
+  {
+    heading: "We Answer, Every Time",
+    body: "A real person picks up. Tell us what's going on and we'll get a truck out fast.",
+  },
+  {
+    heading: "Free On-Site Estimate",
+    body: "We inspect the roof, document the damage, and price the job on the spot.",
+  },
+  {
+    heading: "The Work Gets Done Right",
+    body: "Licensed crews, quality materials, and a workmanship warranty in writing.",
+  },
+];
+
+const steps = data?.steps?.length ? data.steps : defaultSteps;
+
+const ctas = (
+  data?.ctas?.length
+    ? data.ctas
+    : [data?.cta, data?.secondaryCta].filter(Boolean)
+) as SectionCTA[];
+---
+
+<section
+  class:list={["process-big-number section-wrapper section-py", `theme-${theme}`]}
+>
+  <div class="section-container">
+    {/* Section header */}
+    <div class="flex flex-col gap-3 mb-14 max-w-2xl">
+      {
+        data?.eyebrow &&
+          (data.eyebrow.variant === "badge" ? (
+            <Badge class="uppercase tracking-widest text-xs self-start">
+              {data.eyebrow.text}
+            </Badge>
+          ) : (
+            <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+              {data.eyebrow.text}
+            </span>
+          ))
+      }
+      {
+        data?.heading && (
+          <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+            {data.heading}
+          </h2>
+        )
+      }
+      {
+        data?.subheading && (
+          <p class="theme-text-muted text-lg m-0">{data.subheading}</p>
+        )
+      }
+    </div>
+
+    {/* Big-number rows */}
+    <ol class="bn-list">
+      {
+        steps.map((step, index) => (
+          <li class="bn-row">
+            <span class="bn-numeral" aria-hidden="true">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <div class="bn-content">
+              <h3 class="theme-heading font-bold text-xl lg:text-2xl m-0">
+                {step.heading}
+              </h3>
+              {step.body && (
+                <p class="theme-text-muted text-base leading-relaxed m-0 mt-2">
+                  {step.body}
+                </p>
+              )}
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+
+    {
+      (ctas.length > 0 || data?.showPhone) && (
+        <div class="flex flex-wrap items-center gap-4 mt-12">
+          {ctas.map((cta, i) => (
+            <Button
+              variant={cta.variant ?? (i === 0 ? "primary" : "outline")}
+              href={cta.href}
+            >
+              {cta.label}
+            </Button>
+          ))}
+          {data?.showPhone && business.phone && (
+            <a
+              href={`tel:${business.phone}`}
+              class="inline-flex items-center gap-2 font-semibold text-base theme-text no-underline hover:opacity-80 transition-opacity"
+            >
+              <svg
+                class="w-4 h-4 shrink-0"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              {business.phone}
+            </a>
+          )}
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .bn-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .bn-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2rem 0;
+    border-top: var(--t-border-width) solid var(--theme-border);
+  }
+
+  .bn-row:last-child {
+    border-bottom: var(--t-border-width) solid var(--theme-border);
+  }
+
+  .bn-numeral {
+    font-size: clamp(2.75rem, 8vw, 4.5rem);
+    font-weight: 800;
+    line-height: 0.9;
+    color: var(--theme-accent);
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (min-width: 768px) {
+    .bn-row {
+      gap: 3rem;
+      grid-template-columns: 8rem 1fr;
+    }
+  }
+</style>

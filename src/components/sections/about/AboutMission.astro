@@ -1,0 +1,96 @@
+---
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    body?: string;
+    quote?: string;
+    attribution?: string;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const hasContent = Boolean(
+  data?.eyebrow || data?.heading || data?.body || data?.quote,
+);
+---
+
+{
+  hasContent && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        <div class="flex flex-col items-center text-center gap-6 max-w-3xl mx-auto">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">
+                {data.eyebrow.text}
+              </Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            ))}
+
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-5xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )}
+
+          {data?.body && (
+            <p class="theme-text-muted text-lg lg:text-xl leading-relaxed m-0">
+              {data.body}
+            </p>
+          )}
+
+          {data?.quote && (
+            <figure class="pull-quote flex flex-col items-center gap-4 m-0 mt-6">
+              <blockquote class="quote-text m-0">
+                <span class="quote-mark" aria-hidden="true">
+                  &ldquo;
+                </span>
+                {data.quote}
+              </blockquote>
+              {data.attribution && (
+                <figcaption class="theme-text-subtle text-sm font-semibold uppercase tracking-widest">
+                  {data.attribution}
+                </figcaption>
+              )}
+            </figure>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .pull-quote {
+    padding-top: 1.5rem;
+    border-top: 1px solid
+      color-mix(in srgb, var(--theme-accent) 25%, transparent);
+    width: 100%;
+    max-width: 42rem;
+  }
+
+  .quote-text {
+    position: relative;
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    line-height: 1.35;
+    font-style: italic;
+    font-weight: 500;
+    font-family: Georgia, "Times New Roman", serif;
+    color: color-mix(in srgb, var(--color-fg) 88%, transparent);
+  }
+
+  .quote-mark {
+    color: var(--theme-accent);
+    font-weight: 700;
+    margin-right: 0.1em;
+  }
+</style>

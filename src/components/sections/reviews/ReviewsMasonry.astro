@@ -1,19 +1,137 @@
 ---
-// ReviewsMasonry — placeholder
-// Replace with full implementation
+import { getCollection } from "astro:content";
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
 
 interface Props {
   theme?: string;
-  data?: Record<string, unknown>;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    filter?: string;
+    limit?: number;
+  };
 }
 
-const { theme = 'default', data } = Astro.props;
+const { theme = "default", data } = Astro.props;
+
+const allReviews = await getCollection("reviews");
+
+const reviews = allReviews
+  .filter((r) => (data?.filter === "featured" ? r.data.featured : true))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, data?.limit ?? allReviews.length);
 ---
 
 <section class={`section-wrapper section-py theme-${theme}`}>
   <div class="section-container">
-    <p class="theme-text-muted text-sm">
-      [ReviewsMasonry — not yet implemented]
-    </p>
+    {/* Section header */}
+    {
+      (data?.eyebrow || data?.heading || data?.subheading) && (
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow && (
+            <div>
+              {data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              )}
+            </div>
+          )}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">
+              {data.subheading}
+            </p>
+          )}
+        </div>
+      )
+    }
+
+    {/* Masonry wall — staggered via CSS columns + break-inside-avoid */}
+    {
+      reviews.length > 0 ? (
+        <div class="columns-1 sm:columns-2 lg:columns-3 gap-5">
+          {reviews.map((review) => {
+            const stars = Array.from(
+              { length: 5 },
+              (_, i) => i < review.data.rating
+            );
+
+            return (
+              <div class="review-card rounded-xl border theme-border bg-background mb-5 break-inside-avoid p-6">
+                {/* Stars */}
+                <div class="flex items-center gap-0.5 mb-3">
+                  {stars.map((filled) => (
+                    <svg
+                      class={`w-4 h-4 ${filled ? "star-filled" : "star-empty"}`}
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                  ))}
+                </div>
+
+                {/* Review body */}
+                <p class="review-body theme-text">{review.data.body}</p>
+
+                {/* Author + location */}
+                <div class="flex flex-col gap-0.5 pt-4 mt-4 border-t theme-border">
+                  <span class="theme-heading font-semibold text-sm leading-tight">
+                    {review.data.author}
+                  </span>
+                  {review.data.location && (
+                    <span class="theme-text-muted text-xs">
+                      {review.data.location}
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <p class="text-center theme-text-muted">No reviews yet.</p>
+      )
+    }
   </div>
 </section>
+
+<style>
+  .review-card {
+    transition:
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .review-card:hover {
+    box-shadow: var(--t-shadow-sm);
+    transform: translateY(-2px);
+  }
+
+  .star-filled {
+    color: var(--color-rating);
+  }
+
+  .star-empty {
+    color: var(--color-rating-empty);
+  }
+
+  .review-body {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    margin: 0;
+  }
+</style>

@@ -1,0 +1,98 @@
+---
+import type { Eyebrow, CertItem } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+/**
+ * certifications:grid — a responsive grid (2/3/4 cols) of certification, license,
+ * insurance, or manufacturer badges. Each item shows an optional logo (or a
+ * shield/check SVG fallback), a label, and an optional short description. Renders
+ * nothing when no items are supplied.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    items?: CertItem[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const items = data?.items ?? [];
+---
+
+{
+  items.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Header */}
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow && (
+            <div>
+              {data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              )}
+            </div>
+          )}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>
+          )}
+        </div>
+
+        {/* Grid */}
+        <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 list-none m-0 p-0">
+          {items.map((item) => (
+            <li class="flex flex-col items-center text-center gap-3 rounded-xl border theme-border bg-background p-6">
+              {item.logo ? (
+                <SmartImage
+                  src={item.logo}
+                  alt={item.label}
+                  width={96}
+                  class="h-16 w-auto object-contain"
+                />
+              ) : (
+                <span class="cert-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg>
+                </span>
+              )}
+              <span class="theme-heading text-sm font-semibold leading-tight">{item.label}</span>
+              {item.description && (
+                <span class="theme-text-muted text-xs leading-snug">{item.description}</span>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .cert-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
+    color: var(--theme-accent);
+  }
+  .cert-icon svg {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+</style>

@@ -1,31 +1,51 @@
 document.addEventListener("astro:page-load", () => {
-  // Mobile menu toggle
-  const toggle = document.querySelector("[data-nav-toggle]");
-  const menu = document.querySelector("[data-nav-menu]");
-  const lines = document.querySelectorAll("[data-hamburger-line]");
+  // Wire EACH header's mobile toggle to its OWN menu, so multiple headers on a
+  // page (e.g. the chrome preview) don't collide. Scope is relative to the
+  // toggle's own header, not a global id lookup.
+  document.querySelectorAll("[data-nav-toggle]").forEach((toggle) => {
+    if (toggle.dataset.navWired) return; // avoid double-binding across page-loads
+    toggle.dataset.navWired = "1";
 
-  if (toggle && menu) {
-    toggle.addEventListener("click", () => {
+    const scope = toggle.closest("[data-header]") || toggle.closest("header");
+    const menu = (scope || document).querySelector("[data-nav-menu]");
+    const lines = toggle.querySelectorAll("[data-hamburger-line]");
+    if (!menu) return;
+
+    const setLines = (open) => {
+      lines[0]?.classList.toggle("rotate-45", open);
+      lines[0]?.classList.toggle("translate-y-2", open);
+      lines[1]?.classList.toggle("opacity-0", open);
+      lines[2]?.classList.toggle("-rotate-45", open);
+      lines[2]?.classList.toggle("-translate-y-2", open);
+    };
+
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
       const isOpen = toggle.getAttribute("aria-expanded") === "true";
       toggle.setAttribute("aria-expanded", String(!isOpen));
       menu.classList.toggle("hidden");
+      setLines(!isOpen);
+    });
 
-      // Animate hamburger lines
-      if (!isOpen) {
-        lines[0]?.classList.add("rotate-45", "translate-y-2");
-        lines[1]?.classList.add("opacity-0");
-        lines[2]?.classList.add("-rotate-45", "-translate-y-2");
-      } else {
-        lines[0]?.classList.remove("rotate-45", "translate-y-2");
-        lines[1]?.classList.remove("opacity-0");
-        lines[2]?.classList.remove("-rotate-45", "-translate-y-2");
+    // Close this menu when clicking outside of it (and its toggle).
+    document.addEventListener("click", (e) => {
+      if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+        menu.classList.add("hidden");
+        toggle.setAttribute("aria-expanded", "false");
+        setLines(false);
       }
     });
-  }
+  });
 
-  // Mobile dropdown toggles
+  // Mobile dropdown toggles (already scoped via closest()).
   document.querySelectorAll("[data-dropdown-trigger]").forEach((trigger) => {
+    if (trigger.dataset.navWired) return;
+    trigger.dataset.navWired = "1";
     trigger.addEventListener("click", (e) => {
+      // Desktop opens dropdowns on hover and lets <a> parents navigate; only
+      // intercept on mobile, where tapping a parent expands/collapses it.
+      if (window.innerWidth >= 1024) return;
+      if (trigger.tagName === "A") e.preventDefault();
       e.stopPropagation();
       const dropdown = trigger.closest("[data-dropdown]");
       const isOpen = trigger.getAttribute("aria-expanded") === "true";
@@ -34,38 +54,26 @@ document.addEventListener("astro:page-load", () => {
     });
   });
 
-  // Mobile nested dropdown toggles
+  // Mobile nested dropdown toggles.
   document.querySelectorAll("[data-nested-trigger]").forEach((trigger) => {
+    if (trigger.dataset.navWired) return;
+    trigger.dataset.navWired = "1";
     trigger.addEventListener("click", (e) => {
       e.stopPropagation();
-      trigger
-        .closest("[data-dropdown-nested]")
-        ?.classList.toggle("mobile-open");
+      trigger.closest("[data-dropdown-nested]")?.classList.toggle("mobile-open");
     });
   });
 
-  // Close menu on outside click
-  document.addEventListener("click", (e) => {
-    if (!menu?.contains(e.target) && !toggle?.contains(e.target)) {
-      menu?.classList.add("hidden");
-      toggle?.setAttribute("aria-expanded", "false");
-      lines[0]?.classList.remove("rotate-45", "translate-y-2");
-      lines[1]?.classList.remove("opacity-0");
-      lines[2]?.classList.remove("-rotate-45", "-translate-y-2");
-    }
-  });
-
-  // Sticky header shadow on scroll
-  const header = document.querySelector("[data-header]");
-  window.addEventListener(
-    "scroll",
-    () => {
-      if (window.scrollY > 10) {
-        header?.classList.add("shadow-md");
-      } else {
-        header?.classList.remove("shadow-md");
-      }
-    },
-    { passive: true },
-  );
+  // Sticky header shadow on scroll — applies to every header on the page.
+  const headers = document.querySelectorAll("[data-header]");
+  if (headers.length) {
+    window.addEventListener(
+      "scroll",
+      () => {
+        const scrolled = window.scrollY > 10;
+        headers.forEach((h) => h.classList.toggle("shadow-md", scrolled));
+      },
+      { passive: true },
+    );
+  }
 });

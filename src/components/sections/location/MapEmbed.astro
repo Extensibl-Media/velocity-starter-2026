@@ -1,0 +1,172 @@
+---
+import { getCollection } from "astro:content";
+import { getBusinessData } from "@/lib/utils";
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    mapEmbedUrl?: string;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const business = await getBusinessData();
+
+const hoursEntries = await getCollection("hoursSettings");
+const hours = hoursEntries[0]?.data.hours ?? [];
+
+const fullAddress = `${business.address}, ${business.city}, ${business.state} ${business.zip}`;
+
+const mapEmbedUrl =
+  data?.mapEmbedUrl ??
+  `https://www.google.com/maps?q=${encodeURIComponent(fullAddress)}&output=embed`;
+---
+
+<section class={`section-wrapper section-py theme-${theme}`}>
+  <div class="section-container">
+    {/* Section header */}
+    <div class="flex flex-col items-center text-center gap-3 mb-12">
+      {
+        data?.eyebrow && (
+          <div>
+            {data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">
+                {data.eyebrow.text}
+              </Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            )}
+          </div>
+        )
+      }
+      {
+        data?.heading && (
+          <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+            {data.heading}
+          </h2>
+        )
+      }
+      {
+        data?.subheading && (
+          <p class="theme-text-muted text-lg max-w-2xl m-0">
+            {data.subheading}
+          </p>
+        )
+      }
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-stretch">
+      {/* Left — map */}
+      <div class="rounded-2xl overflow-hidden map-box">
+        <iframe
+          src={mapEmbedUrl}
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title={`Map of ${business.city}, ${business.state}`}
+          class="w-full h-full min-h-[320px] border-0"></iframe>
+      </div>
+
+      {/* Right — address, phone, hours */}
+      <div class="flex flex-col gap-6">
+        {/* Address */}
+        <div class="flex items-start gap-3">
+          <svg
+            class="w-5 h-5 shrink-0 mt-0.5 text-color-brand-secondary"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          <div class="flex flex-col">
+            <span class="theme-heading font-semibold">
+              {business.businessName}
+            </span>
+            <span class="theme-text-muted">{business.address}</span>
+            <span class="theme-text-muted">
+              {business.city}, {business.state} {business.zip}
+            </span>
+          </div>
+        </div>
+
+        {/* Phone */}
+        {
+          business.phone && (
+            <div class="flex items-center gap-3">
+              <svg
+                class="w-5 h-5 shrink-0 text-color-brand-secondary"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              <a
+                href={`tel:${business.phone}`}
+                class="font-semibold text-primary hover:underline"
+              >
+                {business.phone}
+              </a>
+            </div>
+          )
+        }
+
+        {/* Hours */}
+        {
+          hours.length > 0 && (
+            <div class="rounded-xl border theme-border bg-background overflow-hidden">
+              <table class="w-full text-sm border-collapse">
+                <tbody>
+                  {hours.map((entry) => (
+                    <tr class="hours-row">
+                      <th
+                        scope="row"
+                        class="text-left font-semibold theme-heading px-4 py-2.5"
+                      >
+                        {entry.day}
+                      </th>
+                      <td class="text-right theme-text-muted px-4 py-2.5">
+                        {entry.closedAllDay ? (
+                          <span class="theme-text-subtle">Closed</span>
+                        ) : (
+                          <span>
+                            {entry.open} – {entry.close}
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .map-box {
+      box-shadow: var(--t-shadow-md);
+    }
+
+    .hours-row + .hours-row {
+      border-top: 1px solid var(--color-border);
+    }
+  </style>
+</section>

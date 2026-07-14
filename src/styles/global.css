@@ -1,55 +1,63 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "./theme.css";
 @plugin "@tailwindcss/forms";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   /* =====================
-     VWS Brand Tokens
+     VWS Utility Tokens
+     VALUES come from theme.css (--t-*). This block only REGISTERS the
+     Tailwind/VWS utility tokens (text-primary, bg-bg-muted, etc.).
+     Do not put literal colors here — edit theme.css instead.
      ===================== */
 
-  /* Primary brand — deep forest green */
-  --color-primary: #1b4332;
-  --color-primary-light: #2d6a4f;
-  --color-primary-muted: #e8f5e9;
+  /* Primary brand */
+  --color-primary: var(--t-primary);
+  --color-primary-light: var(--t-primary-light);
+  --color-primary-muted: var(--t-primary-muted);
 
-  /* Secondary brand — warm amber/orange */
-  --color-brand-secondary: #f4a261;
-  --color-brand-secondary-light: #fddcbc;
-  --color-brand-secondary-fg: #7c2d00;
+  /* Secondary brand */
+  --color-brand-secondary: var(--t-secondary);
+  --color-brand-secondary-light: var(--t-secondary-light);
+  --color-brand-secondary-fg: var(--t-secondary-fg);
 
   /* Backgrounds */
-  --color-bg: #ffffff;
-  --color-bg-alt: #f9fafb;
-  --color-bg-muted: #f3f4f6;
-  --color-bg-inverse: #111827;
-  --color-bg-primary: #1b4332;
-  --color-bg-brand-secondary: #f4a261;
+  --color-bg: var(--t-bg);
+  --color-bg-alt: var(--t-bg-alt);
+  --color-bg-muted: var(--t-bg-muted);
+  --color-bg-inverse: var(--t-bg-inverse);
+  --color-bg-primary: var(--t-primary);
+  --color-bg-brand-secondary: var(--t-secondary);
 
   /* Foregrounds */
-  --color-fg: #111827;
-  --color-fg-muted: #6b7280;
-  --color-fg-subtle: #9ca3af;
-  --color-fg-inverse: #f9fafb;
+  --color-fg: var(--t-fg);
+  --color-fg-muted: var(--t-fg-muted);
+  --color-fg-subtle: var(--t-fg-subtle);
+  --color-fg-inverse: var(--t-fg-inverse);
   --color-fg-on-primary: #ffffff;
-  --color-fg-on-brand-secondary: #7c2d00;
+  --color-fg-on-brand-secondary: var(--t-secondary-fg);
 
   /* Borders */
-  --color-border: #e5e7eb;
-  --color-border-muted: #f3f4f6;
+  --color-border: var(--t-border);
+  --color-border-muted: var(--t-bg-muted);
   --color-border-inverse: rgba(255, 255, 255, 0.12);
 
+  /* Review stars */
+  --color-rating: var(--t-rating);
+  --color-rating-empty: var(--t-rating-empty);
+
   /* Typography */
-  --font-sans: Inter, system-ui, sans-serif;
-  --font-heading: Inter, system-ui, sans-serif;
+  --font-sans: var(--t-font-sans);
+  --font-heading: var(--t-font-heading);
 
   /* Section spacing scale */
-  --spacing-section-xs: 1rem;
-  --spacing-section-sm: 2rem;
-  --spacing-section: 4rem;
-  --spacing-section-lg: 6rem;
-  --spacing-section-xl: 8rem;
+  --spacing-section-xs: var(--t-section-xs);
+  --spacing-section-sm: var(--t-section-sm);
+  --spacing-section: var(--t-section);
+  --spacing-section-lg: var(--t-section-lg);
+  --spacing-section-xl: var(--t-section-xl);
 
   /* Starwind accordion animations */
   --animate-accordion-down: accordion-down 0.2s ease-out;
@@ -112,39 +120,39 @@
 
 /* =====================
    Root Variables
-   Concrete values — no circular references
-   Starwind components read from here
+   Starwind semantic vars — VALUES derive from theme.css (--t-*).
+   Status colors (info/success/warning/error) are intentionally fixed.
    ===================== */
 
 :root {
-  --background: #ffffff;
-  --foreground: #111827;
+  --background: var(--t-bg);
+  --foreground: var(--t-fg);
 
-  --card: #ffffff;
-  --card-foreground: #111827;
+  --card: var(--t-bg);
+  --card-foreground: var(--t-fg);
 
-  --popover: #ffffff;
-  --popover-foreground: #111827;
+  --popover: var(--t-bg);
+  --popover-foreground: var(--t-fg);
 
-  /* Primary = VWS brand green */
-  --primary: #1b4332;
+  /* Primary = brand */
+  --primary: var(--t-primary);
   --primary-foreground: #ffffff;
-  --primary-accent: #2d6a4f;
+  --primary-accent: var(--t-primary-light);
 
-  /* Secondary = VWS brand orange */
-  --secondary: #f4a261;
-  --secondary-foreground: #7c2d00;
-  --secondary-accent: #7c2d00;
+  /* Secondary = brand */
+  --secondary: var(--t-secondary);
+  --secondary-foreground: var(--t-secondary-fg);
+  --secondary-accent: var(--t-secondary-fg);
 
   /* Muted */
-  --muted: #f3f4f6;
-  --muted-foreground: #6b7280;
+  --muted: var(--t-bg-muted);
+  --muted-foreground: var(--t-fg-muted);
 
-  /* Accent = Starwind subtle hover — NOT brand orange */
-  --accent: #f9fafb;
-  --accent-foreground: #111827;
+  /* Accent = Starwind subtle hover — NOT brand color */
+  --accent: var(--t-bg-alt);
+  --accent-foreground: var(--t-fg);
 
-  /* Status */
+  /* Status (fixed — semantic, not brand) */
   --info: oklch(0.828 0.111 230.318);
   --info-foreground: oklch(0.293 0.066 243.157);
   --success: oklch(0.871 0.15 154.449);
@@ -155,62 +163,105 @@
   --error-foreground: oklch(0.985 0 0);
 
   /* Border and input */
-  --border: #e5e7eb;
-  --input: #e5e7eb;
-  --outline: #1b4332;
+  --border: var(--t-border);
+  --input: var(--t-border);
+  --outline: var(--t-primary);
 
   /* Radius */
-  --radius: 0.5rem;
+  --radius: var(--t-radius);
+
+  /* Semantic surface tokens — BASE (light surface) defaults. Theme classes
+     (.theme-inverse/primary/…) and .on-dark override these per surface, so any
+     component using theme-* utilities is contrast-correct anywhere, including
+     headers/footers that aren't wrapped in a theme class.
+       --theme-fg / -heading / -muted / -subtle → on-surface text
+       --theme-border                           → on-surface border
+       --theme-accent                           → brand accent (eyebrows, links, icons) */
+  --theme-fg: var(--t-fg);
+  --theme-heading: var(--t-fg);
+  --theme-fg-muted: var(--t-fg-muted);
+  --theme-fg-subtle: var(--t-fg-subtle);
+  --theme-border: var(--t-border);
+  --theme-accent: var(--t-primary);
+  /* Floating dropdown-panel surface — follows the header context so menus on
+     dark headers are dark cards (not white boxes). Overridden by .on-dark. */
+  --dropdown-surface: var(--t-bg);
 }
 
 /* =====================
    Theme Class Overrides
-   Starwind vars adapt per section theme
+   Starwind vars adapt per section theme. Solid fills derive from
+   theme.css; translucent scrims stay structural.
    ===================== */
 
+/* Colored/dark section themes each declare a COMPLETE, contrast-correct token
+   set so any component reads properly on them:
+   - --background/--card = a RAISED surface (visible card, not the section color)
+   - --primary = an accent that contrasts with THIS surface (text-primary, icons, fills)
+   - --color-fg/-muted/-subtle/-border = surface-aware foregrounds (so text-fg etc. flip) */
 .theme-inverse {
-  --background: #111827;
-  --foreground: #f9fafb;
-  --card: #111827;
-  --card-foreground: #f9fafb;
-  --popover: #111827;
-  --popover-foreground: #f9fafb;
-  --border: rgba(255, 255, 255, 0.12);
-  --input: rgba(255, 255, 255, 0.12);
-  --muted: rgba(255, 255, 255, 0.05);
+  --background: color-mix(in srgb, var(--t-bg-inverse) 93%, #ffffff);
+  --foreground: var(--t-fg-inverse);
+  --card: color-mix(in srgb, var(--t-bg-inverse) 93%, #ffffff);
+  --card-foreground: var(--t-fg-inverse);
+  --popover: color-mix(in srgb, var(--t-bg-inverse) 93%, #ffffff);
+  --popover-foreground: var(--t-fg-inverse);
+  --border: rgba(255, 255, 255, 0.14);
+  --input: rgba(255, 255, 255, 0.14);
+  --muted: rgba(255, 255, 255, 0.06);
   --muted-foreground: rgba(249, 250, 251, 0.6);
-  --accent: rgba(255, 255, 255, 0.08);
-  --accent-foreground: #f9fafb;
+  --accent: rgba(255, 255, 255, 0.1);
+  --accent-foreground: var(--t-fg-inverse);
+  /* Primary fill: a saturated (slightly lightened) green that reads as a real
+     button on the dark surface, with white text — not a washed pastel. */
+  --primary: var(--t-primary-light);
+  --primary-foreground: #ffffff;
+  --color-fg: var(--t-fg-inverse);
+  --color-fg-muted: rgba(249, 250, 251, 0.72);
+  --color-fg-subtle: rgba(249, 250, 251, 0.45);
+  --color-border: rgba(255, 255, 255, 0.14);
 }
 
 .theme-primary {
-  --background: #1b4332;
+  --background: rgba(255, 255, 255, 0.1);
   --foreground: #ffffff;
-  --card: #1b4332;
+  --card: rgba(255, 255, 255, 0.1);
   --card-foreground: #ffffff;
-  --popover: #1b4332;
+  --popover: rgba(20, 40, 30, 0.96);
   --popover-foreground: #ffffff;
-  --border: rgba(255, 255, 255, 0.15);
-  --input: rgba(255, 255, 255, 0.15);
+  --border: rgba(255, 255, 255, 0.2);
+  --input: rgba(255, 255, 255, 0.2);
   --muted: rgba(255, 255, 255, 0.08);
-  --muted-foreground: rgba(255, 255, 255, 0.6);
-  --accent: rgba(255, 255, 255, 0.1);
+  --muted-foreground: rgba(255, 255, 255, 0.7);
+  --accent: rgba(255, 255, 255, 0.12);
   --accent-foreground: #ffffff;
+  --primary: #ffffff;
+  --primary-foreground: var(--t-primary);
+  --color-fg: #ffffff;
+  --color-fg-muted: rgba(255, 255, 255, 0.78);
+  --color-fg-subtle: rgba(255, 255, 255, 0.55);
+  --color-border: rgba(255, 255, 255, 0.22);
 }
 
 .theme-brand-secondary {
-  --background: #f4a261;
-  --foreground: #7c2d00;
-  --card: #f4a261;
-  --card-foreground: #7c2d00;
-  --popover: #f4a261;
-  --popover-foreground: #7c2d00;
-  --border: rgba(124, 45, 0, 0.15);
-  --input: rgba(124, 45, 0, 0.15);
-  --muted: rgba(124, 45, 0, 0.08);
-  --muted-foreground: rgba(124, 45, 0, 0.6);
+  --background: rgba(255, 255, 255, 0.5);
+  --foreground: var(--t-secondary-fg);
+  --card: rgba(255, 255, 255, 0.5);
+  --card-foreground: var(--t-secondary-fg);
+  --popover: rgba(255, 255, 255, 0.96);
+  --popover-foreground: var(--t-secondary-fg);
+  --border: rgba(124, 45, 0, 0.2);
+  --input: rgba(124, 45, 0, 0.2);
+  --muted: rgba(255, 255, 255, 0.35);
+  --muted-foreground: rgba(124, 45, 0, 0.72);
   --accent: rgba(124, 45, 0, 0.1);
-  --accent-foreground: #7c2d00;
+  --accent-foreground: var(--t-secondary-fg);
+  --primary: var(--t-primary);
+  --primary-foreground: #ffffff;
+  --color-fg: var(--t-secondary-fg);
+  --color-fg-muted: rgba(124, 45, 0, 0.72);
+  --color-fg-subtle: rgba(124, 45, 0, 0.5);
+  --color-border: rgba(124, 45, 0, 0.22);
 }
 
 /* =====================
@@ -231,7 +282,7 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     color: var(--color-fg);
-    font-weight: 700;
+    font-weight: var(--t-font-weight-heading);
     line-height: 1.2;
   }
 
@@ -247,6 +298,10 @@
 
   button {
     cursor: pointer;
+    /* Inherit the surface text color so button variants without an explicit
+       text color (outline, ghost) track the theme instead of defaulting to
+       near-black — otherwise they go dark-on-dark on inverse/primary sections. */
+    color: inherit;
   }
 }
 
@@ -353,10 +408,31 @@
   .theme-brand-secondary {
     background-color: var(--color-bg-brand-secondary);
     --theme-fg: var(--color-fg-on-brand-secondary);
-    --theme-fg-muted: rgba(124, 45, 0, 0.7);
-    --theme-fg-subtle: rgba(124, 45, 0, 0.4);
+    --theme-fg-muted: rgba(124, 45, 0, 0.95);
+    --theme-fg-subtle: rgba(124, 45, 0, 0.82);
     --theme-heading: var(--color-fg-on-brand-secondary);
     --theme-border: rgba(124, 45, 0, 0.15);
+  }
+
+  /* Every themed section paints its own base text color, so any element that
+     relies on inheritance (unstyled links, outline/ghost buttons) is always
+     contrast-correct instead of falling back to the global dark body color.
+     Elements with explicit text classes/utilities still override this. */
+  .theme-default, .theme-alt, .theme-muted,
+  .theme-inverse, .theme-primary, .theme-brand-secondary {
+    color: var(--theme-fg);
+  }
+
+  /* The default Badge (bg-foreground/text-background) uses --background as its
+     text color, but on primary/brand-secondary --background is a translucent
+     card tint — so the label vanishes. Give the default badge (the one carrying
+     .bg-foreground) an opaque, contrasting text color on those two themes. The
+     compound selector outranks the .text-background utility. */
+  .theme-primary [data-slot="badge"].bg-foreground {
+    color: var(--t-primary);
+  }
+  .theme-brand-secondary [data-slot="badge"].bg-foreground {
+    color: #ffffff;
   }
 
   /* Theme-aware utilities */
@@ -366,6 +442,79 @@
   .theme-text-subtle { color: var(--theme-fg-subtle); }
   .theme-border { border-color: var(--theme-border); }
 
+  /* Reset every surface/text token back to the base LIGHT surface. Put this on
+     any element that establishes its own solid light card inside a dark/colored
+     section (forms, floating cards) so its contents never inherit the section's
+     flipped foregrounds and turn light-on-light. */
+  .surface-base {
+    color: var(--theme-fg);
+    /* Paint the solid light surface. In @layer components, so an explicit
+       bg-* utility (utilities layer) still overrides it when a component wants
+       a different shade. This is what makes surface-base an actually-solid card. */
+    background-color: var(--background);
+    --background: var(--t-bg);
+    --foreground: var(--t-fg);
+    --card: var(--t-bg);
+    --card-foreground: var(--t-fg);
+    --popover: var(--t-bg);
+    --popover-foreground: var(--t-fg);
+    --border: var(--t-border);
+    --input: var(--t-border);
+    --muted: var(--t-bg-muted);
+    --muted-foreground: var(--t-fg-muted);
+    --accent: var(--t-bg-alt);
+    --accent-foreground: var(--t-fg);
+    --primary: var(--t-primary);
+    --primary-foreground: #ffffff;
+    --color-fg: var(--t-fg);
+    --color-fg-muted: var(--t-fg-muted);
+    --color-fg-subtle: var(--t-fg-subtle);
+    --color-border: var(--t-border);
+    --theme-fg: var(--t-fg);
+    --theme-heading: var(--t-fg);
+    --theme-fg-muted: var(--t-fg-muted);
+    --theme-fg-subtle: var(--t-fg-subtle);
+    --theme-border: var(--t-border);
+    --theme-accent: var(--t-primary);
+  }
+
+  /* Per-surface accent (eyebrows, links, icons) — readable on each surface.
+     Light surfaces = brand green; dark = amber; on green = light amber; on
+     amber = deep brown. (default/alt/muted inherit the :root green.) */
+  .theme-inverse { --theme-accent: var(--t-secondary); }
+  .theme-primary { --theme-accent: color-mix(in srgb, var(--t-secondary) 65%, #ffffff); }
+  .theme-brand-secondary { --theme-accent: var(--t-secondary-fg); }
+
+  /* Accent text utility. `.text-color-brand-secondary` is the legacy eyebrow
+     class used across the library (it is NOT a real Tailwind utility, so it was
+     doing nothing); alias it here so every eyebrow becomes theme-accent. */
+  .theme-accent,
+  .text-color-brand-secondary {
+    color: var(--theme-accent);
+  }
+
+  /* Force a light-on-dark surface context (dark headers/footers/bands) so
+     theme-* utilities + nav links go light without a full theme class. */
+  .on-dark {
+    --theme-fg: var(--t-fg-inverse);
+    --theme-heading: var(--t-fg-inverse);
+    --theme-fg-muted: rgba(249, 250, 251, 0.72);
+    --theme-fg-subtle: rgba(249, 250, 251, 0.45);
+    --theme-border: rgba(255, 255, 255, 0.14);
+    --theme-accent: var(--t-secondary);
+    --dropdown-surface: color-mix(in srgb, var(--t-bg-inverse) 92%, #ffffff);
+  }
+
+  /* Floating dropdown panels — theme-aware surface (white on light headers,
+     raised-dark on dark headers) so items (which use theme-fg-muted) always
+     read. Neutralized to inline/transparent on mobile below. */
+  .dropdown-menu,
+  .nested-menu {
+    background-color: var(--dropdown-surface);
+    border: var(--t-border-width) solid var(--theme-border);
+    box-shadow: var(--t-shadow-lg);
+  }
+
   /* Nav */
   .nav-link {
     display: inline-flex;
@@ -374,14 +523,14 @@
     padding: 0.5rem 0.75rem;
     font-size: 0.9375rem;
     font-weight: 500;
-    color: var(--color-fg);
-    border-radius: 0.5rem;
+    color: var(--theme-fg);
+    border-radius: var(--radius);
     transition: color 0.2s ease, background-color 0.2s ease;
   }
 
   .nav-link:hover {
-    color: var(--color-primary);
-    background-color: var(--color-bg-muted);
+    color: var(--theme-accent);
+    background-color: color-mix(in srgb, var(--theme-fg) 8%, transparent);
   }
 
   .dropdown-item {
@@ -389,7 +538,7 @@
     width: 100%;
     padding: 0.625rem 1rem;
     font-size: 0.875rem;
-    color: var(--color-fg-muted);
+    color: var(--theme-fg-muted);
     transition: color 0.2s ease, background-color 0.2s ease;
     text-align: left;
     background: none;
@@ -398,23 +547,36 @@
   }
 
   .dropdown-item:hover {
-    color: var(--color-primary);
-    background-color: var(--color-bg-muted);
+    color: var(--theme-accent);
+    background-color: color-mix(in srgb, var(--theme-fg) 8%, transparent);
   }
 
   @media (max-width: 1023px) {
-    [data-dropdown].mobile-open > ul,
-    [data-dropdown-nested].mobile-open > ul {
-      display: block !important;
+    /* Neutralize the desktop floating dropdown on mobile. The panel carries
+       desktop utilities (absolute, bg-bg, shadow, opacity-0/invisible +
+       group-hover) that otherwise render as a white card on tap. Force it to a
+       static, transparent, always-visible inline list so sub-links simply sit
+       indented under the parent, inheriting the header's (theme-aware) text. */
+    .dropdown-menu,
+    .nested-menu {
       position: static !important;
+      inset: auto !important;
+      display: none !important; /* collapsed by default; also disables hover-open */
       opacity: 1 !important;
       visibility: visible !important;
-      box-shadow: none !important;
+      min-width: 0 !important;
+      margin: 0.1rem 0 0.35rem 0.75rem !important;
+      padding: 0 !important;
+      background-color: transparent !important;
       border: none !important;
-      background-color: var(--color-bg-muted) !important;
-      border-radius: 0.5rem !important;
-      margin-top: 0.25rem !important;
-      padding: 0.25rem !important;
+      box-shadow: none !important;
+      transition: none !important;
+    }
+
+    /* Expand only when the parent is toggled open (via nav.js). */
+    [data-dropdown].mobile-open > .dropdown-menu,
+    [data-dropdown-nested].mobile-open > .nested-menu {
+      display: block !important;
     }
 
     .nav-link,
@@ -422,4 +584,24 @@
       width: 100%;
     }
   }
+}
+
+/* ---------------------------------------------------------------------------
+   surface-base text hardening (UNLAYERED — wins over @layer utilities).
+   A .surface-base card is an always-light surface, but it may sit inside a
+   dark/colored themed section whose flipped color utilities (text-fg,
+   theme-text, card-title/description, etc.) would otherwise render light — i.e.
+   light-on-light. These rules pin that text to the opaque base foreground
+   tokens so it stays readable on the light card. Accent (theme-accent) is
+   intentionally left alone so eyebrows/icons keep their accent color.
+   --------------------------------------------------------------------------- */
+.surface-base :is(.text-fg, .theme-heading, .theme-text, [data-slot="card-title"]),
+.surface-base :is(h1, h2, h3, h4, h5, h6):not(.theme-accent):not(.text-color-brand-secondary) {
+  color: var(--t-fg);
+}
+.surface-base :is(.text-fg-muted, .theme-text-muted, [data-slot="card-description"]) {
+  color: var(--t-fg-muted);
+}
+.surface-base :is(.text-fg-subtle, .theme-text-subtle) {
+  color: var(--t-fg-subtle);
 }

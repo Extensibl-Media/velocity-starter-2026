@@ -1,19 +1,111 @@
 ---
-// CTASplit — placeholder
-// Replace with full implementation
+import { getBusinessData } from "@/lib/utils";
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
 
 interface Props {
   theme?: string;
-  data?: Record<string, unknown>;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    body?: string;
+    cta?: SectionCTA;
+    secondaryCta?: SectionCTA;
+    showPhone?: boolean;
+  };
 }
 
-const { theme = 'default', data } = Astro.props;
+const { theme = "default", data } = Astro.props;
+
+const business = await getBusinessData();
+
+const primaryClass =
+  "inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold text-sm bg-primary text-primary-foreground hover:opacity-90 transition";
+const outlineClass =
+  "inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold text-sm border theme-border theme-text hover:bg-muted transition";
+
+function ctaClass(cta?: SectionCTA) {
+  return cta?.variant && cta.variant !== "primary" ? outlineClass : primaryClass;
+}
 ---
 
 <section class={`section-wrapper section-py theme-${theme}`}>
   <div class="section-container">
-    <p class="theme-text-muted text-sm">
-      [CTASplit — not yet implemented]
-    </p>
+    <div
+      class="flex flex-col md:flex-row md:items-center md:justify-between gap-8 rounded-xl border theme-border bg-background p-8 lg:p-10"
+    >
+      {/* Left — heading + body */}
+      <div class="flex flex-col gap-3 max-w-2xl">
+        {
+          data?.eyebrow && (
+            <div>
+              {data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              )}
+            </div>
+          )
+        }
+        {
+          data?.heading && (
+            <h2 class="theme-heading text-2xl lg:text-3xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )
+        }
+        {
+          data?.body && (
+            <p class="theme-text-muted text-lg leading-relaxed m-0">
+              {data.body}
+            </p>
+          )
+        }
+      </div>
+
+      {/* Right — actions */}
+      {
+        (data?.cta || data?.secondaryCta || data?.showPhone) && (
+          <div class="flex flex-col sm:flex-row md:flex-col gap-3 shrink-0">
+            {data?.cta && (
+              <a href={data.cta.href} class={ctaClass(data.cta)}>
+                {data.cta.label}
+              </a>
+            )}
+            {data?.secondaryCta && (
+              <a
+                href={data.secondaryCta.href}
+                class={ctaClass(data.secondaryCta)}
+              >
+                {data.secondaryCta.label}
+              </a>
+            )}
+            {data?.showPhone && business.phone && (
+              <a
+                href={`tel:${business.phone}`}
+                class={outlineClass}
+              >
+                <svg
+                  class="w-4 h-4 shrink-0 mr-2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  aria-hidden="true"
+                >
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+                </svg>
+                {business.phone}
+              </a>
+            )}
+          </div>
+        )
+      }
+    </div>
   </div>
 </section>

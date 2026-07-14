@@ -1,0 +1,125 @@
+---
+import type { Eyebrow, ImageRef, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import SmartImage from "@/components/media/SmartImage.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * content:quote-band — a raised testimonial band pairing a portrait image with
+ * an oversized pull-quote, attribution, and optional CTA. `imagePosition`
+ * controls which side the portrait sits on. Distinct from content:quote
+ * (centered, image-less): this is a two-up editorial band on a card surface.
+ * Theme-pure: surface, border, and the quote mark accent derive from tokens.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    quote?: string;
+    attribution?: string;
+    role?: string;
+    image?: ImageRef;
+    imagePosition?: "left" | "right";
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const imageLeft = (data?.imagePosition ?? "left") === "left";
+---
+
+{
+  data?.quote && (
+    <section class:list={["content-quote-band section-wrapper section-py", `theme-${theme}`]}>
+      <div class="section-container">
+        <div class="quote-band grid grid-cols-1 md:grid-cols-5 gap-8 lg:gap-12 items-center">
+          {data?.image && (
+            <div class:list={["quote-band-media md:col-span-2", imageLeft ? "md:order-1" : "md:order-2"]}>
+              <SmartImage
+                src={data.image.src}
+                alt={data.image.alt ?? data.attribution ?? ""}
+                widths={[320, 480, 640]}
+                sizes="(min-width: 768px) 40vw, 100vw"
+                class="w-full h-full object-cover"
+              />
+            </div>
+          )}
+
+          <figure class:list={["m-0 flex flex-col gap-5", data?.image ? "md:col-span-3" : "md:col-span-5 max-w-3xl mx-auto text-center items-center", imageLeft ? "md:order-2" : "md:order-1"]}>
+            {data.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <div>
+                  <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+                </div>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+
+            <span class="quote-mark" aria-hidden="true">&ldquo;</span>
+
+            <blockquote class="quote-text theme-heading text-2xl lg:text-3xl font-medium m-0">
+              {data.quote}
+            </blockquote>
+
+            {(data.attribution || data.role) && (
+              <figcaption class="flex flex-col gap-0.5">
+                {data.attribution && (
+                  <span class="theme-heading font-semibold">{data.attribution}</span>
+                )}
+                {data.role && <span class="theme-text-muted text-sm">{data.role}</span>}
+              </figcaption>
+            )}
+
+            {data.cta && (
+              <div class="mt-2">
+                <Button href={data.cta.href} variant={data.cta.variant ?? "outline"}>
+                  {data.cta.label}
+                </Button>
+              </div>
+            )}
+          </figure>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .quote-band {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    padding: 2rem;
+    box-shadow: var(--t-shadow-lg);
+  }
+  @media (min-width: 768px) {
+    .quote-band {
+      padding: 3rem;
+    }
+  }
+  .quote-band-media {
+    position: relative;
+    border-radius: var(--t-radius);
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    box-shadow: var(--t-shadow-md);
+  }
+  .quote-band-media :global(img) {
+    border-radius: var(--t-radius);
+  }
+  .quote-mark {
+    font-family: var(--font-heading);
+    font-size: 4rem;
+    line-height: 0.5;
+    font-weight: 700;
+    height: 2rem;
+    color: color-mix(in srgb, var(--theme-accent) 40%, transparent);
+  }
+  .quote-text {
+    line-height: 1.35;
+    text-wrap: balance;
+  }
+</style>

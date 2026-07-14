@@ -1,0 +1,90 @@
+---
+import type { Eyebrow, StatItem } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+/**
+ * stats:bar — a single horizontal proof strip. Stats sit in one raised band,
+ * separated by vertical dividers on desktop and stacking on mobile. Compact,
+ * low-height social proof to drop between larger sections. No client JS.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    stats?: StatItem[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const stats = data?.stats ?? [];
+---
+
+{
+  stats.length > 0 && (
+    <section class:list={["stats-bar section-wrapper section-py", `theme-${theme}`]}>
+      <div class="section-container">
+        {(data?.eyebrow || data?.heading || data?.subheading) && (
+          <div class="flex flex-col items-center text-center gap-3 mb-10">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+            {data?.heading && (
+              <h2 class="theme-heading text-2xl lg:text-3xl font-bold m-0">{data.heading}</h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-base max-w-2xl m-0">{data.subheading}</p>
+            )}
+          </div>
+        )}
+
+        <div class="stat-band flex flex-col sm:flex-row sm:flex-wrap sm:justify-around items-stretch">
+          {stats.map((stat, i) => (
+            <div
+              class:list={[
+                "stat-cell flex flex-col items-center text-center gap-1 px-6 py-6 flex-1",
+                i !== 0 && "stat-cell-divided",
+              ]}
+            >
+              <span class="theme-accent text-3xl lg:text-4xl font-extrabold leading-none tabular-nums">
+                {stat.value}
+              </span>
+              <span class="theme-text-muted text-sm font-medium leading-tight">{stat.label}</span>
+              {stat.description && (
+                <span class="theme-text-subtle text-xs leading-relaxed max-w-[14rem]">
+                  {stat.description}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .stat-band {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-sm);
+    overflow: hidden;
+  }
+  .stat-cell-divided {
+    border-top: var(--t-border-width) solid var(--theme-border);
+  }
+  @media (min-width: 640px) {
+    .stat-cell-divided {
+      border-top: 0;
+      border-left: var(--t-border-width) solid var(--theme-border);
+    }
+  }
+</style>

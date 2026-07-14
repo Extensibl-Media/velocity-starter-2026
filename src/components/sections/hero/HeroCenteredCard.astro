@@ -1,0 +1,120 @@
+---
+import { getBusinessData } from "@/lib/utils";
+import { getBackgroundImage } from "@/lib/images";
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * hero:centered-card — an optional subtle background image with a dark overlay
+ * and a single elevated, centered card holding the eyebrow, heading,
+ * subheading, CTAs, and phone. Good for focused, above-the-fold statements.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    ctas?: SectionCTA[];
+    showPhone?: boolean;
+    backgroundImage?: { src: string; overlayOpacity?: number };
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const business = await getBusinessData();
+
+const hasContent = !!(data?.eyebrow || data?.heading || data?.subheading || data?.ctas?.length);
+
+const bgUrl = await getBackgroundImage(data?.backgroundImage?.src, { width: 2200 });
+const hasBackground = !!bgUrl;
+const overlayOpacity = (data?.backgroundImage?.overlayOpacity ?? 60) / 100;
+---
+
+{
+  hasContent && (
+    <section
+      class:list={[
+        "hero-centered-card section-wrapper relative overflow-hidden flex items-center justify-center min-h-[560px]",
+        `theme-${theme}`,
+        hasBackground ? "has-bg" : "no-bg",
+      ]}
+      style={hasBackground ? `--hero-image: url('${bgUrl}'); --hero-overlay: ${overlayOpacity}` : ""}
+    >
+      <div class="section-container relative z-10 py-20 lg:py-28">
+        <div class="hero-card mx-auto w-full max-w-2xl flex flex-col items-center text-center gap-5 rounded-2xl border theme-border bg-background p-8 sm:p-12">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            ))}
+
+          {data?.heading && (
+            <h1 class="theme-heading text-4xl sm:text-5xl font-bold m-0 leading-tight">{data.heading}</h1>
+          )}
+
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg lg:text-xl max-w-xl m-0">{data.subheading}</p>
+          )}
+
+          {(data?.ctas?.length || data?.showPhone) && (
+            <div class="flex flex-wrap items-center justify-center gap-3 mt-2">
+              {data?.ctas?.map((cta) => (
+                <Button variant={cta.variant ?? "primary"} href={cta.href}>
+                  {cta.label}
+                </Button>
+              ))}
+              {data?.showPhone && business.phone && (
+                <a
+                  href={`tel:${business.phone}`}
+                  class="inline-flex items-center gap-2 font-bold text-lg theme-text hover:opacity-80 transition-opacity no-underline"
+                >
+                  <svg
+                    class="w-5 h-5 shrink-0"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    aria-hidden="true"
+                  >
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+                  </svg>
+                  {business.phone}
+                </a>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .hero-centered-card.has-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: var(--hero-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  .hero-centered-card.has-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: rgba(0, 0, 0, var(--hero-overlay, 0.6));
+  }
+
+  .hero-card {
+    box-shadow: var(--t-shadow-lg);
+  }
+</style>

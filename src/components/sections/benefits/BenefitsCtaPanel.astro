@@ -1,0 +1,178 @@
+---
+import { getBusinessData } from "@/lib/utils";
+import type { Eyebrow, FeatureItem, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * benefits:cta-panel — a checklist of benefits paired with a sticky conversion
+ * panel (heading, phone, and up to two CTAs). Puts the "why choose us" list
+ * right next to the ask, so the value proof sits beside the action.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    items?: FeatureItem[];
+    panelHeading?: string;
+    panelBody?: string;
+    showPhone?: boolean;
+    ctas?: SectionCTA[];
+    cta?: SectionCTA;
+    secondaryCta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const business = await getBusinessData();
+
+const items = data?.items ?? [];
+const showPhone = data?.showPhone ?? true;
+const telHref = business.phone
+  ? `tel:${business.phone.replace(/[^\d+]/g, "")}`
+  : null;
+
+const ctas = (
+  data?.ctas?.length
+    ? data.ctas
+    : [data?.cta, data?.secondaryCta].filter(Boolean)
+) as SectionCTA[];
+---
+
+{
+  items.length > 0 && (
+    <section
+      class:list={[
+        "benefits-cta-panel section-wrapper section-py",
+        `theme-${theme}`,
+      ]}
+    >
+      <div class="section-container">
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_minmax(0,22rem)] gap-10 lg:gap-14 items-start">
+          {/* Benefits list */}
+          <div class="flex flex-col gap-6">
+            {(data?.eyebrow || data?.heading || data?.subheading) && (
+              <div class="flex flex-col gap-3">
+                {data?.eyebrow &&
+                  (data.eyebrow.variant === "badge" ? (
+                    <Badge class="uppercase tracking-widest text-xs w-fit">
+                      {data.eyebrow.text}
+                    </Badge>
+                  ) : (
+                    <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                      {data.eyebrow.text}
+                    </span>
+                  ))}
+                {data?.heading && (
+                  <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                    {data.heading}
+                  </h2>
+                )}
+                {data?.subheading && (
+                  <p class="theme-text-muted text-lg leading-relaxed m-0">
+                    {data.subheading}
+                  </p>
+                )}
+              </div>
+            )}
+
+            <ul class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5 m-0 p-0 list-none">
+              {items.map((item) => (
+                <li class="flex items-start gap-3">
+                  <svg
+                    class="check-icon shrink-0"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  <div class="flex flex-col gap-1">
+                    <span class="theme-heading font-semibold leading-snug">
+                      {item.title}
+                    </span>
+                    {item.body && (
+                      <span class="theme-text-muted text-sm leading-relaxed">
+                        {item.body}
+                      </span>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* CTA panel */}
+          <aside class="cta-panel flex flex-col gap-5 p-7 lg:p-8 lg:sticky lg:top-24">
+            {data?.panelHeading && (
+              <h3 class="theme-heading text-xl font-bold m-0">
+                {data.panelHeading}
+              </h3>
+            )}
+            {data?.panelBody && (
+              <p class="theme-text-muted text-sm leading-relaxed m-0">
+                {data.panelBody}
+              </p>
+            )}
+
+            {showPhone && telHref && (
+              <a
+                href={telHref}
+                class="inline-flex items-center gap-2 text-xl font-bold theme-heading no-underline"
+              >
+                <svg
+                  class="w-5 h-5 shrink-0 theme-accent"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  aria-hidden="true"
+                >
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+                </svg>
+                {business.phone}
+              </a>
+            )}
+
+            {ctas.length > 0 && (
+              <div class="flex flex-col gap-3">
+                {ctas.map((c, i) => (
+                  <Button
+                    variant={c.variant ?? (i === 0 ? "primary" : "outline")}
+                    href={c.href}
+                    class="w-full"
+                  >
+                    {c.label}
+                  </Button>
+                ))}
+              </div>
+            )}
+          </aside>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .cta-panel {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-lg);
+  }
+
+  .check-icon {
+    width: 1.35rem;
+    height: 1.35rem;
+    margin-top: 0.1rem;
+    color: var(--theme-accent);
+  }
+</style>

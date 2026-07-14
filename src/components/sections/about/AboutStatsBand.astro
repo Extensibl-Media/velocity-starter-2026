@@ -1,0 +1,121 @@
+---
+import type { Eyebrow, SectionCTA, StatItem } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    body?: string;
+    stats?: StatItem[];
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const hasHeader = Boolean(data?.eyebrow || data?.heading || data?.body);
+const hasStats = Boolean(data?.stats && data.stats.length > 0);
+---
+
+{
+  (hasHeader || hasStats) && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Brand story */}
+        {hasHeader && (
+          <div class="flex flex-col gap-4 max-w-2xl mb-12">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs self-start">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+
+            {data?.body && (
+              <p class="theme-text-muted text-lg leading-relaxed m-0">
+                {data.body}
+              </p>
+            )}
+
+            {data?.cta && (
+              <div class="mt-2">
+                <Button
+                  variant={data.cta.variant ?? "primary"}
+                  href={data.cta.href}
+                >
+                  {data.cta.label}
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Prominent stats band */}
+        {hasStats && (
+          <div class="stats-band">
+            <div
+              class={`grid gap-8 ${
+                data!.stats!.length === 2
+                  ? "grid-cols-1 sm:grid-cols-2"
+                  : data!.stats!.length === 4
+                    ? "grid-cols-2 lg:grid-cols-4"
+                    : "grid-cols-1 sm:grid-cols-3"
+              }`}
+            >
+              {data!.stats!.map((stat) => (
+                <div class="flex flex-col items-center text-center gap-2">
+                  <span class="stat-value text-4xl lg:text-5xl font-black leading-none">
+                    {stat.value}
+                  </span>
+                  <span class="stat-label font-semibold text-sm uppercase tracking-widest">
+                    {stat.label}
+                  </span>
+                  {stat.description && (
+                    <span class="stat-desc text-sm leading-relaxed">
+                      {stat.description}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .stats-band {
+    padding: 2.5rem 2rem;
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--theme-accent) 6%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent) 20%, transparent);
+    box-shadow: var(--t-shadow-md);
+  }
+
+  .stat-value {
+    color: var(--theme-accent);
+  }
+
+  .stat-label {
+    color: color-mix(in srgb, var(--theme-accent) 85%, var(--color-fg));
+  }
+
+  .stat-desc {
+    color: color-mix(in srgb, var(--color-fg) 60%, transparent);
+  }
+</style>

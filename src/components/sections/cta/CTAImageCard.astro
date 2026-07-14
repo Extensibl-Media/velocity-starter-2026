@@ -1,0 +1,110 @@
+---
+import type { Eyebrow, SectionCTA, ImageRef } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+/**
+ * cta:image-card — a full-bleed photo with a solid, guaranteed-light card
+ * floated over it holding the message + buttons. Distinct from split-image
+ * (side-by-side): here the image is the whole backdrop and the card sits on top.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    image?: ImageRef;
+    cardAlign?: "left" | "center" | "right";
+    cta?: SectionCTA;
+    secondaryCta?: SectionCTA;
+    ctas?: SectionCTA[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const ctas = (
+  data?.ctas?.length ? data.ctas : [data?.cta, data?.secondaryCta].filter(Boolean)
+) as SectionCTA[];
+
+const align = data?.cardAlign ?? "left";
+const alignClass =
+  align === "center" ? "mx-auto" : align === "right" ? "ml-auto" : "mr-auto";
+---
+
+<section class:list={["cta-image-card section-wrapper section-py", `theme-${theme}`]}>
+  <div class="section-container">
+    <div class="cta-image-frame relative overflow-hidden">
+      {data?.image?.src && (
+        <SmartImage
+          src={data.image.src}
+          alt={data.image.alt ?? ""}
+          width={1600}
+          class="frame-img absolute inset-0 w-full h-full object-cover"
+        />
+      )}
+      <div class="frame-overlay absolute inset-0" aria-hidden="true"></div>
+
+      <div class="relative z-10 p-6 sm:p-10 lg:p-14">
+        <div class:list={["surface-base card-panel flex flex-col items-start gap-5 max-w-xl", alignClass]}>
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="text-sm font-bold uppercase tracking-widest theme-accent">
+                {data.eyebrow.text}
+              </span>
+            ))}
+
+          {data?.heading && (
+            <h2 class="theme-heading text-2xl lg:text-4xl font-black m-0 leading-tight">
+              {data.heading}
+            </h2>
+          )}
+
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg leading-relaxed m-0">{data.subheading}</p>
+          )}
+
+          {ctas.length > 0 && (
+            <div class="flex flex-wrap gap-3 mt-1">
+              {ctas.map((cta, i) => (
+                <Button variant={cta.variant ?? (i === 0 ? "primary" : "outline")} href={cta.href}>
+                  {cta.label}
+                </Button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-image-frame {
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-lg);
+    min-height: 22rem;
+    display: flex;
+    align-items: center;
+    background-color: var(--card);
+  }
+  .frame-overlay {
+    background: linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.55) 0%,
+      rgba(0, 0, 0, 0.25) 60%,
+      rgba(0, 0, 0, 0.1) 100%
+    );
+  }
+  .card-panel {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-md);
+    padding: 2rem;
+  }
+</style>

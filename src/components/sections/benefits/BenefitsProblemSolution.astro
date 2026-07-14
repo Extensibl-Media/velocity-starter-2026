@@ -1,0 +1,157 @@
+---
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+/**
+ * benefits:problem-solution — pairs a customer pain point with the benefit that
+ * resolves it. Each row shows a muted "problem" cell and an accented "solution"
+ * cell separated by an arrow, making the before/after value obvious.
+ */
+interface PainPair {
+  problem: string;
+  solution: string;
+  detail?: string;
+}
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    problemLabel?: string;
+    solutionLabel?: string;
+    pairs?: PainPair[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const pairs = data?.pairs ?? [];
+const problemLabel = data?.problemLabel ?? "The problem";
+const solutionLabel = data?.solutionLabel ?? "How we fix it";
+---
+
+{
+  pairs.length > 0 && (
+    <section
+      class:list={[
+        "benefits-problem-solution section-wrapper section-py",
+        `theme-${theme}`,
+      ]}
+    >
+      <div class="section-container">
+        {/* Section header */}
+        {(data?.eyebrow || data?.heading || data?.subheading) && (
+          <div class="flex flex-col items-center text-center gap-3 mb-12">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">
+                {data.subheading}
+              </p>
+            )}
+          </div>
+        )}
+
+        <div class="flex flex-col gap-5 max-w-4xl mx-auto">
+          {pairs.map((pair) => (
+            <div class="ps-row grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-stretch gap-4 md:gap-0">
+              {/* Problem */}
+              <div class="ps-problem p-6 flex flex-col gap-2">
+                <span class="ps-label theme-text-subtle">{problemLabel}</span>
+                <p class="theme-text leading-relaxed m-0">{pair.problem}</p>
+              </div>
+
+              {/* Arrow */}
+              <div class="ps-arrow" aria-hidden="true">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 12h14" />
+                  <path d="m13 6 6 6-6 6" />
+                </svg>
+              </div>
+
+              {/* Solution */}
+              <div class="ps-solution p-6 flex flex-col gap-2">
+                <span class="ps-label theme-accent">{solutionLabel}</span>
+                <p class="theme-heading font-semibold leading-relaxed m-0">
+                  {pair.solution}
+                </p>
+                {pair.detail && (
+                  <p class="theme-text-muted text-sm leading-relaxed m-0">
+                    {pair.detail}
+                  </p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .ps-row {
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    overflow: hidden;
+    box-shadow: var(--t-shadow-sm);
+  }
+
+  .ps-problem {
+    background-color: color-mix(in srgb, var(--theme-border) 22%, transparent);
+  }
+
+  .ps-solution {
+    background-color: var(--card);
+  }
+
+  .ps-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .ps-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.75rem;
+    color: var(--theme-accent);
+    background-color: var(--card);
+  }
+
+  .ps-arrow svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    transform: rotate(90deg);
+  }
+
+  @media (min-width: 768px) {
+    .ps-arrow svg {
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,136 @@
+---
+import type { Eyebrow, StatItem } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+/**
+ * content:stat-interrupt — long-form prose split by a full-width band of big
+ * numbers. `bodyTop` reads, the stats interrupt as an emphatic raised strip,
+ * then `bodyBottom` resumes. Distinct from stats sections and plain rich-text:
+ * the stats live *inside* a reading flow. Theme-pure: the band surface and
+ * accents derive from tokens.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    bodyTop?: string;
+    stats?: StatItem[];
+    bodyBottom?: string;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const stats = data?.stats ?? [];
+const hasHeader = Boolean(data?.eyebrow || data?.heading || data?.subheading);
+---
+
+{
+  (hasHeader || data?.bodyTop || stats.length > 0 || data?.bodyBottom) && (
+    <section class:list={["content-stat-interrupt section-wrapper section-py", `theme-${theme}`]}>
+      <div class="section-container">
+        <div class="max-w-2xl mx-auto">
+          {hasHeader && (
+            <div class="flex flex-col gap-3 mb-8">
+              {data?.eyebrow &&
+                (data.eyebrow.variant === "badge" ? (
+                  <div>
+                    <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+                  </div>
+                ) : (
+                  <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                    {data.eyebrow.text}
+                  </span>
+                ))}
+              {data?.heading && (
+                <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+              )}
+              {data?.subheading && (
+                <p class="theme-text-muted text-lg m-0">{data.subheading}</p>
+              )}
+            </div>
+          )}
+
+          {data?.bodyTop && <div class="rich-text theme-text" set:html={data.bodyTop} />}
+        </div>
+
+        {stats.length > 0 && (
+          <div class="stat-band my-12">
+            <dl class="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-4 text-center m-0">
+              {stats.map((stat) => (
+                <div class="flex flex-col gap-1">
+                  <dt class="stat-value theme-accent font-extrabold m-0">{stat.value}</dt>
+                  <dd class="theme-heading font-semibold m-0">{stat.label}</dd>
+                  {stat.description && (
+                    <p class="theme-text-muted text-sm m-0">{stat.description}</p>
+                  )}
+                </div>
+              ))}
+            </dl>
+          </div>
+        )}
+
+        {data?.bodyBottom && (
+          <div class="max-w-2xl mx-auto">
+            <div class="rich-text theme-text" set:html={data.bodyBottom} />
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .stat-band {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    padding: 2.5rem 2rem;
+    box-shadow: var(--t-shadow-md);
+  }
+  .stat-value {
+    font-family: var(--font-heading);
+    font-size: clamp(2.25rem, 5vw, 3rem);
+    line-height: 1;
+  }
+
+  .rich-text {
+    line-height: 1.75;
+  }
+  .rich-text :global(> * + *) {
+    margin-top: 1.25em;
+  }
+  .rich-text :global(h2),
+  .rich-text :global(h3),
+  .rich-text :global(h4) {
+    color: var(--theme-heading);
+    font-family: var(--font-heading);
+    font-weight: var(--t-font-weight-heading);
+    line-height: 1.25;
+    margin-top: 2em;
+  }
+  .rich-text :global(h2) { font-size: 1.5rem; }
+  .rich-text :global(h3) { font-size: 1.25rem; }
+  .rich-text :global(a) {
+    color: var(--theme-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .rich-text :global(ul),
+  .rich-text :global(ol) {
+    padding-left: 1.5rem;
+  }
+  .rich-text :global(ul) { list-style: disc; }
+  .rich-text :global(ol) { list-style: decimal; }
+  .rich-text :global(li + li) { margin-top: 0.5rem; }
+  .rich-text :global(blockquote) {
+    border-left: 3px solid var(--theme-accent);
+    padding-left: 1rem;
+    color: var(--theme-fg-muted);
+    font-style: italic;
+  }
+  .rich-text :global(strong) { font-weight: 600; }
+  .rich-text :global(img) { border-radius: var(--t-radius); }
+</style>

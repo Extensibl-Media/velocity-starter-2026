@@ -1,0 +1,181 @@
+---
+import type { Eyebrow, FeatureItem } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+/**
+ * benefits:alternating — a 2-column alternating layout. Each benefit places its
+ * copy and a supporting "aside" (bullets) on opposite sides, flipping direction
+ * every other row so the eye zig-zags down the page.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    items?: FeatureItem[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const items = data?.items ?? [];
+
+const iconPaths: Record<string, string> = {
+  shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
+  star: '<path d="M12 3l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 18.8 6.2 21.9l1.1-6.5L2.6 9.8l6.5-.9L12 3z"/>',
+  home: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/>',
+  award: '<circle cx="12" cy="9" r="6"/><path d="M8.5 13.5 7 22l5-3 5 3-1.5-8.5"/>',
+  wrench:
+    '<path d="M14.5 6.5a4 4 0 0 0-5 5L3 18l3 3 6.5-6.5a4 4 0 0 0 5-5l-2.5 2.5-2-2 2.5-2.5z"/>',
+  droplet: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>',
+  bolt: '<path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/>',
+  check: '<circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/>',
+};
+---
+
+{
+  items.length > 0 && (
+    <section
+      class:list={[
+        "benefits-alternating section-wrapper section-py",
+        `theme-${theme}`,
+      ]}
+    >
+      <div class="section-container">
+        {/* Section header */}
+        {(data?.eyebrow || data?.heading || data?.subheading) && (
+          <div class="flex flex-col items-center text-center gap-3 mb-16">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">
+                {data.subheading}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Alternating rows */}
+        <div class="flex flex-col gap-14 lg:gap-20">
+          {items.map((item, i) => (
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-center">
+              {/* Copy side */}
+              <div
+                class:list={[
+                  "flex flex-col gap-4",
+                  i % 2 === 1 && "lg:order-2",
+                ]}
+              >
+                <span class="benefit-icon" aria-hidden="true">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <Fragment
+                      set:html={iconPaths[item.icon ?? ""] ?? iconPaths.check}
+                    />
+                  </svg>
+                </span>
+                <h3 class="theme-heading text-2xl lg:text-3xl font-bold m-0">
+                  {item.title}
+                </h3>
+                {item.body && (
+                  <p class="theme-text-muted text-lg leading-relaxed m-0">
+                    {item.body}
+                  </p>
+                )}
+              </div>
+
+              {/* Supporting aside */}
+              <div
+                class:list={[
+                  "benefit-aside p-6 lg:p-8",
+                  i % 2 === 1 && "lg:order-1",
+                ]}
+              >
+                {item.bullets && item.bullets.length > 0 ? (
+                  <ul class="flex flex-col gap-4 m-0 p-0 list-none">
+                    {item.bullets.map((bullet) => (
+                      <li class="flex items-start gap-3">
+                        <svg
+                          class="check-icon shrink-0"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M20 6L9 17l-5-5" />
+                        </svg>
+                        <span class="theme-text leading-relaxed">{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  item.body && (
+                    <p class="theme-text leading-relaxed m-0">{item.body}</p>
+                  )
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .benefit-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 0.85rem;
+    background: color-mix(in srgb, var(--theme-accent) 14%, transparent);
+    color: var(--theme-accent);
+  }
+
+  .benefit-icon svg {
+    width: 1.65rem;
+    height: 1.65rem;
+  }
+
+  .benefit-aside {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-md);
+  }
+
+  .check-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: 0.15rem;
+    color: var(--theme-accent);
+  }
+</style>

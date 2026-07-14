@@ -1,0 +1,157 @@
+---
+import type { Eyebrow, FeatureItem } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    items?: FeatureItem[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const items = data?.items ?? [];
+const hasHeader = Boolean(data?.eyebrow || data?.heading || data?.subheading);
+const hasItems = items.length > 0;
+
+const count = items.length;
+const gridClass =
+  count === 2
+    ? "grid-cols-1 sm:grid-cols-2"
+    : count === 4
+      ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+      : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
+
+/** Named icon paths (stroke-based, 24x24 viewBox). Falls back to a check. */
+const icons: Record<string, string> = {
+  shield: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+  clock: "M12 6v6l4 2M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z",
+  heart:
+    "M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z",
+  star: "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",
+  check: "M20 6L9 17l-5-5",
+};
+
+function iconPath(key?: string): string {
+  return (key && icons[key]) || icons.check;
+}
+---
+
+{
+  (hasHeader || hasItems) && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Section header */}
+        {hasHeader && (
+          <div class="flex flex-col items-center text-center gap-3 mb-12">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg max-w-2xl m-0">
+                {data.subheading}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Values grid */}
+        {hasItems && (
+          <div class={`grid ${gridClass} gap-6`}>
+            {items.map((item) => (
+              <div class="flex flex-col gap-4 p-6 rounded-xl border theme-border">
+                <span class="value-icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d={iconPath(item.icon)} />
+                  </svg>
+                </span>
+                <h3 class="theme-heading text-lg font-semibold m-0">
+                  {item.title}
+                </h3>
+                {item.body && (
+                  <p class="theme-text-muted text-sm leading-relaxed m-0">
+                    {item.body}
+                  </p>
+                )}
+                {item.bullets && item.bullets.length > 0 && (
+                  <ul class="flex flex-col gap-2 m-0 p-0 list-none">
+                    {item.bullets.map((bullet) => (
+                      <li class="theme-text-subtle text-sm flex items-start gap-2">
+                        <svg
+                          class="bullet-check"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M20 6L9 17l-5-5" />
+                        </svg>
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .value-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--theme-accent) 12%, transparent);
+    color: var(--theme-accent);
+    flex-shrink: 0;
+  }
+
+  .value-icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .bullet-check {
+    width: 1rem;
+    height: 1rem;
+    margin-top: 0.15rem;
+    color: var(--theme-accent);
+    flex-shrink: 0;
+  }
+</style>

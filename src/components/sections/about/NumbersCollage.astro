@@ -1,0 +1,151 @@
+---
+import type { Eyebrow, SectionCTA, StatItem, ImageRef } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+/**
+ * about:numbers-collage — "by the numbers" story on one side and a staggered
+ * photo collage on the other. The stats read as a compact 2-up grid beneath the
+ * copy; the collage overlaps two/three images for a candid, on-the-job feel.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    stats?: StatItem[];
+    images?: ImageRef[];
+    cta?: SectionCTA;
+    ctas?: SectionCTA[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const ctas = (
+  data?.ctas?.length ? data.ctas : [data?.cta].filter(Boolean)
+) as SectionCTA[];
+const stats = data?.stats ?? [];
+const images = (data?.images ?? []).filter((img) => img?.src).slice(0, 3);
+const hasContent = Boolean(data?.heading || data?.subheading || stats.length);
+---
+
+{
+  (hasContent || images.length > 0) && (
+    <section class:list={["about-numbers-collage section-wrapper section-py", `theme-${theme}`]}>
+      <div class="section-container">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Copy + stats */}
+          <div class="flex flex-col gap-6">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs self-start">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+
+            {data?.subheading && (
+              <p class="theme-text-muted text-lg leading-relaxed m-0">
+                {data.subheading}
+              </p>
+            )}
+
+            {stats.length > 0 && (
+              <div class="grid grid-cols-2 gap-x-8 gap-y-6 mt-2">
+                {stats.map((stat) => (
+                  <div class="flex flex-col gap-1">
+                    <span class="stat-value">{stat.value}</span>
+                    <span class="theme-text font-semibold text-sm uppercase tracking-wide">
+                      {stat.label}
+                    </span>
+                    {stat.description && (
+                      <span class="theme-text-subtle text-sm leading-snug">
+                        {stat.description}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {ctas.length > 0 && (
+              <div class="flex flex-wrap gap-4 mt-2">
+                {ctas.map((cta, i) => (
+                  <Button variant={cta.variant ?? (i === 0 ? "primary" : "outline")} href={cta.href}>
+                    {cta.label}
+                  </Button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Photo collage */}
+          {images.length > 0 && (
+            <div class="collage">
+              {images.map((img, i) => (
+                <figure class={`collage-item collage-item-${i + 1} m-0`}>
+                  <SmartImage
+                    src={img.src}
+                    alt={img.alt ?? ""}
+                    widths={[320, 640]}
+                    sizes="(min-width: 1024px) 30vw, 60vw"
+                    class="w-full h-full object-cover"
+                  />
+                </figure>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .stat-value {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 800;
+    line-height: 1;
+    color: var(--theme-accent);
+  }
+
+  .collage {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 1fr;
+    gap: 1rem;
+  }
+
+  .collage-item {
+    overflow: hidden;
+    border-radius: var(--t-radius);
+    border: var(--t-border-width) solid var(--theme-border);
+    box-shadow: var(--t-shadow-md);
+    aspect-ratio: 1 / 1;
+  }
+
+  /* First image spans taller on wide screens; the rest stack beside it. */
+  .collage-item-1 {
+    grid-row: span 2;
+    aspect-ratio: 3 / 4;
+  }
+
+  @media (max-width: 640px) {
+    .collage-item-1 {
+      grid-row: auto;
+      aspect-ratio: 1 / 1;
+    }
+  }
+</style>

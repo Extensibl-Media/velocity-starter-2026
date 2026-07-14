@@ -1,0 +1,104 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getResolvedNav } from "@/lib/utils";
+import { headerVariants, footerVariants } from "@/lib/layoutRegistry";
+
+// Dev/preview page: shows every header + footer chrome variant in a contained
+// frame. Not part of the real site — noindex + excluded from the sitemap.
+const navItems = await getResolvedNav();
+const headers = Object.entries(headerVariants);
+const footers = Object.entries(footerVariants);
+---
+
+<BaseLayout
+  page={{ id: "components/chrome", data: {} }}
+  title="Header & Footer Variants"
+  description="Chrome variant preview"
+  noindex={true}
+  includeLocalBusinessSchema={false}
+>
+  <main class="section-container section-py">
+    <div class="mb-10">
+      <a href="/components" class="text-sm text-primary font-semibold">&larr; Back to Component Library</a>
+      <h1 class="theme-heading text-3xl lg:text-4xl font-bold mt-3 mb-2">Header &amp; Footer Variants</h1>
+      <p class="theme-text-muted max-w-2xl">
+        Chrome is global layout, selected per site via <code>headerVariant</code> / <code>footerVariant</code> in
+        <code>settings/general.json</code>. Each frame below is a scaled-in preview; the mobile toggle is inert here
+        (duplicate previews share markup).
+      </p>
+    </div>
+
+    <h2 class="theme-heading text-2xl font-bold mb-4">Headers</h2>
+    {
+      headers.map(([name, Header]) => (
+        <section class="chrome-block">
+          <div class="chrome-label">header: <code>{name}</code></div>
+          <div class="chrome-frame">
+            <Header navItems={navItems} />
+            <div class="chrome-hero">
+              <span>Hero / page content</span>
+            </div>
+            <div class="chrome-body">Sample body content sits here.</div>
+          </div>
+        </section>
+      ))
+    }
+
+    <h2 class="theme-heading text-2xl font-bold mt-14 mb-4">Footers</h2>
+    {
+      footers.map(([name, Footer]) => (
+        <section class="chrome-block">
+          <div class="chrome-label">footer: <code>{name}</code></div>
+          <div class="chrome-frame chrome-frame--auto">
+            <Footer />
+          </div>
+        </section>
+      ))
+    }
+  </main>
+</BaseLayout>
+
+<style>
+  .chrome-block { margin-bottom: 2.5rem; }
+  .chrome-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-fg-muted);
+    margin-bottom: 0.5rem;
+  }
+  .chrome-label code,
+  main code {
+    font-family: ui-monospace, monospace;
+    background: var(--color-bg-muted);
+    padding: 0.05rem 0.35rem;
+    border-radius: 0.25rem;
+  }
+  /* transform establishes a containing block so the header's position:fixed
+     is scoped to this frame instead of the viewport. */
+  .chrome-frame {
+    position: relative;
+    transform: translateZ(0);
+    overflow: hidden;
+    height: 360px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-bg);
+  }
+  .chrome-frame--auto { height: auto; }
+  .chrome-hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 180px;
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-bg-inverse));
+  }
+  .chrome-body {
+    padding: 1.5rem;
+    color: var(--color-fg-muted);
+  }
+</style>

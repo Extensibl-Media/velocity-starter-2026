@@ -1,0 +1,95 @@
+---
+import type { Eyebrow } from "@/types/sections";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    items?: { label?: string; logo?: string }[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const items = data?.items ?? [];
+const heading = data?.heading ?? data?.eyebrow?.text;
+---
+
+{
+  items.length > 0 && (
+    <section class={`section-wrapper section-py-sm theme-${theme}`}>
+      <div class="section-container">
+        {heading && (
+          <p class="theme-text-subtle text-sm font-semibold uppercase tracking-widest text-center m-0 mb-8">
+            {heading}
+          </p>
+        )}
+
+        <ul class="flex flex-wrap items-start justify-center gap-x-10 gap-y-8 md:gap-x-14 list-none m-0 p-0">
+          {items.map((item) => (
+            <li class="flex flex-col items-center text-center gap-2 w-24">
+              {item.logo ? (
+                <SmartImage
+                  src={item.logo}
+                  alt={item.label ?? ""}
+                  widths={[120, 240]}
+                  class="cert-logo h-14 w-auto object-contain"
+                />
+              ) : (
+                <span
+                  class="cert-logo flex items-center justify-center h-14"
+                  role="img"
+                  aria-label={item.label ?? "Certification"}
+                >
+                  <svg
+                    class="w-10 h-10"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    aria-hidden="true"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M12 3l7 3v5c0 4.25-2.9 8.06-7 9-4.1-.94-7-4.75-7-9V6l7-3z"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M9 12l2 2 4-4"
+                    />
+                  </svg>
+                </span>
+              )}
+
+              {item.label && (
+                <span class="text-xs font-medium theme-text-muted leading-tight">
+                  {item.label}
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .cert-logo {
+    color: var(--theme-fg-muted, var(--theme-fg));
+    filter: grayscale(1);
+    opacity: 0.65;
+    transition:
+      filter 0.2s ease,
+      opacity 0.2s ease;
+  }
+
+  li:hover .cert-logo {
+    filter: grayscale(0);
+    opacity: 1;
+  }
+</style>

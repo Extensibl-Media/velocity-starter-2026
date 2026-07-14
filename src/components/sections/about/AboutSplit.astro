@@ -1,19 +1,99 @@
 ---
-// AboutSplit — placeholder
-// Replace with full implementation
+import type { Eyebrow, SectionCTA, ImageRef } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import SmartImage from "@/components/media/SmartImage.astro";
 
 interface Props {
   theme?: string;
-  data?: Record<string, unknown>;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    body?: string;
+    image?: ImageRef;
+    imagePosition?: "left" | "right";
+    cta?: SectionCTA;
+  };
 }
 
-const { theme = 'default', data } = Astro.props;
+const { theme = "default", data } = Astro.props;
+
+const imageOnLeft = data?.imagePosition === "left";
 ---
 
 <section class={`section-wrapper section-py theme-${theme}`}>
   <div class="section-container">
-    <p class="theme-text-muted text-sm">
-      [AboutSplit — not yet implemented]
-    </p>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      {/* Content */}
+      <div class={`flex flex-col gap-6 ${imageOnLeft ? "lg:order-2" : "lg:order-1"}`}>
+        {
+          data?.eyebrow && (
+            <div>
+              {data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              )}
+            </div>
+          )
+        }
+
+        {
+          data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )
+        }
+
+        {
+          data?.body && (
+            <p class="theme-text-muted text-lg leading-relaxed m-0">
+              {data.body}
+            </p>
+          )
+        }
+
+        {
+          data?.cta && (
+            <div class="mt-2">
+              <a
+                href={data.cta.href}
+                class="inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold text-sm bg-primary text-primary-foreground hover:opacity-90 transition"
+              >
+                {data.cta.label}
+              </a>
+            </div>
+          )
+        }
+      </div>
+
+      {/* Image */}
+      <div class={`image-wrapper ${imageOnLeft ? "lg:order-1" : "lg:order-2"}`}>
+        {
+          data?.image && (
+            <SmartImage
+              src={data.image.src}
+              alt={data.image.alt ?? ""}
+              widths={[480, 768, 1024]}
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              class="w-full h-full object-cover rounded-2xl"
+            />
+          )
+        }
+      </div>
+    </div>
   </div>
 </section>
+
+<style>
+  .image-wrapper {
+    position: relative;
+    border-radius: var(--radius);
+    overflow: hidden;
+    aspect-ratio: 4/3;
+  }
+</style>

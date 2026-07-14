@@ -1,0 +1,125 @@
+---
+import { getCollection } from "astro:content";
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+/**
+ * service-areas:chips — a compact "cities we serve" chip cloud pulled from the
+ * `serviceAreas` collection. Each city renders as a rounded pill linking to its
+ * area page. Ideal for footers or geo-SEO strips with many cities.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    limit?: number;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const all = await getCollection("serviceAreas");
+let areas = all.sort((a, b) => a.data.order - b.data.order);
+if (data?.limit) areas = areas.slice(0, data.limit);
+---
+
+<section
+  class:list={["service-areas-chips section-wrapper section-py", `theme-${theme}`]}
+>
+  <div class="section-container">
+    <div class="flex flex-col items-center text-center gap-3 mb-10">
+      {
+        data?.eyebrow && (
+          <div>
+            {data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="theme-accent text-sm font-semibold uppercase tracking-widest">
+                {data.eyebrow.text}
+              </span>
+            )}
+          </div>
+        )
+      }
+      {
+        data?.heading && (
+          <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+        )
+      }
+      {
+        data?.subheading && (
+          <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>
+        )
+      }
+    </div>
+
+    <ul class="chip-cloud" role="list">
+      {
+        areas.map((area) => (
+          <li>
+            <a href={`/${area.data.slug}`} class="chip">
+              <svg
+                class="chip-pin"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.25"
+                aria-hidden="true"
+              >
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              <span>{area.data.city}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .chip-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.625rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 56rem;
+    margin-inline: auto;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.95rem;
+    border-radius: 999px;
+    border: var(--t-border-width) solid var(--theme-border);
+    background-color: var(--card);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: inherit;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
+  }
+  .chip:hover {
+    box-shadow: var(--t-shadow-sm);
+    transform: translateY(-1px);
+  }
+  .chip:hover .chip-pin {
+    opacity: 1;
+  }
+  .chip-pin {
+    width: 0.9rem;
+    height: 0.9rem;
+    opacity: 0.55;
+    transition: opacity 0.2s ease;
+  }
+</style>

@@ -1,0 +1,145 @@
+---
+import type { Eyebrow, CertItem, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import SmartImage from "@/components/media/SmartImage.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * certifications:split-copy — a two-column layout: trust copy (eyebrow, heading,
+ * body, optional bullet points and CTA) on one side, and a tidy badge grid of
+ * certifications on the other. Reads as "here's why our credentials matter,"
+ * pairing narrative with proof. `flip` puts the badges first on large screens.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    body?: string;
+    bullets?: string[];
+    cta?: SectionCTA;
+    flip?: boolean;
+    items?: CertItem[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const items = data?.items ?? [];
+const bullets = data?.bullets ?? [];
+const flip = data?.flip ?? false;
+---
+
+<section class:list={["certifications-split-copy section-wrapper section-py", `theme-${theme}`]}>
+  <div class="section-container">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+      {/* Copy column */}
+      <div class:list={["flex flex-col gap-5", flip && "lg:order-2"]}>
+        {data?.eyebrow && (
+          <div>
+            {data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                {data.eyebrow.text}
+              </span>
+            )}
+          </div>
+        )}
+        {data?.heading && (
+          <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+        )}
+        {data?.body && (
+          <p class="theme-text-muted text-lg leading-relaxed m-0">{data.body}</p>
+        )}
+        {bullets.length > 0 && (
+          <ul class="flex flex-col gap-3 list-none m-0 p-0">
+            {bullets.map((b) => (
+              <li class="flex items-start gap-3">
+                <span class="check-dot">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                    <path d="m5 13 4 4L19 7" />
+                  </svg>
+                </span>
+                <span class="theme-text text-base leading-snug">{b}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+        {data?.cta && (
+          <div class="mt-2">
+            <Button href={data.cta.href} variant={data.cta.variant ?? "primary"}>
+              {data.cta.label}
+            </Button>
+          </div>
+        )}
+      </div>
+
+      {/* Badge column */}
+      {items.length > 0 && (
+        <ul class:list={["grid grid-cols-2 gap-4 list-none m-0 p-0", flip && "lg:order-1"]}>
+          {items.map((item) => (
+            <li class="badge-cell flex flex-col items-center text-center gap-3 p-6">
+              {item.logo ? (
+                <SmartImage
+                  src={item.logo}
+                  alt={item.label}
+                  width={96}
+                  class="h-12 w-auto object-contain"
+                />
+              ) : (
+                <span class="badge-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg>
+                </span>
+              )}
+              <span class="theme-heading text-sm font-semibold leading-tight">{item.label}</span>
+              {item.description && (
+                <span class="theme-text-subtle text-xs leading-snug">{item.description}</span>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .badge-cell {
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-sm);
+  }
+  .badge-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--theme-accent, currentColor) 12%, transparent);
+    color: var(--theme-accent, currentColor);
+  }
+  .badge-icon svg {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+  .check-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--theme-accent, currentColor) 15%, transparent);
+    color: var(--theme-accent, currentColor);
+  }
+  .check-dot svg {
+    width: 0.85rem;
+    height: 0.85rem;
+  }
+</style>

@@ -1,0 +1,136 @@
+---
+import { getCollection } from "astro:content";
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+/**
+ * service-areas:columns — a dense multi-column list of cities from the
+ * `serviceAreas` collection. CSS columns flow the links into 2–4 balanced
+ * columns, making it a tidy home for long coverage lists.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    limit?: number;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const all = await getCollection("serviceAreas");
+let areas = all.sort((a, b) => a.data.order - b.data.order);
+if (data?.limit) areas = areas.slice(0, data.limit);
+---
+
+<section
+  class:list={["service-areas-columns section-wrapper section-py", `theme-${theme}`]}
+>
+  <div class="section-container">
+    <div class="flex flex-col gap-3 mb-10 max-w-2xl">
+      {
+        data?.eyebrow && (
+          <div>
+            {data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="theme-accent text-sm font-semibold uppercase tracking-widest">
+                {data.eyebrow.text}
+              </span>
+            )}
+          </div>
+        )
+      }
+      {
+        data?.heading && (
+          <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+        )
+      }
+      {
+        data?.subheading && (
+          <p class="theme-text-muted text-lg m-0">{data.subheading}</p>
+        )
+      }
+    </div>
+
+    <ul class="area-columns" role="list">
+      {
+        areas.map((area) => (
+          <li>
+            <a href={`/${area.data.slug}`} class="area-line group">
+              <svg
+                class="line-pin"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.25"
+                aria-hidden="true"
+              >
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              <span class="line-city theme-text">{area.data.city}</span>
+              <span class="line-region theme-text-subtle">
+                {area.data.county ? `${area.data.county} County` : area.data.state}
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .area-columns {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    column-gap: 2.5rem;
+    columns: 1;
+  }
+  @media (min-width: 640px) {
+    .area-columns {
+      columns: 2;
+    }
+  }
+  @media (min-width: 1024px) {
+    .area-columns {
+      columns: 3;
+    }
+  }
+  .area-columns li {
+    break-inside: avoid;
+  }
+  .area-line {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.55rem 0;
+    border-bottom: var(--t-border-width) solid var(--theme-border);
+    text-decoration: none;
+    transition: padding-left 0.2s ease;
+  }
+  .area-line:hover {
+    padding-left: 0.35rem;
+  }
+  .line-pin {
+    width: 0.85rem;
+    height: 0.85rem;
+    flex-shrink: 0;
+    color: currentColor;
+    opacity: 0.5;
+    transform: translateY(0.15rem);
+  }
+  .line-city {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .line-region {
+    margin-left: auto;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+</style>

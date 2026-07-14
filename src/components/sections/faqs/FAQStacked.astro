@@ -1,19 +1,84 @@
 ---
-// FAQStacked — placeholder
-// Replace with full implementation
+import { getCollection } from "astro:content";
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
 
 interface Props {
   theme?: string;
-  data?: Record<string, unknown>;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    service?: string;
+  };
 }
 
-const { theme = 'default', data } = Astro.props;
+const { theme = "default", data } = Astro.props;
+
+const allFaqs = await getCollection("faqs");
+
+const faqs = allFaqs
+  .filter((f) => !data?.service || f.data.service === data.service)
+  .sort((a, b) => a.data.order - b.data.order);
 ---
 
 <section class={`section-wrapper section-py theme-${theme}`}>
   <div class="section-container">
-    <p class="theme-text-muted text-sm">
-      [FAQStacked — not yet implemented]
-    </p>
+    {/* Section header */}
+    {
+      (data?.eyebrow || data?.heading || data?.subheading) && (
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow && (
+            <div>
+              {data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              )}
+            </div>
+          )}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">
+              {data.subheading}
+            </p>
+          )}
+        </div>
+      )
+    }
+
+    {/* Always-open stacked Q&A list */}
+    {
+      faqs.length > 0 ? (
+        <div class="max-w-3xl mx-auto flex flex-col divide-y theme-divide">
+          {faqs.map((faq) => (
+            <div class="py-6 first:pt-0 last:pb-0">
+              <h3 class="theme-heading font-semibold text-lg m-0">
+                {faq.data.question}
+              </h3>
+              <p class="theme-text-muted leading-relaxed mt-2 mb-0">
+                {faq.data.answer}
+              </p>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p class="text-center theme-text-muted">No FAQs found.</p>
+      )
+    }
   </div>
 </section>
+
+<style>
+  .theme-divide > * + * {
+    border-top: 1px solid var(--color-border);
+  }
+</style>

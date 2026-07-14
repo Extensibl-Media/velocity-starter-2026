@@ -1,0 +1,264 @@
+---
+import { getCollection } from "astro:content";
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    limit?: number;
+    filter?: "featured" | "all";
+    service?: string;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const allReviews = await getCollection("reviews");
+
+const reviews = allReviews
+  .filter((r) => (data?.filter === "all" ? true : r.data.featured))
+  .filter((r) => !data?.service || r.data.service === data.service)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, data?.limit ?? 6);
+
+const sourceColors: Record<string, string> = {
+  Google: "#EA4335",
+  Facebook: "#1877F2",
+  Yelp: "#D32323",
+  Direct: "var(--theme-accent)",
+};
+
+function getInitials(name: string) {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+}
+---
+
+<section
+  class:list={["reviews-verified section-wrapper section-py", `theme-${theme}`]}
+>
+  <div class="section-container">
+    {
+      (data?.eyebrow || data?.heading || data?.subheading) && (
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">
+                {data.eyebrow.text}
+              </Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                {data.eyebrow.text}
+              </span>
+            ))}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">
+              {data.subheading}
+            </p>
+          )}
+        </div>
+      )
+    }
+
+    {
+      reviews.length > 0 ? (
+        <div class="verified-grid">
+          {reviews.map((review) => {
+            const accent =
+              sourceColors[review.data.source] ?? sourceColors.Direct;
+            return (
+              <article class="verified-card">
+                <header class="flex items-center gap-3 mb-4">
+                  <div
+                    class="avatar"
+                    style={`background: color-mix(in srgb, ${accent} 18%, transparent); color: ${accent};`}
+                    aria-hidden="true"
+                  >
+                    {getInitials(review.data.author)}
+                  </div>
+                  <div class="flex flex-col min-w-0">
+                    <span class="theme-heading font-semibold text-sm leading-tight truncate">
+                      {review.data.author}
+                    </span>
+                    <span
+                      class="verified-pill"
+                      style={`color: ${accent};`}
+                      title={`Verified ${review.data.source} review`}
+                    >
+                      <svg
+                        class="w-3.5 h-3.5"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path d="M12 2l2.09 1.53 2.55-.42 1.16 2.32 2.32 1.16-.42 2.55L23 12l-1.53 2.09.42 2.55-2.32 1.16-1.16 2.32-2.55-.42L12 22l-2.09-1.53-2.55.42-1.16-2.32-2.32-1.16.42-2.55L1 12l1.53-2.09-.42-2.55 2.32-1.16 1.16-2.32 2.55.42L12 2zm-1.2 12.6l5-5-1.4-1.4-3.6 3.6-1.6-1.6-1.4 1.4 3 3z" />
+                      </svg>
+                      Verified {review.data.source !== "Direct"
+                        ? review.data.source
+                        : "customer"}
+                    </span>
+                  </div>
+
+                  <div class="source-logo shrink-0 ml-auto" aria-hidden="true">
+                    {review.data.source === "Google" && (
+                      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                          fill="#4285F4"
+                        />
+                        <path
+                          d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                          fill="#34A853"
+                        />
+                        <path
+                          d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                          fill="#FBBC05"
+                        />
+                        <path
+                          d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                          fill="#EA4335"
+                        />
+                      </svg>
+                    )}
+                    {review.data.source === "Facebook" && (
+                      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
+                          fill="#1877F2"
+                        />
+                      </svg>
+                    )}
+                    {review.data.source === "Yelp" && (
+                      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M20.16 12.73l-4.703 1.14a.63.63 0 0 0-.354.98l3.028 3.78a.66.66 0 0 0 1.125-.088c.47-.878.801-1.821.982-2.797a9.123 9.123 0 0 0-.078-3.067.63.63 0 0 0-1.02-.948zM12.77 11.33l4.31-2.217a.62.62 0 0 0 .045-1.079 9.284 9.284 0 0 0-5.448-1.49.62.62 0 0 0-.6.597l-.068 4.806a.64.64 0 0 0 .96.55.633.633 0 0 0 .8-.167z"
+                          fill="#D32323"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                </header>
+
+                <div class="flex items-center gap-0.5 mb-3">
+                  {Array.from(
+                    { length: 5 },
+                    (_, i) => review.data.rating > i
+                  ).map((filled) => (
+                    <svg
+                      class={`w-4 h-4 ${filled ? "star-filled" : "star-empty"}`}
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                  ))}
+                </div>
+
+                <p class="verified-body theme-text">{review.data.body}</p>
+              </article>
+            );
+          })}
+        </div>
+      ) : (
+        <p class="text-center theme-text-muted">No reviews yet.</p>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .verified-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .verified-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .verified-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .verified-card {
+    padding: 1.5rem;
+    background-color: var(--card);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-sm);
+    transition:
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .verified-card:hover {
+    box-shadow: var(--t-shadow-md);
+    transform: translateY(-2px);
+  }
+
+  .avatar {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .verified-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-top: 0.125rem;
+  }
+
+  .source-logo {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .source-logo svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .verified-body {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .star-filled {
+    color: var(--color-rating);
+  }
+
+  .star-empty {
+    color: var(--color-rating-empty);
+  }
+</style>

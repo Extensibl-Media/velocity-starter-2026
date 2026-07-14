@@ -1,0 +1,145 @@
+---
+import type { Eyebrow, SectionCTA, TeamMember } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+/**
+ * about:team-story — a story block (heading + body + optional CTA) on one side
+ * and a compact team preview (small avatar cards) on the other.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    body?: string;
+    members?: TeamMember[];
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const members = data?.members ?? [];
+const hasStory = !!(data?.heading || data?.body);
+
+/** Derive up to two initials from a member's name. */
+function initials(name: string): string {
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join("");
+}
+---
+
+{
+  (hasStory || members.length > 0) && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Story — left */}
+          <div class="flex flex-col gap-6">
+            {data?.eyebrow &&
+              (data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              ))}
+
+            {data?.heading && (
+              <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+                {data.heading}
+              </h2>
+            )}
+
+            {data?.body && (
+              <p class="theme-text-muted text-lg leading-relaxed m-0">
+                {data.body}
+              </p>
+            )}
+
+            {data?.cta && (
+              <div class="mt-2">
+                <Button
+                  variant={data.cta.variant ?? "primary"}
+                  href={data.cta.href}
+                >
+                  {data.cta.label}
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Team preview — right */}
+          {members.length > 0 && (
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {members.map((member) => (
+                <div class="member-card flex items-center gap-4 p-4 rounded-xl border theme-border">
+                  {member.photo ? (
+                    <SmartImage
+                      src={member.photo}
+                      alt={member.name}
+                      widths={[96, 192]}
+                      class="member-photo w-16 h-16 object-cover rounded-full shrink-0"
+                    />
+                  ) : (
+                    <div class="member-avatar shrink-0" aria-hidden="true">
+                      <span>{initials(member.name)}</span>
+                    </div>
+                  )}
+                  <div class="flex flex-col gap-0.5 min-w-0">
+                    <span class="theme-heading font-semibold truncate">
+                      {member.name}
+                    </span>
+                    {member.role && (
+                      <span class="text-primary text-sm font-medium truncate">
+                        {member.role}
+                      </span>
+                    )}
+                    {member.bio && (
+                      <span class="theme-text-muted text-sm leading-relaxed mt-1">
+                        {member.bio}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .member-card {
+    background: color-mix(in srgb, var(--theme-accent) 3%, transparent);
+  }
+
+  .member-photo {
+    box-shadow: var(--t-shadow-md);
+  }
+
+  .member-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--theme-accent) 12%, transparent);
+    color: var(--theme-accent);
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+</style>

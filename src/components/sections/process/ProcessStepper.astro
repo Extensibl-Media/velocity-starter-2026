@@ -1,0 +1,240 @@
+---
+import type { Eyebrow, ProcessStep } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+/**
+ * process:stepper — a static horizontal stepper with a progress rail. Numbered
+ * nodes sit along a track (a filled progress segment up to the highlighted
+ * step, unfilled after it) with labels + body beneath each. Purely static — no
+ * client JS. Communicates "a clear, guided sequence" at a glance. On mobile the
+ * stepper becomes a vertical rail.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    steps?: ProcessStep[];
+    /** 1-based index of the step to visually highlight as "current". */
+    current?: number;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const defaultSteps: ProcessStep[] = [
+  { heading: "Request", body: "Call or book online in under a minute." },
+  { heading: "Inspect", body: "Free on-site assessment and photo report." },
+  { heading: "Quote", body: "Clear, written estimate — no pressure." },
+  { heading: "Repair", body: "Licensed crews finish on schedule." },
+];
+
+const steps = data?.steps?.length ? data.steps : defaultSteps;
+const current = data?.current ?? steps.length;
+---
+
+<section
+  class:list={["process-stepper section-wrapper section-py", `theme-${theme}`]}
+>
+  <div class="section-container">
+    {/* Section header */}
+    <div class="flex flex-col items-center text-center gap-3 mb-16">
+      {
+        data?.eyebrow &&
+          (data.eyebrow.variant === "badge" ? (
+            <Badge class="uppercase tracking-widest text-xs">
+              {data.eyebrow.text}
+            </Badge>
+          ) : (
+            <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+              {data.eyebrow.text}
+            </span>
+          ))
+      }
+      {
+        data?.heading && (
+          <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+            {data.heading}
+          </h2>
+        )
+      }
+      {
+        data?.subheading && (
+          <p class="theme-text-muted text-lg max-w-2xl m-0">
+            {data.subheading}
+          </p>
+        )
+      }
+    </div>
+
+    {/* Stepper */}
+    <ol class="st-list" style={`--step-count:${steps.length}`}>
+      {
+        steps.map((step, index) => {
+          const done = current >= index + 1;
+          return (
+            <li class:list={["st-item", { "st-done": done }]}>
+              <div class="st-track" aria-hidden="true">
+                {index > 0 && (
+                  <span
+                    class:list={["st-line st-line-left", { "st-line-fill": done }]}
+                  />
+                )}
+                <span class="st-node">
+                  <span class="st-number">{index + 1}</span>
+                </span>
+                {index !== steps.length - 1 && (
+                  <span
+                    class:list={[
+                      "st-line st-line-right",
+                      { "st-line-fill": index + 2 <= current },
+                    ]}
+                  />
+                )}
+              </div>
+              <div class="st-content">
+                <h3 class="theme-heading font-bold text-base m-0">
+                  {step.heading}
+                </h3>
+                {step.body && (
+                  <p class="theme-text-muted text-sm leading-relaxed m-0 mt-1">
+                    {step.body}
+                  </p>
+                )}
+              </div>
+            </li>
+          );
+        })
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .st-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .st-item {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    column-gap: 1.25rem;
+  }
+
+  .st-track {
+    grid-column: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+  .st-node {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--card);
+    border: 2px solid var(--theme-border);
+    z-index: 1;
+  }
+
+  .st-done .st-node {
+    background: var(--color-primary);
+    border-color: var(--theme-accent);
+  }
+
+  .st-number {
+    font-size: 1rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--theme-text-muted, currentColor);
+  }
+
+  .st-done .st-number {
+    color: var(--color-fg-on-primary);
+  }
+
+  .st-line {
+    width: 2px;
+    flex: 1;
+    background: var(--theme-border);
+    min-height: 1.25rem;
+  }
+
+  .st-line-fill {
+    background: var(--color-primary);
+  }
+
+  .st-content {
+    grid-column: 2;
+    padding-bottom: 2rem;
+    padding-top: 0.4rem;
+  }
+
+  .st-item:last-child .st-content {
+    padding-bottom: 0;
+  }
+
+  /* Horizontal stepper on desktop */
+  @media (min-width: 900px) {
+    .st-list {
+      grid-template-columns: repeat(var(--step-count), 1fr);
+    }
+
+    .st-item {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr;
+      row-gap: 1rem;
+      text-align: center;
+    }
+
+    .st-track {
+      grid-row: 1;
+      flex-direction: row;
+      justify-content: center;
+      width: 100%;
+      height: 2.75rem;
+    }
+
+    .st-line {
+      width: auto;
+      height: 2px;
+      flex: 1;
+      min-height: 0;
+      position: relative;
+      top: 0;
+    }
+
+    .st-line-left {
+      order: 0;
+    }
+
+    .st-node {
+      order: 1;
+    }
+
+    .st-line-right {
+      order: 2;
+    }
+
+    .st-content {
+      grid-column: 1;
+      grid-row: 2;
+      padding: 0 0.75rem;
+    }
+
+    .st-item:last-child .st-content {
+      padding-bottom: 0;
+    }
+  }
+</style>

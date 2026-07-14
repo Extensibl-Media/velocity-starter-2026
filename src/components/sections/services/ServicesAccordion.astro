@@ -1,0 +1,118 @@
+---
+import { getCollection } from "astro:content";
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/starwind/accordion";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    limit?: number;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const services = await getCollection("services");
+const sorted = services
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, data?.limit ?? services.length);
+---
+
+<section class={`section-wrapper section-py theme-${theme}`}>
+  <div class="section-container">
+    {/* Section header */}
+    <div class="flex flex-col items-center text-center gap-3 mb-12">
+      {
+        data?.eyebrow && (
+          <div>
+            {data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">
+                {data.eyebrow.text}
+              </Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            )}
+          </div>
+        )
+      }
+      {
+        data?.heading && (
+          <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+            {data.heading}
+          </h2>
+        )
+      }
+      {
+        data?.subheading && (
+          <p class="theme-text-muted text-lg max-w-2xl m-0">
+            {data.subheading}
+          </p>
+        )
+      }
+    </div>
+
+    {/* Accordion */}
+    {
+      sorted.length > 0 && (
+        <div class="max-w-3xl mx-auto">
+          <Accordion type="single" defaultValue="svc-0">
+            {sorted.map((service, i) => (
+              <AccordionItem value={`svc-${i}`}>
+                <AccordionTrigger class="text-left font-semibold theme-heading">
+                  <span class="flex items-center gap-2">
+                    <span>{service.data.title}</span>
+                    {service.data.isEmergency && (
+                      <span
+                        class="shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full"
+                        style="background: color-mix(in srgb, var(--color-brand-secondary) 15%, transparent); color: var(--color-brand-secondary-fg)"
+                      >
+                        Emergency
+                      </span>
+                    )}
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent class="theme-text-muted leading-relaxed">
+                  <div class="flex flex-col gap-3">
+                    {service.data.description && (
+                      <p class="theme-text-muted text-sm leading-relaxed m-0">
+                        {service.data.description}
+                      </p>
+                    )}
+                    <a
+                      href={`/services/${service.data.slug}`}
+                      class="text-sm font-semibold text-primary inline-flex items-center gap-1 no-underline self-start group"
+                    >
+                      Learn more
+                      <svg
+                        class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        aria-hidden="true"
+                      >
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </a>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+      )
+    }
+  </div>
+</section>

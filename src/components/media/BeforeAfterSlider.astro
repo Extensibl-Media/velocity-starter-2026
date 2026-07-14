@@ -1,0 +1,145 @@
+---
+import SmartImage from "@/components/media/SmartImage.astro";
+
+/**
+ * A single draggable before/after comparison slider. Both images render at
+ * full stage size and stay perfectly aligned; the "before" layer is revealed
+ * via clip-path driven by a range input. Shared by the gallery:before-after
+ * and gallery:before-after-grid sections.
+ */
+interface Props {
+  before: string;
+  after: string;
+  label?: string;
+  alt?: string;
+}
+const { before, after, label, alt } = Astro.props;
+---
+
+<figure class="ba m-0" data-before-after>
+  <div class="ba-stage">
+    {/* After = base layer */}
+    <div class="ba-img">
+      <SmartImage src={after} alt={alt ? `${alt} — after` : "After"} widths={[400, 600, 900, 1200]} sizes="(min-width: 1024px) 50vw, 100vw" class="ba-media" />
+      <span class="ba-tag ba-tag-after">After</span>
+    </div>
+    {/* Before = clipped overlay */}
+    <div class="ba-img ba-before">
+      <SmartImage src={before} alt={alt ? `${alt} — before` : "Before"} widths={[400, 600, 900, 1200]} sizes="(min-width: 1024px) 50vw, 100vw" class="ba-media" />
+      <span class="ba-tag ba-tag-before">Before</span>
+    </div>
+    {/* Handle */}
+    <div class="ba-handle" aria-hidden="true">
+      <span class="ba-handle-grip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="m15 18-6-6 6-6" /><path d="m9 6 6 6-6 6" />
+        </svg>
+      </span>
+    </div>
+    {/* Range control (drag) */}
+    <input class="ba-range" type="range" min="0" max="100" value="50" aria-label="Reveal before or after image" />
+  </div>
+  {label && <figcaption class="theme-text-subtle text-sm mt-3 text-center">{label}</figcaption>}
+</figure>
+
+<style>
+  .ba-stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    border-radius: var(--radius);
+    overflow: hidden;
+    --pos: 50%;
+    user-select: none;
+    touch-action: none;
+  }
+  .ba-img {
+    position: absolute;
+    inset: 0;
+  }
+  .ba-img :global(.ba-media) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+  }
+  /* Reveal only the left portion of the "before" image; images stay aligned. */
+  .ba-before {
+    clip-path: inset(0 calc(100% - var(--pos)) 0 0);
+  }
+  .ba-before::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 2px;
+    background: var(--color-bg);
+  }
+  .ba-tag {
+    position: absolute;
+    bottom: 0.75rem;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: var(--radius);
+    color: #fff;
+    background: rgba(0, 0, 0, 0.6);
+  }
+  .ba-tag-before { left: 0.75rem; }
+  .ba-tag-after { right: 0.75rem; }
+  .ba-handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--pos);
+    width: 0;
+    pointer-events: none;
+  }
+  .ba-handle-grip {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translate(-50%, -50%);
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 9999px;
+    background: var(--color-bg);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--t-shadow-md);
+  }
+  .ba-handle-grip svg { width: 1.25rem; height: 1.25rem; }
+  .ba-range {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: ew-resize;
+  }
+</style>
+
+<script>
+  function initBeforeAfter(fig: HTMLElement) {
+    if (fig.dataset.baReady) return;
+    const stage = fig.querySelector<HTMLElement>(".ba-stage");
+    const range = fig.querySelector<HTMLInputElement>(".ba-range");
+    if (!stage || !range) return;
+    fig.dataset.baReady = "1";
+    const update = () => stage.style.setProperty("--pos", `${range.value}%`);
+    range.addEventListener("input", update);
+    update();
+  }
+  function initAllBeforeAfter() {
+    document.querySelectorAll<HTMLElement>("[data-before-after]").forEach(initBeforeAfter);
+  }
+  initAllBeforeAfter();
+  document.addEventListener("astro:after-swap", initAllBeforeAfter);
+</script>

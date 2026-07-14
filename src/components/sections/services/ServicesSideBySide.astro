@@ -1,0 +1,137 @@
+---
+import { getCollection } from "astro:content";
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+import SmartImage from "@/components/media/SmartImage.astro";
+import roofingCrew from "@/assets/images/roofing-crew.jpg";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    image: { src: string; alt?: string };
+    imagePosition?: "left" | "right";
+    limit?: number;
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const services = await getCollection("services");
+const sorted = services
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, data?.limit ?? services.length);
+
+const imageLeft = data?.imagePosition !== "right";
+---
+
+<section class={`section-wrapper section-py theme-${theme}`}>
+  <div class="section-container">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      {/* Image */}
+      <div
+        class:list={[
+          "relative rounded-2xl overflow-hidden",
+          !imageLeft && "lg:order-last",
+        ]}
+      >
+        <SmartImage
+          src={data?.image?.src}
+          alt={data?.image?.alt ?? ""}
+          fallback={roofingCrew}
+          widths={[480, 768, 1024]}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          class="w-full h-full object-cover aspect-[4/3]"
+        />
+      </div>
+
+      {/* Content */}
+      <div class="flex flex-col gap-6">
+        {
+          data?.eyebrow && (
+            <div>
+              {data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              )}
+            </div>
+          )
+        }
+
+        {
+          data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )
+        }
+
+        {
+          data?.subheading && (
+            <p class="theme-text-muted text-lg leading-relaxed m-0">
+              {data.subheading}
+            </p>
+          )
+        }
+
+        {/* Service list */}
+        <ul class="flex flex-col gap-4 list-none m-0 p-0">
+          {
+            sorted.map((service) => (
+              <li class="flex items-start gap-3">
+                <div
+                  class="shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-0.5"
+                  style="background: color-mix(in srgb, var(--theme-accent) 10%, transparent)"
+                >
+                  <svg
+                    class="w-3.5 h-3.5 text-primary"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    aria-hidden="true"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </div>
+                <div class="flex flex-col gap-0.5">
+                  <span class="theme-heading font-semibold text-base">
+                    {service.data.title}
+                  </span>
+                  {service.data.description && (
+                    <span class="theme-text-muted text-sm leading-relaxed">
+                      {service.data.description}
+                    </span>
+                  )}
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+
+        {
+          data?.cta && (
+            <div class="mt-2">
+              <Button
+                variant={data.cta.variant ?? "primary"}
+                href={data.cta.href}
+              >
+                {data.cta.label}
+              </Button>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,63 @@
+---
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import BeforeAfterSlider from "@/components/media/BeforeAfterSlider.astro";
+
+/**
+ * gallery:before-after-grid — a responsive grid of compact before/after
+ * sliders (default 3 columns). Use it to show many transformations at once;
+ * for one or two large comparisons use gallery:before-after.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    columns?: 2 | 3 | 4;
+    pairs?: { before: string; after: string; label?: string; alt?: string }[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const pairs = data?.pairs ?? [];
+const cols =
+  data?.columns === 2
+    ? "sm:grid-cols-2"
+    : data?.columns === 4
+      ? "sm:grid-cols-2 lg:grid-cols-4"
+      : "sm:grid-cols-2 lg:grid-cols-3";
+---
+
+<section class={`section-wrapper section-py theme-${theme}`}>
+  <div class="section-container">
+    {/* Header */}
+    <div class="flex flex-col items-center text-center gap-3 mb-12">
+      {
+        data?.eyebrow && (
+          <div>
+            {data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            )}
+          </div>
+        )
+      }
+      {data?.heading && <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>}
+      {data?.subheading && <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>}
+    </div>
+
+    {
+      pairs.length > 0 && (
+        <div class={`grid grid-cols-1 ${cols} gap-6`}>
+          {pairs.map((pair) => (
+            <BeforeAfterSlider before={pair.before} after={pair.after} label={pair.label} alt={pair.alt} />
+          ))}
+        </div>
+      )
+    }
+  </div>
+</section>

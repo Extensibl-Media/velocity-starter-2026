@@ -1,0 +1,147 @@
+---
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * content:callout — a highlighted, primary-tinted panel that draws the eye to
+ * a single message: optional icon, heading, prose `body`, and optional CTA.
+ * Centered and narrow. `body` is an HTML string authored in the CMS/JSON,
+ * rendered as a themed `.rich-text` block. Theme-pure: colors derive from
+ * design tokens.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    body?: string;
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const hasContent = Boolean(data?.heading || data?.body || data?.eyebrow || data?.cta);
+---
+
+{
+  hasContent && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        <div class="callout theme-border max-w-3xl mx-auto flex flex-col items-center text-center gap-4">
+          {/* Icon */}
+          <span class="callout-icon" aria-hidden="true">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 16v-4" />
+              <path d="M12 8h.01" />
+            </svg>
+          </span>
+
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">
+                {data.eyebrow.text}
+              </Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            ))}
+
+          {data?.heading && (
+            <h2 class="theme-heading text-2xl lg:text-3xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )}
+
+          {data?.body && (
+            <div class="rich-text theme-text" set:html={data.body} />
+          )}
+
+          {data?.cta && (
+            <div class="mt-2">
+              <Button href={data.cta.href} variant={data.cta.variant ?? "primary"}>
+                {data.cta.label}
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .callout {
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 1rem;
+    padding: 2.5rem 2rem;
+    background: color-mix(in srgb, var(--theme-accent) 6%, transparent);
+  }
+
+  .callout-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 9999px;
+    color: var(--theme-accent);
+    background: color-mix(in srgb, var(--theme-accent) 12%, transparent);
+  }
+  .callout-icon :global(svg) {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .rich-text {
+    line-height: 1.75;
+  }
+  .rich-text :global(> * + *) {
+    margin-top: 1.25em;
+  }
+  .rich-text :global(h2),
+  .rich-text :global(h3),
+  .rich-text :global(h4) {
+    color: var(--theme-heading);
+    font-family: var(--font-heading);
+    font-weight: var(--t-font-weight-heading);
+    line-height: 1.25;
+    margin-top: 2em;
+  }
+  .rich-text :global(h2) { font-size: 1.5rem; }
+  .rich-text :global(h3) { font-size: 1.25rem; }
+  .rich-text :global(a) {
+    color: var(--theme-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .rich-text :global(ul),
+  .rich-text :global(ol) {
+    padding-left: 1.5rem;
+    text-align: left;
+  }
+  .rich-text :global(ul) { list-style: disc; }
+  .rich-text :global(ol) { list-style: decimal; }
+  .rich-text :global(li + li) { margin-top: 0.5rem; }
+  .rich-text :global(blockquote) {
+    border-left: 3px solid var(--color-primary);
+    padding-left: 1rem;
+    color: var(--theme-fg-muted);
+    font-style: italic;
+    text-align: left;
+  }
+  .rich-text :global(strong) { font-weight: 600; }
+  .rich-text :global(img) { border-radius: var(--radius); }
+</style>

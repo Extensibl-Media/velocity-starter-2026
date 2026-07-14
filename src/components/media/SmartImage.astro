@@ -1,0 +1,60 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import { resolveImage, isLocal } from "@/lib/images";
+
+/**
+ * JSON-friendly image. Takes a string `src` (from page/content JSON), resolves
+ * it via the central resolver, and renders an optimized <Image> for local
+ * assets or a plain <img> for public/remote URLs. Pass `fallback` (a statically
+ * imported ImageMetadata) to cover missing/unset sources.
+ */
+interface Props {
+  src?: string;
+  alt?: string;
+  fallback?: ImageMetadata;
+  width?: number;
+  widths?: number[];
+  sizes?: string;
+  class?: string;
+  loading?: "lazy" | "eager";
+  fetchpriority?: "high" | "low" | "auto";
+}
+
+const {
+  src,
+  alt = "",
+  fallback,
+  width,
+  widths,
+  sizes,
+  class: className,
+  loading = "lazy",
+  fetchpriority,
+} = Astro.props;
+
+const resolved = resolveImage(src) ?? fallback;
+---
+
+{
+  isLocal(resolved) ? (
+    <Image
+      src={resolved}
+      alt={alt}
+      width={width}
+      widths={widths}
+      sizes={sizes}
+      class={className}
+      loading={loading}
+      fetchpriority={fetchpriority}
+    />
+  ) : resolved ? (
+    <img
+      src={resolved}
+      alt={alt}
+      class={className}
+      loading={loading}
+      fetchpriority={fetchpriority}
+    />
+  ) : null
+}

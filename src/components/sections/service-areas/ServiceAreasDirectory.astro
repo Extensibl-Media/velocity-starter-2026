@@ -1,0 +1,148 @@
+---
+import { getCollection } from "astro:content";
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+/**
+ * service-areas:directory — an alphabetized A–Z directory of every city in the
+ * `serviceAreas` collection, grouped under a leading-letter header. Best for
+ * large coverage footprints where scannability beats visual flair.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    limit?: number;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const all = await getCollection("serviceAreas");
+let areas = all.slice();
+if (data?.limit) {
+  areas = areas.sort((a, b) => a.data.order - b.data.order).slice(0, data.limit);
+}
+
+// Sort alphabetically by city, then bucket by first letter.
+areas = areas.sort((a, b) => a.data.city.localeCompare(b.data.city));
+
+const groupMap = new Map<string, typeof areas>();
+for (const area of areas) {
+  const letter = (area.data.city.charAt(0) || "#").toUpperCase();
+  const bucket = groupMap.get(letter) ?? [];
+  bucket.push(area);
+  groupMap.set(letter, bucket);
+}
+const groups = Array.from(groupMap.entries()).sort((a, b) =>
+  a[0].localeCompare(b[0])
+);
+---
+
+<section
+  class:list={["service-areas-directory section-wrapper section-py", `theme-${theme}`]}
+>
+  <div class="section-container">
+    <div class="flex flex-col gap-3 mb-10 max-w-2xl">
+      {
+        data?.eyebrow && (
+          <div>
+            {data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="theme-accent text-sm font-semibold uppercase tracking-widest">
+                {data.eyebrow.text}
+              </span>
+            )}
+          </div>
+        )
+      }
+      {
+        data?.heading && (
+          <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+        )
+      }
+      {
+        data?.subheading && (
+          <p class="theme-text-muted text-lg m-0">{data.subheading}</p>
+        )
+      }
+    </div>
+
+    <div class="directory">
+      {
+        groups.map(([letter, cities]) => (
+          <div class="dir-group">
+            <div class="dir-letter theme-accent" aria-hidden="true">{letter}</div>
+            <ul class="dir-list" role="list">
+              {cities.map((area) => (
+                <li>
+                  <a href={`/${area.data.slug}`} class="dir-link">
+                    <span class="theme-text font-medium">{area.data.city}</span>
+                    <span class="theme-text-subtle text-xs">
+                      {area.data.county ? `${area.data.county} County, ` : ""}
+                      {area.data.state}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .directory {
+    display: grid;
+    gap: 2rem 2.5rem;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 640px) {
+    .directory {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1024px) {
+    .directory {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .dir-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .dir-letter {
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1;
+    padding-bottom: 0.5rem;
+    border-bottom: var(--t-border-width) solid var(--theme-border);
+  }
+  .dir-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .dir-link {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.35rem 0.4rem;
+    border-radius: var(--t-radius);
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+  }
+  .dir-link:hover {
+    background-color: color-mix(in srgb, var(--theme-accent, currentColor) 8%, transparent);
+  }
+</style>

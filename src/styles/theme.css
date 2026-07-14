@@ -1,0 +1,83 @@
+/* =====================================================================
+   THEME — the per-site reskin knob.
+   ---------------------------------------------------------------------
+   This is the ONE file you edit to reskin a clone. Every value here is
+   a raw "source" token (--t-*). The section components and the Starwind
+   UI primitives all derive from these via global.css — they never
+   hardcode a color, radius, or shadow. Change a value here and the
+   whole site (sections + UI, every theme variant) follows.
+
+   Current values = the Peak Roofing Co demo (the default theme).
+   To reskin: swap the palette, fonts, radius, border-width, shadows,
+   and density below. Alternate examples live in src/styles/themes/.
+   ===================================================================== */
+
+:root {
+  /* ---------------------------------------------------------------
+     BRAND PALETTE
+     --------------------------------------------------------------- */
+  /* Primary brand — deep forest green */
+  --t-primary: #1b4332;
+  --t-primary-light: #2d6a4f;
+  --t-primary-muted: #e8f5e9;
+
+  /* Secondary brand — warm amber/orange */
+  --t-secondary: #f4a261;
+  --t-secondary-light: #fddcbc;
+  --t-secondary-fg: #7c2d00;
+
+  /* ---------------------------------------------------------------
+     NEUTRALS — backgrounds & text
+     --------------------------------------------------------------- */
+  --t-bg: #ffffff;
+  --t-bg-alt: #f9fafb;
+  --t-bg-muted: #f3f4f6;
+  --t-bg-inverse: #111827;
+
+  --t-fg: #111827;
+  --t-fg-muted: #5f6470;
+  --t-fg-subtle: #767d89;
+  --t-fg-inverse: #f9fafb;
+
+  --t-border: #e5e7eb;
+
+  /* ---------------------------------------------------------------
+     RATING — review stars. Retheme per brand if desired.
+     NOTE: third-party review-SOURCE logo colors (Google / Facebook /
+     Yelp) are intentionally NOT tokenized — they stay brand-correct
+     on every site, so they remain hardcoded in the review components.
+     --------------------------------------------------------------- */
+  --t-rating: #fbbf24;
+  --t-rating-empty: #d1d5db;
+
+  /* ---------------------------------------------------------------
+     TYPOGRAPHY
+     --------------------------------------------------------------- */
+  --t-font-sans: Inter, system-ui, sans-serif;
+  --t-font-heading: Inter, system-ui, sans-serif;
+  --t-font-weight-heading: 700;
+
+  /* ---------------------------------------------------------------
+     SHAPE — roundness & border weight. A big part of "feel":
+     0 = sharp/brutalist, 0.5rem = soft, 1rem = pill-ish.
+     --------------------------------------------------------------- */
+  --t-radius: 0.5rem;
+  --t-border-width: 1px;
+
+  /* ---------------------------------------------------------------
+     ELEVATION — shadow style. Soft vs flat vs hard reads as a
+     completely different design system at the same palette.
+     --------------------------------------------------------------- */
+  --t-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --t-shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.08);
+  --t-shadow-lg: 0 12px 32px -4px rgba(0, 0, 0, 0.12);
+
+  /* ---------------------------------------------------------------
+     DENSITY — vertical section rhythm. Airy vs tight.
+     --------------------------------------------------------------- */
+  --t-section-xs: 1rem;
+  --t-section-sm: 2rem;
+  --t-section: 4rem;
+  --t-section-lg: 6rem;
+  --t-section-xl: 8rem;
+}

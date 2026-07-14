@@ -1,0 +1,145 @@
+---
+import { getCollection } from "astro:content";
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    limit?: number;
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const services = (await getCollection("services"))
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, data?.limit ?? undefined);
+
+const count = services.length;
+const gridClass =
+  count === 1
+    ? "grid-cols-1"
+    : count === 2
+      ? "grid-cols-1 sm:grid-cols-2"
+      : count === 4
+        ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+        : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
+---
+
+<section
+  class:list={["services-hover-reveal section-wrapper section-py", `theme-${theme}`]}
+>
+  <div class="section-container">
+    {
+      (data?.eyebrow || data?.heading || data?.subheading) && (
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">
+                {data.eyebrow.text}
+              </Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+                {data.eyebrow.text}
+              </span>
+            ))}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">
+              {data.subheading}
+            </p>
+          )}
+        </div>
+      )
+    }
+
+    {
+      services.length > 0 && (
+        <div class={`grid ${gridClass} gap-5`}>
+          {services.map((service) => (
+            <a
+              href={`/services/${service.data.slug}`}
+              class="reveal-card group relative flex flex-col justify-end overflow-hidden min-h-[16rem] p-6 no-underline transition-shadow duration-300"
+              style="background-color: var(--card); border: var(--t-border-width) solid var(--theme-border); border-radius: var(--t-radius); box-shadow: var(--t-shadow-sm)"
+            >
+              <span
+                class="absolute top-6 left-6 inline-flex items-center justify-center rounded-full theme-accent transition-transform duration-300 group-hover:-translate-y-1"
+                style="width: 3rem; height: 3rem; background: color-mix(in srgb, currentColor 12%, transparent)"
+              >
+                <svg
+                  class="w-6 h-6"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M9.5 2A2.5 2.5 0 0 0 7 4.5v15A2.5 2.5 0 0 0 9.5 22h9a.5.5 0 0 0 .5-.5v-19a.5.5 0 0 0-.5-.5Z" />
+                  <path d="M7 8h12" />
+                </svg>
+              </span>
+              {service.data.isEmergency && (
+                <Badge
+                  variant="secondary"
+                  class="absolute top-6 right-6 uppercase tracking-wide text-[0.65rem]"
+                >
+                  Emergency
+                </Badge>
+              )}
+
+              <div class="relative flex flex-col gap-2">
+                <h3 class="theme-heading text-xl font-semibold m-0 transition-colors group-hover:theme-accent">
+                  {service.data.title}
+                </h3>
+                {service.data.description && (
+                  <p class="reveal-body theme-text-muted text-sm leading-relaxed m-0 max-h-0 opacity-0 overflow-hidden transition-all duration-300 ease-out group-hover:max-h-40 group-hover:opacity-100 group-focus-visible:max-h-40 group-focus-visible:opacity-100">
+                    {service.data.description}
+                  </p>
+                )}
+                <span class="reveal-cue text-sm font-semibold theme-accent inline-flex items-center gap-1 opacity-70 transition-opacity group-hover:opacity-100">
+                  Learn more
+                  <svg
+                    class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </span>
+              </div>
+            </a>
+          ))}
+        </div>
+      )
+    }
+
+    {
+      data?.cta && (
+        <div class="flex justify-center mt-12">
+          <Button href={data.cta.href} variant={data.cta.variant ?? "primary"}>
+            {data.cta.label}
+          </Button>
+        </div>
+      )
+    }
+  </div>
+</section>

@@ -1,0 +1,95 @@
+---
+import type { SectionCTA } from "@/types/sections";
+
+interface Props {
+  theme?: string;
+  data?: {
+    text?: string;
+    cta?: SectionCTA;
+    dismissible?: boolean;
+  };
+}
+
+const { theme = "primary", data } = Astro.props;
+const hasContent = !!(data?.text || data?.cta);
+---
+
+{
+  hasContent && (
+    <div
+      data-announcement
+      class:list={["announcement-banner section-wrapper", `theme-${theme}`]}
+    >
+      <div class="mx-auto max-w-6xl px-4 py-2.5">
+        <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-sm">
+          {data?.text && (
+            <span class="theme-text font-medium">{data.text}</span>
+          )}
+
+          {data?.cta && (
+            <a
+              href={data.cta.href}
+              class="theme-text inline-flex items-center gap-1 font-bold underline underline-offset-2 hover:opacity-80 transition-opacity"
+            >
+              {data.cta.label}
+              <svg
+                class="w-3.5 h-3.5 shrink-0"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </a>
+          )}
+
+          {data?.dismissible && (
+            <button
+              type="button"
+              data-dismiss
+              aria-label="Dismiss"
+              class="theme-text absolute right-3 top-1/2 -translate-y-1/2 inline-flex items-center justify-center rounded p-1 opacity-70 hover:opacity-100 transition-opacity"
+            >
+              <svg
+                class="w-4 h-4 shrink-0"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<style>
+  .announcement-banner {
+    position: relative;
+    width: 100%;
+  }
+</style>
+
+<script>
+  function initAll() {
+    document.querySelectorAll<HTMLElement>("[data-dismiss]").forEach((b) => {
+      if (b.dataset.ready) return;
+      b.dataset.ready = "1";
+      b.addEventListener("click", () => {
+        const root = b.closest("[data-sticky-bar],[data-announcement]");
+        if (root) (root as HTMLElement).hidden = true;
+      });
+    });
+  }
+  initAll();
+  document.addEventListener("astro:after-swap", initAll);
+</script>

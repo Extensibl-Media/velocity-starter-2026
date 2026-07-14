@@ -1,0 +1,166 @@
+---
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    body?: string;
+    video?: string;
+    videoTitle?: string;
+    name?: string;
+    role?: string;
+    signature?: string;
+    imagePosition?: "left" | "right";
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+function ytId(input?: string): string | null {
+  if (!input) return null;
+  const m =
+    input.match(/(?:youtu\.be\/|watch\?v=|embed\/|shorts\/)([\w-]{11})/) ||
+    input.match(/^([\w-]{11})$/);
+  return m ? m[1] : null;
+}
+
+const id = ytId(data?.video);
+const title = data?.videoTitle;
+const imagePosition = data?.imagePosition ?? "left";
+const videoOrder = imagePosition === "right" ? "lg:order-2" : "lg:order-1";
+const contentOrder = imagePosition === "right" ? "lg:order-1" : "lg:order-2";
+---
+
+<section class={`section-wrapper section-py theme-${theme}`}>
+  <div class="section-container">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      {/* Video */}
+      <div class={videoOrder}>
+        {
+          id ? (
+            <div class="video-embed">
+              <iframe
+                src={`https://www.youtube-nocookie.com/embed/${id}`}
+                title={title ?? "Video"}
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen
+              />
+            </div>
+          ) : (
+            <div class="video-placeholder">
+              <span class="theme-text-subtle text-sm">Video coming soon</span>
+            </div>
+          )
+        }
+      </div>
+
+      {/* Content */}
+      <div class={`flex flex-col gap-6 ${contentOrder}`}>
+        {
+          data?.eyebrow && (
+            <div>
+              {data.eyebrow.variant === "badge" ? (
+                <Badge class="uppercase tracking-widest text-xs">
+                  {data.eyebrow.text}
+                </Badge>
+              ) : (
+                <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                  {data.eyebrow.text}
+                </span>
+              )}
+            </div>
+          )
+        }
+
+        {
+          data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">
+              {data.heading}
+            </h2>
+          )
+        }
+
+        {
+          data?.body && (
+            <p class="theme-text-muted text-lg leading-relaxed m-0">
+              {data.body}
+            </p>
+          )
+        }
+
+        {
+          (data?.name || data?.role) && (
+            <div class="flex flex-col gap-0.5">
+              {data?.name && (
+                <span class="theme-heading font-bold text-base">
+                  {data.name}
+                </span>
+              )}
+              {data?.role && (
+                <span class="theme-text-muted text-sm">{data.role}</span>
+              )}
+            </div>
+          )
+        }
+
+        {data?.signature && <p class="signature m-0">{data.signature}</p>}
+
+        {
+          data?.cta && (
+            <div class="mt-2">
+              <Button
+                variant={data.cta.variant ?? "primary"}
+                href={data.cta.href}
+              >
+                {data.cta.label}
+              </Button>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .video-embed {
+    position: relative;
+    aspect-ratio: 16/9;
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .video-embed iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .video-placeholder {
+    position: relative;
+    aspect-ratio: 16/9;
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+  }
+
+  .signature {
+    font-family: Georgia, "Times New Roman", serif;
+    font-style: italic;
+    font-size: 1.5rem;
+    line-height: 1.2;
+    color: var(--color-brand-secondary);
+  }
+</style>

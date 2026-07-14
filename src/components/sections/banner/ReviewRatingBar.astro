@@ -1,0 +1,79 @@
+---
+import type { SectionCTA } from "@/types/sections";
+
+interface Props {
+  theme?: string;
+  data?: {
+    rating?: number;
+    count?: number;
+    source?: string;
+    text?: string;
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const rating = data?.rating ?? 5;
+const rounded = Math.round(rating);
+const stars = [0, 1, 2, 3, 4];
+---
+
+<section class:list={["banner-review-rating", `theme-${theme}`]}>
+  <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-3 text-sm">
+    <span class="theme-accent inline-flex items-center gap-0.5" aria-hidden="true">
+      {stars.map((i) => (
+        <svg
+          class="h-4 w-4 shrink-0"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill={rounded > i ? "currentColor" : "none"}
+          stroke="currentColor"
+          stroke-width="1.5"
+        >
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+        </svg>
+      ))}
+    </span>
+
+    <span class="theme-heading font-bold">
+      {rating.toFixed(1)}
+    </span>
+
+    {data?.count && (
+      <span class="theme-text-muted">
+        from {data.count.toLocaleString()} reviews{data?.source ? ` on ${data.source}` : ""}
+      </span>
+    )}
+
+    {data?.text && (
+      <span class="theme-text hidden font-medium sm:inline">· {data.text}</span>
+    )}
+
+    {data?.cta && (
+      <a
+        href={data.cta.href}
+        class="theme-text inline-flex items-center gap-1 font-bold underline underline-offset-2 transition-opacity hover:opacity-80"
+      >
+        {data.cta.label}
+        <svg
+          class="h-3.5 w-3.5 shrink-0"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+      </a>
+    )}
+  </div>
+</section>
+
+<style>
+  .banner-review-rating {
+    width: 100%;
+    border-bottom: var(--t-border-width) solid var(--theme-border);
+  }
+</style>

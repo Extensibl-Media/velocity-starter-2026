@@ -1,0 +1,132 @@
+---
+import { getCollection } from "astro:content";
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+
+/**
+ * service-areas:list — a compact multi-column list of "City, ST" entries
+ * from the `service-areas` collection. A lighter alternative to
+ * service-areas:grid, ideal for footers or dense coverage sections. If
+ * `hrefBase` is set, each entry links to `${hrefBase}/${slug}`; otherwise
+ * entries render as plain, non-linked text.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    featuredOnly?: boolean;
+    limit?: number;
+    hrefBase?: string;
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const all = await getCollection("serviceAreas");
+let areas = all.sort((a, b) => a.data.order - b.data.order);
+if (data?.featuredOnly) areas = areas.filter((a) => a.data.featured);
+if (data?.limit) areas = areas.slice(0, data.limit);
+
+const hrefBase = data?.hrefBase?.replace(/\/$/, "");
+---
+
+{
+  areas.length > 0 && (
+    <section class={`section-wrapper section-py theme-${theme}`}>
+      <div class="section-container">
+        {/* Header */}
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+          {data?.eyebrow &&
+            (data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            ))}
+          {data?.heading && (
+            <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>
+          )}
+          {data?.subheading && (
+            <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>
+          )}
+        </div>
+
+        {/* List */}
+        <ul class="area-list grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2 list-none p-0 m-0">
+          {areas.map((area) => {
+            const label = `${area.data.city}, ${area.data.state}`;
+            const inner = (
+              <>
+                <span class="area-pin" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                </span>
+                <span class="theme-text leading-tight">{label}</span>
+              </>
+            );
+            return (
+              <li>
+                {hrefBase ? (
+                  <a href={`${hrefBase}/${area.data.slug}`} aria-label={label} class="area-item area-link">
+                    {inner}
+                  </a>
+                ) : (
+                  <span class="area-item">{inner}</span>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+
+        {/* Optional CTA */}
+        {data?.cta && (
+          <div class="flex justify-center mt-10">
+            <a
+              href={data.cta.href}
+              class="inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold text-sm transition-colors bg-primary text-primary-foreground hover:opacity-90"
+            >
+              {data.cta.label}
+            </a>
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .area-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0;
+    text-decoration: none;
+  }
+  .area-link {
+    transition: color 0.2s ease;
+  }
+  .area-link:hover .theme-text {
+    color: var(--theme-accent);
+  }
+  .area-link:hover .area-pin {
+    color: var(--theme-accent);
+  }
+  .area-pin {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--theme-accent);
+    transition: color 0.2s ease;
+  }
+  .area-pin svg {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+</style>

@@ -1,0 +1,176 @@
+---
+import type { Eyebrow } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import SmartImage from "@/components/media/SmartImage.astro";
+
+/**
+ * gallery:grid — a responsive photo grid with a click-to-expand lightbox.
+ * Images are optimized through the resolver. Works with multiple instances
+ * on one page (each wires its own lightbox).
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    columns?: 2 | 3 | 4;
+    images?: { src: string; alt?: string; caption?: string }[];
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+const images = data?.images ?? [];
+const cols = data?.columns ?? 3;
+const colClass =
+  cols === 2
+    ? "sm:grid-cols-2"
+    : cols === 4
+      ? "sm:grid-cols-2 lg:grid-cols-4"
+      : "sm:grid-cols-2 lg:grid-cols-3";
+---
+
+<section class={`section-wrapper section-py theme-${theme}`}>
+  <div class="section-container">
+    {/* Header */}
+    <div class="flex flex-col items-center text-center gap-3 mb-12">
+      {
+        data?.eyebrow && (
+          <div>
+            {data.eyebrow.variant === "badge" ? (
+              <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+            ) : (
+              <span class="text-sm font-semibold uppercase tracking-widest text-color-brand-secondary">
+                {data.eyebrow.text}
+              </span>
+            )}
+          </div>
+        )
+      }
+      {data?.heading && <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>}
+      {data?.subheading && <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>}
+    </div>
+
+    {
+      images.length > 0 && (
+        <div class="gallery-grid" data-gallery>
+          <div class={`grid grid-cols-1 ${colClass} gap-4`}>
+            {images.map((img, i) => (
+              <figure class="gallery-item m-0">
+                <button type="button" class="gallery-trigger" data-index={i} aria-label={img.caption ?? img.alt ?? "View image"}>
+                  <SmartImage
+                    src={img.src}
+                    alt={img.alt ?? ""}
+                    widths={[400, 600, 800]}
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    class="gallery-img"
+                  />
+                </button>
+                {img.caption && <figcaption class="theme-text-subtle text-sm mt-2 text-center">{img.caption}</figcaption>}
+              </figure>
+            ))}
+          </div>
+
+          <dialog class="gallery-lightbox" aria-label="Image viewer">
+            <button type="button" class="gallery-close" aria-label="Close">&times;</button>
+            <img class="gallery-lightbox-img" src="" alt="" />
+          </dialog>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .gallery-item .gallery-trigger {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: zoom-in;
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .gallery-item :global(.gallery-img) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  .gallery-item .gallery-trigger:hover :global(.gallery-img) {
+    transform: scale(1.04);
+  }
+  .gallery-lightbox {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: fit-content;
+    height: fit-content;
+    max-width: min(92vw, 1100px);
+    max-height: 90vh;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius);
+    background: transparent;
+    overflow: visible;
+  }
+  .gallery-lightbox::backdrop {
+    background: rgba(0, 0, 0, 0.85);
+  }
+  .gallery-lightbox-img {
+    display: block;
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: var(--radius);
+  }
+  .gallery-close {
+    position: absolute;
+    top: -0.5rem;
+    right: -0.5rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 9999px;
+    border: none;
+    background: var(--color-fg);
+    color: var(--color-bg);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 1;
+  }
+</style>
+
+<script>
+  function initGallery(root: HTMLElement) {
+    if (root.dataset.ready) return;
+    root.dataset.ready = "1";
+    const dialog = root.querySelector<HTMLDialogElement>(".gallery-lightbox");
+    const lightImg = root.querySelector<HTMLImageElement>(".gallery-lightbox-img");
+    const closeBtn = root.querySelector<HTMLButtonElement>(".gallery-close");
+    if (!dialog || !lightImg) return;
+
+    root.querySelectorAll<HTMLButtonElement>(".gallery-trigger").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const img = btn.querySelector("img");
+        if (!img) return;
+        lightImg.src = img.currentSrc || img.src;
+        lightImg.alt = img.alt;
+        dialog.showModal();
+      });
+    });
+
+    const close = () => dialog.close();
+    closeBtn?.addEventListener("click", close);
+    dialog.addEventListener("click", (e) => {
+      if (e.target === dialog) close();
+    });
+  }
+
+  function initAllGallery() {
+    document.querySelectorAll<HTMLElement>("[data-gallery]").forEach(initGallery);
+  }
+  initAllGallery();
+  document.addEventListener("astro:after-swap", initAllGallery);
+</script>
