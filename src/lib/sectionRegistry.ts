@@ -239,6 +239,10 @@ import LocationDirectionsCta from "@/components/sections/location/LocationDirect
 import LocationMultiGrid from "@/components/sections/location/LocationMultiGrid.astro";
 import LocationMapHoursCta from "@/components/sections/location/LocationMapHoursCta.astro";
 import LocationServiceArea from "@/components/sections/location/LocationServiceArea.astro";
+import ServicesByCategory from "@/components/sections/services/ServicesByCategory.astro";
+import ServicesCategoryTabs from "@/components/sections/services/ServicesCategoryTabs.astro";
+import ServicesCategoryCards from "@/components/sections/services/ServicesCategoryCards.astro";
+import ServicesCategoryFilter from "@/components/sections/services/ServicesCategoryFilter.astro";
 // GEN:variant-imports
 export const sectionRegistry: Record<string, AstroComponentFactory> = {
   "hero:image-overlay": HeroImageOverlay,
@@ -478,5 +482,9 @@ export const sectionRegistry: Record<string, AstroComponentFactory> = {
   "location:multi": LocationMultiGrid,
   "location:map-hours-cta": LocationMapHoursCta,
   "location:service-area": LocationServiceArea,
+  "services:by-category": ServicesByCategory,
+  "services:category-tabs": ServicesCategoryTabs,
+  "services:category-cards": ServicesCategoryCards,
+  "services:category-filter": ServicesCategoryFilter,
   // GEN:variant-keys
 };

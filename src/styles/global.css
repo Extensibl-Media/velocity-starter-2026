@@ -583,6 +583,26 @@
     .dropdown-item {
       width: 100%;
     }
+
+    /* The mobile menu panel lives inside the fixed header. Cap it to the
+       viewport height (minus the header row) and scroll internally so long
+       auto-populated dropdowns (e.g. many services/areas) stay fully reachable
+       instead of overflowing off-screen. Applies to every header variant via
+       the shared [data-nav-menu] hook. */
+    [data-nav-menu] {
+      max-height: calc(100vh - 4rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+    /* Separate rule so the 100vh fallback above survives minification (Lightning
+       CSS collapses two max-heights in one block, dropping the fallback and
+       leaving no cap on browsers without dvh). dvh refines for the mobile URL bar. */
+    @supports (height: 100dvh) {
+      [data-nav-menu] {
+        max-height: calc(100dvh - 4rem);
+      }
+    }
   }
 }
 
@@ -604,4 +624,31 @@
 }
 .surface-base :is(.text-fg-subtle, .theme-text-subtle) {
   color: var(--t-fg-subtle);
+}
+
+/* ---------------------------------------------------------------------------
+   Accessibility baselines (a11y sweep).
+   --------------------------------------------------------------------------- */
+
+/* Respect the user's reduced-motion preference: neutralize animations,
+   transitions, and smooth scrolling (marquees, carousels, hover reveals, etc.). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Baseline keyboard-focus indicator for interactive elements that don't already
+   carry a component focus ring (links, nav items, filter pills, the skip link,
+   native disclosures). :where() keeps specificity at 0 so Starwind's own
+   focus-visible rings still win where present. */
+:where(a, button, [role="button"], summary, [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 2px solid var(--theme-accent, var(--color-primary));
+  outline-offset: 2px;
+  border-radius: var(--t-radius);
 }

@@ -2,6 +2,8 @@
 import MarketingLayout from "@/layouts/MarketingLayout.astro";
 import PageRenderer from "@/components/PageRenderer.astro";
 import { getCollection } from "astro:content";
+import { getBusinessData, getSiteData } from "@/lib/utils";
+import { createServiceSchema, createFAQSchema } from "@/lib/schema";
 
 export async function getStaticPaths() {
   const pages = await getCollection("pages");
@@ -17,6 +19,27 @@ export async function getStaticPaths() {
 }
 
 const { page } = Astro.props;
+const seo = page.data.seo;
+
+// Per-page structured data (Service / FAQPage) for bespoke SEO landing pages.
+const pageSchemas = [];
+if (seo?.service || seo?.faq?.length) {
+  const business = await getBusinessData();
+  const site = getSiteData();
+  if (seo.service) {
+    pageSchemas.push(
+      createServiceSchema(
+        {
+          ...seo.service,
+          url: new URL(Astro.url.pathname, Astro.site).toString(),
+        },
+        business,
+        site,
+      ),
+    );
+  }
+  if (seo.faq?.length) pageSchemas.push(createFAQSchema(seo.faq));
+}
 ---
 
 <MarketingLayout
@@ -24,7 +47,11 @@ const { page } = Astro.props;
   title={page.data.metaTitle ?? page.data.title}
   description={page.data.metaDescription}
   noindex={page.data.noindex}
-  includeLocalBusinessSchema={false}
+  image={seo?.ogImage}
+  imageAlt={seo?.ogImageAlt}
+  canonical={seo?.canonical}
+  includeLocalBusinessSchema={seo?.localBusiness ?? false}
+  schemas={pageSchemas}
 >
   <PageRenderer config={page.data} />
 </MarketingLayout>

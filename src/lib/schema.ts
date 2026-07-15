@@ -4,6 +4,7 @@ import type {
   BlogPosting,
   BreadcrumbList,
   FAQPage,
+  Service,
   WithContext,
   SearchAction,
 } from "schema-dts";
@@ -159,6 +160,41 @@ export function createBreadcrumbSchema(
       name: item.name,
       item: item.url,
     })),
+  };
+}
+
+/**
+ * Per-page Service schema — attach to a service or service-in-location landing
+ * page for local-SEO. `areaServed` scopes it (e.g. "Meridian, ID"); the site's
+ * LocalBusiness is the provider.
+ */
+export function createServiceSchema(
+  service: {
+    name: string;
+    description?: string;
+    serviceType?: string;
+    areaServed?: string;
+    url?: string;
+  },
+  business: BusinessData,
+  site: SiteData
+): WithContext<Service> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: service.name,
+    description: service.description,
+    serviceType: service.serviceType,
+    url: service.url,
+    areaServed: service.areaServed
+      ? { "@type": "City", name: service.areaServed }
+      : undefined,
+    provider: {
+      "@type": "LocalBusiness",
+      name: business.businessName,
+      telephone: business.phone,
+      url: site.url,
+    },
   };
 }
 

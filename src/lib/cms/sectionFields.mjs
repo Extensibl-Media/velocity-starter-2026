@@ -362,6 +362,10 @@ export const sectionFields = {
   "location:multi": def("Location — Multi-Location Grid", [...sectionHeader(), list('locations','Locations',[str('name','Name'),str('address','Address'),str('phone','Phone'),str('hoursNote','Hours note'),str('mapUrl','Map / directions URL')])]),
   "location:map-hours-cta": def("Location — Map, Hours & CTA", [...sectionHeader(), str('mapEmbedUrl','Map embed URL'), cta('cta','Directions button')]),
   "location:service-area": def("Location — Service Area Coverage", [...sectionHeader(), str('mapEmbedUrl','Map embed URL'), stringlist('areas','Service areas'), text('footnote','Coverage footnote'), cta('cta','Primary button')]),
+  "services:by-category": def("Services — By Category", [...sectionHeader(), num("limit", "Max per category"), stringlist("categories", "Only these category slugs (in order; blank = all)"), cta("cta", "Section button")]),
+  "services:category-tabs": def("Services — Category Tabs", [...sectionHeader(), num("limit", "Max per category"), cta("cta", "Section button")]),
+  "services:category-cards": def("Services — Category Cards", [...sectionHeader(), num("perCategory", "Services listed per card"), cta("cta", "Section button")]),
+  "services:category-filter": def("Services — Category Filter", [...sectionHeader(), num("limit", "Max services"), str("allLabel", "'All' pill label"), cta("cta", "Section button")]),
   // GEN:variant-fields
 };
 

@@ -1,0 +1,165 @@
+---
+import { getServiceGroups, type ServiceGroup } from "@/lib/services";
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * services:category-filter — all services in one grid with category filter
+ * pills. Clicking a pill shows only that category (pure show/hide, no reload).
+ * ClientRouter-safe: wired on astro:page-load, scoped per instance.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    limit?: number;
+    allLabel?: string;
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const groups = await getServiceGroups();
+let services = groups.flatMap((g) =>
+  g.services.map((s: ServiceGroup["services"][number]) => ({
+    ...s.data,
+    categoryTitle: g.title,
+  })),
+);
+if (data?.limit) services = services.slice(0, data.limit);
+// Category pills, in category order, limited to those actually shown.
+const categories = [...new Set(services.map((s) => s.categoryTitle))];
+const allLabel = data?.allLabel ?? "All";
+---
+
+<section class={`services-category-filter section-wrapper section-py theme-${theme}`}>
+  <div class="section-container" data-svc-filter>
+    <div class="flex flex-col items-center text-center gap-3 mb-8">
+      {
+        data?.eyebrow &&
+          (data.eyebrow.variant === "badge" ? (
+            <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+          ) : (
+            <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+              {data.eyebrow.text}
+            </span>
+          ))
+      }
+      {data?.heading && <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>}
+      {data?.subheading && <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>}
+    </div>
+
+    {/* Filter pills */}
+    <div class="flex flex-wrap items-center justify-center gap-2 mb-10" role="tablist" aria-label="Filter services by category">
+      <button type="button" class="svc-pill is-active" data-filter="all" aria-pressed="true">{allLabel}</button>
+      {categories.map((cat) => (
+        <button type="button" class="svc-pill" data-filter={cat} aria-pressed="false">{cat}</button>
+      ))}
+    </div>
+
+    {/* Grid */}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {
+        services.map((service) => (
+          <a
+            href={`/services/${service.slug}`}
+            class="svc-item group flex flex-col gap-3 p-6 rounded-xl border theme-border bg-background hover:shadow-md transition-all duration-200 no-underline"
+            data-category={service.categoryTitle}
+          >
+            <div class="flex items-start justify-between gap-2">
+              <h3 class="theme-heading text-lg font-semibold m-0">{service.title}</h3>
+              {service.isEmergency && (
+                <span class="shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full svc-emergency">Emergency</span>
+              )}
+            </div>
+            <span class="text-xs font-semibold uppercase tracking-wide theme-accent">{service.categoryTitle}</span>
+            {service.description && (
+              <p class="theme-text-muted text-sm leading-relaxed m-0 flex-1">{service.description}</p>
+            )}
+            <span class="text-sm font-semibold theme-accent flex items-center gap-1 mt-auto">
+              Learn more
+              <svg class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </span>
+          </a>
+        ))
+      }
+    </div>
+
+    {
+      data?.cta && (
+        <div class="flex justify-center mt-12">
+          <Button variant={data.cta.variant ?? "primary"} href={data.cta.href}>{data.cta.label}</Button>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .svc-pill {
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border-radius: 9999px;
+    border: var(--t-border-width) solid var(--theme-border);
+    color: var(--theme-fg-muted);
+    background: transparent;
+    cursor: pointer;
+    transition:
+      color 0.15s ease,
+      background-color 0.15s ease,
+      border-color 0.15s ease;
+  }
+  .svc-pill:hover {
+    color: var(--theme-fg);
+    border-color: var(--theme-accent);
+  }
+  .svc-pill.is-active {
+    color: var(--color-fg-on-primary, #fff);
+    background: var(--theme-accent);
+    border-color: var(--theme-accent);
+  }
+  .svc-emergency {
+    background: color-mix(in srgb, var(--color-brand-secondary) 15%, transparent);
+    color: var(--theme-accent);
+  }
+  .svc-item[hidden] {
+    display: none;
+  }
+</style>
+
+<script>
+  function initServiceFilters() {
+    document.querySelectorAll<HTMLElement>("[data-svc-filter]").forEach((root) => {
+      if (root.dataset.svcFilterReady === "true") return;
+      root.dataset.svcFilterReady = "true";
+
+      const pills = root.querySelectorAll<HTMLButtonElement>(".svc-pill");
+      const items = root.querySelectorAll<HTMLElement>(".svc-item");
+
+      pills.forEach((pill) => {
+        pill.addEventListener("click", () => {
+          const filter = pill.dataset.filter ?? "all";
+          pills.forEach((p) => {
+            const active = p === pill;
+            p.classList.toggle("is-active", active);
+            p.setAttribute("aria-pressed", String(active));
+          });
+          items.forEach((item) => {
+            const show = filter === "all" || item.dataset.category === filter;
+            item.hidden = !show;
+          });
+        });
+      });
+    });
+  }
+
+  initServiceFilters();
+  document.addEventListener("astro:page-load", initServiceFilters);
+</script>

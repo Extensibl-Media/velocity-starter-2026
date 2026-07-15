@@ -20,15 +20,36 @@ const pages = defineCollection({
     metaDescription: z.string().optional(),
     noindex: z.boolean().default(false),
     draft: z.boolean().default(false),
+    /** Per-page SEO + structured data for bespoke landing/SEO pages. */
+    seo: z
+      .object({
+        ogImage: z.string().optional(),
+        ogImageAlt: z.string().optional(),
+        canonical: z.string().optional(),
+        /** Emit a Service JSON-LD (service / service-in-location pages). */
+        service: z
+          .object({
+            name: z.string(),
+            description: z.string().optional(),
+            serviceType: z.string().optional(),
+            areaServed: z.string().optional(),
+          })
+          .optional(),
+        /** Emit an FAQPage JSON-LD from this page's Q&A. */
+        faq: z
+          .array(z.object({ question: z.string(), answer: z.string() }))
+          .optional(),
+        /** Emit the site LocalBusiness JSON-LD on this page. */
+        localBusiness: z.boolean().optional(),
+      })
+      .optional(),
     sections: z.array(sectionSchema).default([]),
   }),
 });
 // Services
 const services = defineCollection({
-  loader: glob({
-    base: "./src/content/services",
-    pattern: "**/*.{md,mdx,markdoc}",
-  }),
+  // Pure data (no rendered body) — JSON, not markdown.
+  loader: glob({ base: "./src/content/services", pattern: "**/*.json" }),
   schema: z.object({
     title: z.string(),
     slug: z.string(),
@@ -36,8 +57,27 @@ const services = defineCollection({
     metaTitle: z.string().optional(),
     metaDescription: z.string().optional(),
     image: z.string().optional(),
+    /** Slug of a `serviceCategories` entry — groups/filters services on pages. */
+    category: z.string().optional(),
+    /** Optional longer body copy (preserved from the former markdown body). */
+    content: z.string().optional(),
     isEmergency: z.boolean().default(false),
     featured: z.boolean().default(false),
+    order: z.number().default(0),
+  }),
+});
+
+// Service Categories — taxonomy collection for grouping services
+const serviceCategories = defineCollection({
+  loader: glob({
+    base: "./src/content/service-categories",
+    pattern: "**/*.json",
+  }),
+  schema: z.object({
+    title: z.string(),
+    slug: z.string(),
+    description: z.string().optional(),
+    icon: z.string().optional(),
     order: z.number().default(0),
   }),
 });
@@ -238,6 +278,7 @@ const navigationSettings = defineCollection({
 
 export const collections = {
   services,
+  serviceCategories,
   serviceAreas,
   // localPages,
   faqs,

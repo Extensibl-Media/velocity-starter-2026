@@ -24,6 +24,8 @@ interface Props {
   businessType?: string;
   openingHours?: string[];
   areaServed?: string[];
+  canonical?: string;
+  schemas?: any[];
 }
 
 const {
@@ -38,6 +40,8 @@ const {
   businessType = "GeneralContractor",
   openingHours,
   areaServed,
+  canonical,
+  schemas,
   page,
 } = Astro.props;
 
@@ -60,6 +64,8 @@ const Footer = resolveFooter(business.footerVariant);
   businessType={businessType}
   openingHours={openingHours}
   areaServed={areaServed}
+  canonical={canonical}
+  schemas={schemas}
 >
   <Header slot="header" navItems={navItems} />
   <slot />

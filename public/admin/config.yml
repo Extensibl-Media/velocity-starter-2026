@@ -227,6 +227,53 @@ collections:
         name: draft
         widget: boolean
         default: false
+      - label: SEO & Structured Data
+        name: seo
+        widget: object
+        collapsed: true
+        required: false
+        fields:
+          - label: Social / OG Image
+            name: ogImage
+            widget: image
+            required: false
+          - label: OG Image Alt
+            name: ogImageAlt
+            widget: string
+            required: false
+          - label: Canonical URL
+            name: canonical
+            widget: string
+            required: false
+            hint: Override only to point this page at a different canonical
+          - label: Service Schema
+            name: service
+            widget: object
+            collapsed: true
+            required: false
+            hint: Emit Service JSON-LD (for service / service-in-location pages)
+            fields:
+              - { label: Name, name: name, widget: string }
+              - { label: Description, name: description, widget: text, required: false }
+              - { label: Service Type, name: serviceType, widget: string, required: false }
+              - label: Area Served
+                name: areaServed
+                widget: string
+                required: false
+                hint: e.g. Meridian, ID
+          - label: FAQ Schema
+            name: faq
+            widget: list
+            required: false
+            label_singular: Q&A
+            fields:
+              - { label: Question, name: question, widget: string }
+              - { label: Answer, name: answer, widget: text }
+          - label: Include LocalBusiness schema on this page
+            name: localBusiness
+            widget: boolean
+            default: false
+            required: false
       # BEGIN GENERATED SECTIONS — do not edit by hand; run `npm run generate:cms`
       - label: Sections
         name: sections
@@ -16909,11 +16956,269 @@ collections:
                         required: false
                         default: "primary"
                         options: ["primary", "secondary", "outline", "ghost"]
+          - label: "Services — By Category"
+            name: "services:by-category"
+            widget: object
+            fields:
+              - label: "Theme"
+                name: "theme"
+                widget: "select"
+                required: false
+                default: "default"
+                options: ["default", "alt", "muted", "inverse", "primary", "brand-secondary"]
+              - label: "Content"
+                name: "data"
+                widget: "object"
+                required: false
+                fields:
+                  - label: "Eyebrow"
+                    name: "eyebrow"
+                    widget: "object"
+                    required: false
+                    fields:
+                      - label: "Text"
+                        name: "text"
+                        widget: "string"
+                        required: false
+                      - label: "Style"
+                        name: "variant"
+                        widget: "select"
+                        required: false
+                        default: "text"
+                        options: ["badge", "tag", "text"]
+                  - label: "Heading"
+                    name: "heading"
+                    widget: "string"
+                    required: false
+                  - label: "Subheading"
+                    name: "subheading"
+                    widget: "text"
+                    required: false
+                  - label: "Max per category"
+                    name: "limit"
+                    widget: "number"
+                    value_type: "float"
+                    required: false
+                  - label: "Only these category slugs (in order; blank = all)"
+                    name: "categories"
+                    widget: "list"
+                    required: false
+                  - label: "Section button"
+                    name: "cta"
+                    widget: "object"
+                    required: false
+                    fields:
+                      - label: "Label"
+                        name: "label"
+                        widget: "string"
+                        required: false
+                      - label: "Link"
+                        name: "href"
+                        widget: "string"
+                        required: false
+                      - label: "Style"
+                        name: "variant"
+                        widget: "select"
+                        required: false
+                        default: "primary"
+                        options: ["primary", "secondary", "outline", "ghost"]
+          - label: "Services — Category Tabs"
+            name: "services:category-tabs"
+            widget: object
+            fields:
+              - label: "Theme"
+                name: "theme"
+                widget: "select"
+                required: false
+                default: "default"
+                options: ["default", "alt", "muted", "inverse", "primary", "brand-secondary"]
+              - label: "Content"
+                name: "data"
+                widget: "object"
+                required: false
+                fields:
+                  - label: "Eyebrow"
+                    name: "eyebrow"
+                    widget: "object"
+                    required: false
+                    fields:
+                      - label: "Text"
+                        name: "text"
+                        widget: "string"
+                        required: false
+                      - label: "Style"
+                        name: "variant"
+                        widget: "select"
+                        required: false
+                        default: "text"
+                        options: ["badge", "tag", "text"]
+                  - label: "Heading"
+                    name: "heading"
+                    widget: "string"
+                    required: false
+                  - label: "Subheading"
+                    name: "subheading"
+                    widget: "text"
+                    required: false
+                  - label: "Max per category"
+                    name: "limit"
+                    widget: "number"
+                    value_type: "float"
+                    required: false
+                  - label: "Section button"
+                    name: "cta"
+                    widget: "object"
+                    required: false
+                    fields:
+                      - label: "Label"
+                        name: "label"
+                        widget: "string"
+                        required: false
+                      - label: "Link"
+                        name: "href"
+                        widget: "string"
+                        required: false
+                      - label: "Style"
+                        name: "variant"
+                        widget: "select"
+                        required: false
+                        default: "primary"
+                        options: ["primary", "secondary", "outline", "ghost"]
+          - label: "Services — Category Cards"
+            name: "services:category-cards"
+            widget: object
+            fields:
+              - label: "Theme"
+                name: "theme"
+                widget: "select"
+                required: false
+                default: "default"
+                options: ["default", "alt", "muted", "inverse", "primary", "brand-secondary"]
+              - label: "Content"
+                name: "data"
+                widget: "object"
+                required: false
+                fields:
+                  - label: "Eyebrow"
+                    name: "eyebrow"
+                    widget: "object"
+                    required: false
+                    fields:
+                      - label: "Text"
+                        name: "text"
+                        widget: "string"
+                        required: false
+                      - label: "Style"
+                        name: "variant"
+                        widget: "select"
+                        required: false
+                        default: "text"
+                        options: ["badge", "tag", "text"]
+                  - label: "Heading"
+                    name: "heading"
+                    widget: "string"
+                    required: false
+                  - label: "Subheading"
+                    name: "subheading"
+                    widget: "text"
+                    required: false
+                  - label: "Services listed per card"
+                    name: "perCategory"
+                    widget: "number"
+                    value_type: "float"
+                    required: false
+                  - label: "Section button"
+                    name: "cta"
+                    widget: "object"
+                    required: false
+                    fields:
+                      - label: "Label"
+                        name: "label"
+                        widget: "string"
+                        required: false
+                      - label: "Link"
+                        name: "href"
+                        widget: "string"
+                        required: false
+                      - label: "Style"
+                        name: "variant"
+                        widget: "select"
+                        required: false
+                        default: "primary"
+                        options: ["primary", "secondary", "outline", "ghost"]
+          - label: "Services — Category Filter"
+            name: "services:category-filter"
+            widget: object
+            fields:
+              - label: "Theme"
+                name: "theme"
+                widget: "select"
+                required: false
+                default: "default"
+                options: ["default", "alt", "muted", "inverse", "primary", "brand-secondary"]
+              - label: "Content"
+                name: "data"
+                widget: "object"
+                required: false
+                fields:
+                  - label: "Eyebrow"
+                    name: "eyebrow"
+                    widget: "object"
+                    required: false
+                    fields:
+                      - label: "Text"
+                        name: "text"
+                        widget: "string"
+                        required: false
+                      - label: "Style"
+                        name: "variant"
+                        widget: "select"
+                        required: false
+                        default: "text"
+                        options: ["badge", "tag", "text"]
+                  - label: "Heading"
+                    name: "heading"
+                    widget: "string"
+                    required: false
+                  - label: "Subheading"
+                    name: "subheading"
+                    widget: "text"
+                    required: false
+                  - label: "Max services"
+                    name: "limit"
+                    widget: "number"
+                    value_type: "float"
+                    required: false
+                  - label: "'All' pill label"
+                    name: "allLabel"
+                    widget: "string"
+                    required: false
+                  - label: "Section button"
+                    name: "cta"
+                    widget: "object"
+                    required: false
+                    fields:
+                      - label: "Label"
+                        name: "label"
+                        widget: "string"
+                        required: false
+                      - label: "Link"
+                        name: "href"
+                        widget: "string"
+                        required: false
+                      - label: "Style"
+                        name: "variant"
+                        widget: "select"
+                        required: false
+                        default: "primary"
+                        options: ["primary", "secondary", "outline", "ghost"]
       # END GENERATED SECTIONS
   - name: services
     label: Services
     folder: src/content/services
     create: true
+    extension: json
+    format: json
     slug: "{{slug}}"
     fields:
       - label: Title
@@ -16926,6 +17231,11 @@ collections:
       - label: Short Description
         name: description
         widget: text
+      - label: Content
+        name: content
+        widget: markdown
+        required: false
+        hint: Longer body copy (optional)
       - label: Meta Title
         name: metaTitle
         widget: string
@@ -16938,6 +17248,15 @@ collections:
         name: image
         widget: image
         required: false
+      - label: Category
+        name: category
+        widget: relation
+        collection: serviceCategories
+        value_field: slug
+        search_fields: [title]
+        display_fields: [title]
+        required: false
+        hint: Group services on pages by category
       - label: Emergency Service
         name: isEmergency
         widget: boolean
@@ -16946,6 +17265,35 @@ collections:
         name: featured
         widget: boolean
         default: false
+      - label: Order
+        name: order
+        widget: number
+        default: 0
+  - name: serviceCategories
+    label: Service Categories
+    folder: src/content/service-categories
+    create: true
+    extension: json
+    format: json
+    slug: "{{slug}}"
+    identifier_field: title
+    fields:
+      - label: Title
+        name: title
+        widget: string
+      - label: Slug
+        name: slug
+        widget: string
+        hint: URL-friendly e.g. roofing
+      - label: Description
+        name: description
+        widget: text
+        required: false
+      - label: Icon
+        name: icon
+        widget: string
+        required: false
+        hint: Optional icon key (e.g. shield, droplet, home)
       - label: Order
         name: order
         widget: number

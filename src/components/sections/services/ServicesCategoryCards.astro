@@ -1,0 +1,106 @@
+---
+import { getServiceGroups } from "@/lib/services";
+import type { Eyebrow, SectionCTA } from "@/types/sections";
+import Badge from "@/components/starwind/badge/Badge.astro";
+import { Button } from "@/components/starwind/button";
+
+/**
+ * services:category-cards — a "browse by category" overview. One card per
+ * service `category`, each listing the services it contains as links. Use it as
+ * a directory/entry point above detailed service sections.
+ */
+interface Props {
+  theme?: string;
+  data?: {
+    eyebrow?: Eyebrow;
+    heading?: string;
+    subheading?: string;
+    /** Max services listed per category card. */
+    perCategory?: number;
+    cta?: SectionCTA;
+  };
+}
+
+const { theme = "default", data } = Astro.props;
+
+const perCategory = data?.perCategory ?? 5;
+const groups = (await getServiceGroups()).map((g) => ({
+  title: g.title,
+  description: g.description,
+  total: g.services.length,
+  services: g.services.slice(0, perCategory),
+  hiddenCount: Math.max(0, g.services.length - perCategory),
+}));
+---
+
+<section class={`services-category-cards section-wrapper section-py theme-${theme}`}>
+  <div class="section-container">
+    <div class="flex flex-col items-center text-center gap-3 mb-12">
+      {
+        data?.eyebrow &&
+          (data.eyebrow.variant === "badge" ? (
+            <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
+          ) : (
+            <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+              {data.eyebrow.text}
+            </span>
+          ))
+      }
+      {data?.heading && <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0">{data.heading}</h2>}
+      {data?.subheading && <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>}
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {
+        groups.map((group) => (
+          <div class="flex flex-col gap-4 p-6 rounded-xl border theme-border bg-background">
+            <div class="flex items-center justify-between gap-3">
+              <h3 class="theme-heading text-lg font-bold m-0">{group.title}</h3>
+              <span class="cat-count shrink-0 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                {group.total}
+              </span>
+            </div>
+            {group.description && (
+              <p class="theme-text-muted text-sm leading-relaxed m-0 -mt-1">
+                {group.description}
+              </p>
+            )}
+            <ul class="flex flex-col gap-2 list-none m-0 p-0">
+              {group.services.map((service) => (
+                <li>
+                  <a
+                    href={`/services/${service.data.slug}`}
+                    class="flex items-center gap-2 theme-text hover:theme-accent no-underline text-sm font-medium transition-colors"
+                  >
+                    <svg class="w-4 h-4 theme-accent shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                      <path d="M9 6l6 6-6 6" />
+                    </svg>
+                    {service.data.title}
+                  </a>
+                </li>
+              ))}
+              {group.hiddenCount > 0 && (
+                <li class="theme-text-subtle text-sm pl-6">+{group.hiddenCount} more</li>
+              )}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+
+    {
+      data?.cta && (
+        <div class="flex justify-center mt-12">
+          <Button variant={data.cta.variant ?? "primary"} href={data.cta.href}>{data.cta.label}</Button>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .cat-count {
+    background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
+    color: var(--theme-accent);
+  }
+</style>

@@ -4,6 +4,22 @@
   "metaTitle": "Roof Repair Services | Peak Roofing Co",
   "metaDescription": "Fast, reliable roof repair in Boise, ID. Licensed and insured with same-day response on emergency leaks. Free estimates.",
   "draft": false,
+  "seo": {
+    "ogImage": "/src/assets/images/landing.jpg",
+    "ogImageAlt": "Peak Roofing Co repairing a roof in Boise, ID",
+    "service": {
+      "name": "Roof Repair",
+      "description": "Fast, licensed roof repair in Boise, ID with same-day emergency service on leaks.",
+      "serviceType": "Roof Repair",
+      "areaServed": "Boise, ID"
+    },
+    "faq": [
+      { "question": "How fast can you repair my roof?", "answer": "Most repairs are completed the same day or within 48 hours of your inspection." },
+      { "question": "Are you licensed and insured?", "answer": "Yes — Peak Roofing Co is fully licensed and insured in Idaho." },
+      { "question": "Do you offer free estimates?", "answer": "Every roof repair inspection and estimate is free, with no obligation." }
+    ],
+    "localBusiness": true
+  },
   "sections": [
     {
       "type": "hero:image-overlay",

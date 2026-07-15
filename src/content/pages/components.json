@@ -1028,6 +1028,65 @@
       }
     },
     {
+      "type": "services:by-category",
+      "theme": "default",
+      "data": {
+        "eyebrow": {
+          "text": "services:by-category",
+          "variant": "text"
+        },
+        "heading": "Services by Category",
+        "subheading": "Every service grouped under its category heading.",
+        "cta": {
+          "label": "View all services",
+          "href": "/services",
+          "variant": "outline"
+        }
+      }
+    },
+    {
+      "type": "services:category-tabs",
+      "theme": "alt",
+      "data": {
+        "eyebrow": {
+          "text": "services:category-tabs",
+          "variant": "text"
+        },
+        "heading": "Browse by Category",
+        "subheading": "One tab per category \u2014 click through the offerings."
+      }
+    },
+    {
+      "type": "services:category-cards",
+      "theme": "inverse",
+      "data": {
+        "eyebrow": {
+          "text": "services:category-cards",
+          "variant": "text"
+        },
+        "heading": "What We Offer",
+        "subheading": "A directory of every service, organized by category.",
+        "cta": {
+          "label": "Get a quote",
+          "href": "/contact",
+          "variant": "primary"
+        }
+      }
+    },
+    {
+      "type": "services:category-filter",
+      "theme": "muted",
+      "data": {
+        "eyebrow": {
+          "text": "services:category-filter",
+          "variant": "text"
+        },
+        "heading": "Find Your Service",
+        "subheading": "Filter the full lineup by category.",
+        "allLabel": "All services"
+      }
+    },
+    {
       "type": "about:split",
       "theme": "default",
       "data": {

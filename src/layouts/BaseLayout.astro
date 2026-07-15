@@ -8,12 +8,16 @@ import {
   createWebsiteSchema,
   createLocalBusinessSchema,
   createBlogPostSchema,
+  createBreadcrumbSchema,
 } from "@/lib/schema";
 import type {
   WithContext,
   WebSite,
   LocalBusiness,
   BlogPosting,
+  Service,
+  FAQPage,
+  BreadcrumbList,
 } from "schema-dts";
 import siteConfig from "@/config/site.config";
 import { getBusinessData, getSiteData } from "@/lib/utils";
@@ -41,6 +45,10 @@ interface Props {
   businessType?: string;
   openingHours?: string[];
   areaServed?: string[];
+  /** Override the canonical URL for this page. */
+  canonical?: string;
+  /** Extra per-page JSON-LD (e.g. Service, FAQPage) appended to the site schemas. */
+  schemas?: WithContext<Service | FAQPage | LocalBusiness>[];
 }
 
 const {
@@ -56,6 +64,8 @@ const {
   businessType,
   openingHours,
   areaServed,
+  canonical,
+  schemas: extraSchemas = [],
   page,
 } = Astro.props;
 
@@ -71,9 +81,9 @@ if (image) {
   ogImage = new URL(siteConfig.ogImage, Astro.site).toString();
 }
 
-const schemas: WithContext<WebSite | LocalBusiness | BlogPosting>[] = [
-  createWebsiteSchema(business, site),
-];
+const schemas: WithContext<
+  WebSite | LocalBusiness | BlogPosting | Service | FAQPage | BreadcrumbList
+>[] = [createWebsiteSchema(business, site)];
 
 if (includeLocalBusinessSchema) {
   schemas.push(
@@ -104,6 +114,9 @@ if (includeBlogSchema) {
   );
 }
 
+// Per-page structured data (Service, FAQPage, …) built by the route.
+if (extraSchemas.length) schemas.push(...extraSchemas);
+
 const segments = page.id.split("/");
 const breadcrumbItems = [
   { name: "Home", url: site.url },
@@ -115,6 +128,11 @@ const breadcrumbItems = [
     url: `${site.url}/${segments.slice(0, i + 1).join("/")}`,
   })),
 ];
+
+// Breadcrumb JSON-LD for real nested pages (skip home + Home-only trails).
+if (breadcrumbItems.length > 1 && page.id !== "index") {
+  schemas.push(createBreadcrumbSchema(breadcrumbItems));
+}
 ---
 
 <!doctype html>
@@ -140,6 +158,7 @@ const breadcrumbItems = [
       noindex={noindex}
       nofollow={nofollow}
       businessName={business.businessName}
+      canonical={canonical}
     />
 
     <JsonLd schema={schemas} />
@@ -185,7 +204,11 @@ const breadcrumbItems = [
   </head>
 
   <body>
-    <a href="#main-content" class="sr-only"> Skip to content </a>
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:font-semibold focus:text-fg-on-primary focus:no-underline focus:shadow-lg"
+      >Skip to content</a
+    >
 
     <slot name="header" />
 
