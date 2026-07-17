@@ -3,6 +3,8 @@ import "@/styles/starwind.css";
 import "../styles/global.css";
 import SEO from "@/components/seo/SEO.astro";
 import JsonLd from "@/components/seo/JsonLD.astro";
+import Analytics from "@/components/layout/Analytics.astro";
+import ConsentBanner from "@/components/layout/ConsentBanner.astro";
 import { ClientRouter } from "astro:transitions";
 import {
   createWebsiteSchema,
@@ -163,6 +165,8 @@ if (breadcrumbItems.length > 1 && page.id !== "index") {
 
     <JsonLd schema={schemas} />
 
+    <Analytics />
+
     <ClientRouter />
     <script src="@lib/nav.js"></script>
     <script is:inline>
@@ -217,5 +221,7 @@ if (breadcrumbItems.length > 1 && page.id !== "index") {
     </main>
 
     <slot name="footer" />
+
+    <ConsentBanner />
   </body>
 </html>

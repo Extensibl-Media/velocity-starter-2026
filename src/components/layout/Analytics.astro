@@ -1,0 +1,30 @@
+---
+/**
+ * Analytics — COOKIELESS providers only (Umami, Plausible). These need no
+ * consent banner, so they load unconditionally when configured. Cookie-setting
+ * tools (GA, GTM, ad pixels) are gated by ConsentBanner instead.
+ * Seamless: set the relevant PUBLIC_* env var and the script appears; unset = nothing.
+ */
+import siteConfig from "@/config/site.config";
+
+const { plausible, umami } = siteConfig.analytics;
+const plausibleDomain = plausible?.domain?.trim();
+const plausibleSrc =
+  plausible?.src?.trim() || "https://plausible.io/js/script.js";
+const umamiId = umami?.websiteId?.trim();
+const umamiSrc = umami?.src?.trim();
+---
+
+{/* Plausible — cookieless, self-hostable via PUBLIC_PLAUSIBLE_SRC */}
+{
+  plausibleDomain && (
+    <script is:inline defer data-domain={plausibleDomain} src={plausibleSrc} />
+  )
+}
+
+{/* Umami — cookieless; requires your instance's script src */}
+{
+  umamiId && umamiSrc && (
+    <script is:inline defer src={umamiSrc} data-website-id={umamiId} />
+  )
+}

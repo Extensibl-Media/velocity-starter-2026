@@ -20,6 +20,8 @@ const pages = defineCollection({
     metaDescription: z.string().optional(),
     noindex: z.boolean().default(false),
     draft: z.boolean().default(false),
+    /** Demo/reference pages (e.g. /components) — excluded from production builds. */
+    demo: z.boolean().default(false),
     /** Per-page SEO + structured data for bespoke landing/SEO pages. */
     seo: z
       .object({

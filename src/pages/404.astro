@@ -1,0 +1,55 @@
+---
+import MarketingLayout from "@/layouts/MarketingLayout.astro";
+import { Button } from "@/components/starwind/button";
+import { getBusinessData } from "@/lib/utils";
+
+const business = await getBusinessData();
+const page = { id: "404", data: { title: "Page Not Found" } };
+---
+
+<MarketingLayout
+  page={page}
+  title="Page Not Found"
+  description="Sorry, we couldn't find the page you were looking for."
+  noindex={true}
+>
+  <section class="section-wrapper section-py-xl theme-default">
+    <div class="section-container">
+      <div class="flex flex-col items-center text-center gap-6 max-w-xl mx-auto">
+        <span class="text-sm font-semibold uppercase tracking-widest theme-accent">
+          404 — Page Not Found
+        </span>
+        <h1 class="theme-heading text-4xl lg:text-5xl font-extrabold m-0">
+          This page took a wrong turn
+        </h1>
+        <p class="theme-text-muted text-lg leading-relaxed m-0">
+          The page you're looking for doesn't exist or has moved. Let's get you
+          back on track.
+        </p>
+
+        <div class="flex flex-wrap items-center justify-center gap-4 mt-2">
+          <Button variant="primary" href="/">Back to Home</Button>
+          <Button variant="outline" href="/contact">Contact Us</Button>
+          {
+            business.phone && (
+              <Button variant="ghost" href={`tel:${business.phone}`}>
+                Call {business.phone}
+              </Button>
+            )
+          }
+        </div>
+
+        <div class="mt-6 pt-6 border-t theme-border w-full">
+          <p class="text-sm theme-text-subtle m-0 mb-3">Popular pages</p>
+          <div
+            class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm"
+          >
+            <a href="/services" class="theme-accent font-medium no-underline hover:opacity-80">Services</a>
+            <a href="/about" class="theme-accent font-medium no-underline hover:opacity-80">About</a>
+            <a href="/contact" class="theme-accent font-medium no-underline hover:opacity-80">Contact</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</MarketingLayout>

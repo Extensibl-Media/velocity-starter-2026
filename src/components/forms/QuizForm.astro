@@ -2,6 +2,7 @@
 import type { FormConfig } from "@/types/sections";
 import { Input } from "@/components/starwind/input";
 import { Label } from "@/components/starwind/label";
+import siteConfig from "@/config/site.config";
 
 /**
  * QuizForm — a config-driven, multi-step lead form (a drop-in form sub-component
@@ -118,7 +119,7 @@ const ICONS: Record<string, string> = {
     <button type="button" class="quiz-next" data-quiz-next>Next</button>
   </div>
 
-  <script type="application/json" data-quiz-config set:html={JSON.stringify({ submit: form.submit ?? {}, outcome: form.outcome ?? {}, submitLabel: form.submitLabel ?? "Get My Free Estimate" })} />
+  <script type="application/json" data-quiz-config set:html={JSON.stringify({ submit: { ...siteConfig.forms, ...(form.submit ?? {}), formName: "quiz" }, outcome: form.outcome ?? {}, submitLabel: form.submitLabel ?? "Get My Free Estimate" })} />
 </div>
 
 <style>
@@ -201,8 +202,10 @@ const ICONS: Record<string, string> = {
 </style>
 
 <script>
+  import { submitForm, type FormSubmitConfig } from "@/lib/forms/submitForm";
+
   interface QuizConfig {
-    submit?: { endpoint?: string; method?: string; redirect?: string; hiddenFields?: Record<string, string> };
+    submit?: FormSubmitConfig;
     outcome?: { heading?: string; body?: string };
     submitLabel?: string;
   }
@@ -284,21 +287,12 @@ const ICONS: Record<string, string> = {
       root.querySelectorAll<HTMLInputElement>("[data-quiz-field]").forEach((inp) => {
         if (inp.value.trim()) answers[inp.dataset.quizField!] = inp.value.trim();
       });
-      const payload: Record<string, unknown> = { ...answers, ...(cfg.submit?.hiddenFields || {}) };
-      root.dispatchEvent(new CustomEvent("form:submit", { detail: payload, bubbles: true }));
+      const payload: Record<string, unknown> = { ...answers };
 
       nextBtn!.disabled = true;
       nextBtn!.textContent = "Sending…";
-      if (cfg.submit?.endpoint) {
-        try {
-          await fetch(cfg.submit.endpoint, {
-            method: cfg.submit.method || "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-        } catch { /* swallow — event still fired for other integrations */ }
-      }
-      if (cfg.submit?.redirect) { window.location.href = cfg.submit.redirect; return; }
+      const res = await submitForm(payload, cfg.submit || {}, root);
+      if (cfg.submit?.redirect && res.ok) { window.location.href = cfg.submit.redirect; return; }
       showOutcome();
     }
 

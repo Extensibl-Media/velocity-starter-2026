@@ -19,6 +19,7 @@ import {
 } from "@/components/starwind/select";
 import Textarea from "../starwind/textarea";
 import type { FormConfig } from "@/types/sections";
+import siteConfig from "@/config/site.config";
 
 /**
  * The "simple" lead form — single-step contact capture. A drop-in form
@@ -36,6 +37,14 @@ const { form = {}, services = [] } = Astro.props;
 const title = form.title ?? "Get a Free Quote";
 const description = form.description ?? "We'll get back to you within the hour.";
 const submitLabel = form.submitLabel ?? "Request a Free Quote";
+
+// Resolve the submit target: site-wide default (env) overridden by this form's
+// own `submit` block. Handed to the shared submitForm() adapter client-side.
+const submitCfg = {
+  ...siteConfig.forms,
+  ...(form.submit ?? {}),
+  formName: "contact",
+};
 ---
 
 <Card class="bg-bg-muted surface-base" data-lead-form>
@@ -96,7 +105,7 @@ const submitLabel = form.submitLabel ?? "Request a Free Quote";
       <p class="text-fg-muted text-sm m-0">A team member will reach out within the hour.</p>
     </div>
 
-    <script type="application/json" data-lead-config set:html={JSON.stringify(form.submit ?? {})} />
+    <script type="application/json" data-lead-config set:html={JSON.stringify(submitCfg)} />
   </CardContent>
 </Card>
 
@@ -112,6 +121,8 @@ const submitLabel = form.submitLabel ?? "Request a Free Quote";
 </style>
 
 <script>
+  import { submitForm, type FormSubmitConfig } from "@/lib/forms/submitForm";
+
   function initLeadForm(root: HTMLElement) {
     if (root.dataset.leadReady) return;
     root.dataset.leadReady = "1";
@@ -122,26 +133,22 @@ const submitLabel = form.submitLabel ?? "Request a Free Quote";
     const cfgEl = root.querySelector<HTMLElement>("[data-lead-config]");
     if (!formEl) return;
 
-    let cfg: { endpoint?: string; method?: string; redirect?: string; hiddenFields?: Record<string, string> } = {};
+    let cfg: FormSubmitConfig = {};
     try { cfg = JSON.parse(cfgEl?.textContent || "{}"); } catch { cfg = {}; }
 
     formEl.addEventListener("submit", async (e) => {
       e.preventDefault();
       if (hp && hp.value) { done(); return; } // honeypot
-      const data = Object.fromEntries(new FormData(formEl).entries());
-      delete (data as Record<string, unknown>).company_website;
-      const payload = { ...data, ...(cfg.hiddenFields || {}) };
-      root.dispatchEvent(new CustomEvent("form:submit", { detail: payload, bubbles: true }));
+      const data = Object.fromEntries(new FormData(formEl).entries()) as Record<string, unknown>;
+      delete data.company_website;
 
+      const label = submitBtn?.textContent ?? "";
       if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Sending…"; }
-      if (cfg.endpoint) {
-        try {
-          await fetch(cfg.endpoint, {
-            method: cfg.method || "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-        } catch { /* event already fired */ }
+
+      const res = await submitForm(data, cfg, root);
+      if (!res.ok) {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = label || "Try again"; }
+        return;
       }
       if (cfg.redirect) { window.location.href = cfg.redirect; return; }
       done();

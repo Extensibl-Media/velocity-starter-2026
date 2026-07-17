@@ -3,6 +3,7 @@ import type { Eyebrow } from "@/types/sections";
 import Badge from "@/components/starwind/badge/Badge.astro";
 import { Button } from "@/components/starwind/button";
 import { Input } from "@/components/starwind/input";
+import siteConfig from "@/config/site.config";
 
 interface Props {
   theme?: string;
@@ -12,6 +13,9 @@ interface Props {
     subheading?: string;
     submitLabel?: string;
     placeholder?: string;
+    /** Override the site-default form endpoint for this newsletter form. */
+    endpoint?: string;
+    successMessage?: string;
   };
 }
 
@@ -19,7 +23,15 @@ const { theme = "default", data } = Astro.props;
 
 const submitLabel = data?.submitLabel ?? "Subscribe";
 const placeholder = data?.placeholder ?? "you@example.com";
+const successMessage = data?.successMessage ?? "Thanks — you're subscribed!";
 const hasContent = !!(data?.heading || data?.subheading);
+
+// Resolve submit target: site default (env) with an optional per-section endpoint.
+const submitCfg = {
+  ...siteConfig.forms,
+  ...(data?.endpoint ? { endpoint: data.endpoint } : {}),
+  formName: "newsletter",
+};
 ---
 
 {
@@ -53,28 +65,89 @@ const hasContent = !!(data?.heading || data?.subheading);
             </p>
           )}
 
-          <form
-            name="newsletter"
-            method="POST"
-            class="flex flex-col sm:flex-row w-full gap-3 mt-2"
-          >
-            <label for="newsletter-email" class="sr-only">
-              Email address
-            </label>
-            <Input
-              id="newsletter-email"
-              type="email"
-              name="email"
-              required
-              placeholder={placeholder}
-              class="text-fg-muted placeholder:text-fg-muted border-bg-inverse flex-1"
-            />
-            <Button type="submit" variant="primary" class="shrink-0">
-              {submitLabel}
-            </Button>
-          </form>
+          <div class="w-full" data-newsletter>
+            <form
+              name="newsletter"
+              method="POST"
+              class="flex flex-col sm:flex-row w-full gap-3 mt-2"
+              data-newsletter-form
+            >
+              <label for="newsletter-email" class="sr-only">Email address</label>
+              <input
+                type="text"
+                name="company_website"
+                tabindex="-1"
+                autocomplete="off"
+                aria-hidden="true"
+                class="nl-hp"
+                data-newsletter-hp
+              />
+              <Input
+                id="newsletter-email"
+                type="email"
+                name="email"
+                required
+                placeholder={placeholder}
+                class="text-fg-muted placeholder:text-fg-muted border-bg-inverse flex-1"
+              />
+              <Button type="submit" variant="primary" class="shrink-0" data-newsletter-submit>
+                {submitLabel}
+              </Button>
+            </form>
+            <p class="theme-accent font-semibold m-0 mt-3" data-newsletter-success hidden>
+              {successMessage}
+            </p>
+            <script type="application/json" data-newsletter-config set:html={JSON.stringify(submitCfg)} />
+          </div>
         </div>
       </div>
     </section>
   )
 }
+
+<style>
+  .nl-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+</style>
+
+<script>
+  import { submitForm, type FormSubmitConfig } from "@/lib/forms/submitForm";
+
+  function initNewsletter(root: HTMLElement) {
+    if (root.dataset.nlReady) return;
+    root.dataset.nlReady = "1";
+    const formEl = root.querySelector<HTMLFormElement>("[data-newsletter-form]");
+    const success = root.querySelector<HTMLElement>("[data-newsletter-success]");
+    const hp = root.querySelector<HTMLInputElement>("[data-newsletter-hp]");
+    const submitBtn = root.querySelector<HTMLButtonElement>("[data-newsletter-submit]");
+    const cfgEl = root.querySelector<HTMLElement>("[data-newsletter-config]");
+    if (!formEl) return;
+
+    let cfg: FormSubmitConfig = {};
+    try { cfg = JSON.parse(cfgEl?.textContent || "{}"); } catch { cfg = {}; }
+
+    formEl.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (hp && hp.value) { formEl.hidden = true; if (success) success.hidden = false; return; }
+      const data = Object.fromEntries(new FormData(formEl).entries()) as Record<string, unknown>;
+      delete data.company_website;
+
+      const label = submitBtn?.textContent ?? "";
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "…"; }
+
+      const res = await submitForm(data, cfg, root);
+      if (!res.ok) {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = label || "Try again"; }
+        return;
+      }
+      if (cfg.redirect) { window.location.href = cfg.redirect; return; }
+      formEl.hidden = true;
+      if (success) success.hidden = false;
+    });
+  }
+
+  function initAllNewsletters() {
+    document.querySelectorAll<HTMLElement>("[data-newsletter]").forEach(initNewsletter);
+  }
+  initAllNewsletters();
+  document.addEventListener("astro:page-load", initAllNewsletters);
+</script>

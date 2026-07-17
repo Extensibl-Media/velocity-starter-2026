@@ -1,0 +1,159 @@
+---
+/**
+ * ConsentBanner — GDPR/ePrivacy consent gate for cookie-setting scripts
+ * (Google Analytics, GTM, and ad pixels: Meta, Google Ads, TikTok).
+ *
+ * Behaviour:
+ *  - Renders NOTHING unless at least one cookie-setting provider is configured,
+ *    so pure-Umami/Plausible sites never show a banner.
+ *  - First visit → banner shown; the gated scripts do NOT load until "Accept".
+ *  - Choice is stored in localStorage; Accept loads the scripts, Decline keeps
+ *    them off. `window.openCookieSettings()` re-opens the banner (wire it to a
+ *    footer / cookie-policy link).
+ *  - Cookieless analytics (Umami/Plausible) are handled by Analytics.astro and
+ *    are never gated.
+ */
+import siteConfig from "@/config/site.config";
+
+const cfg = {
+  ga: siteConfig.analytics.gaMeasurementId?.trim() || "",
+  gtm: siteConfig.analytics.gtmId?.trim() || "",
+  meta: siteConfig.marketing.metaPixelId?.trim() || "",
+  googleAds: siteConfig.marketing.googleAdsId?.trim() || "",
+  tiktok: siteConfig.marketing.tiktokPixelId?.trim() || "",
+};
+const hasGatedScripts = Object.values(cfg).some(Boolean);
+---
+
+{
+  hasGatedScripts && (
+    <div
+      id="cookie-consent"
+      class="cookie-consent"
+      role="dialog"
+      aria-label="Cookie consent"
+      aria-live="polite"
+      hidden
+      transition:persist
+    >
+      <div class="cookie-consent-inner surface-base">
+        <p class="cookie-consent-text">
+          We use cookies for analytics and advertising to improve your experience.
+          See our <a href="/cookie-policy">Cookie Policy</a>.
+        </p>
+        <div class="cookie-consent-actions">
+          <button type="button" data-consent="deny" class="cc-btn cc-btn-ghost">
+            Decline
+          </button>
+          <button type="button" data-consent="accept" class="cc-btn cc-btn-primary">
+            Accept
+          </button>
+        </div>
+      </div>
+
+      <script is:inline define:vars={{ cfg }}>
+        (function () {
+          var KEY = "cookie-consent";
+          var banner = document.getElementById("cookie-consent");
+          if (!banner) return;
+          var get = function () { try { return localStorage.getItem(KEY); } catch (e) { return null; } };
+          var set = function (v) { try { localStorage.setItem(KEY, v); } catch (e) {} };
+
+          var loaded = false;
+          function loadScripts() {
+            if (loaded) return; loaded = true;
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { window.dataLayer.push(arguments); }
+
+            if (cfg.ga) {
+              var g = document.createElement("script"); g.async = true;
+              g.src = "https://www.googletagmanager.com/gtag/js?id=" + cfg.ga;
+              document.head.appendChild(g);
+              gtag("js", new Date()); gtag("config", cfg.ga);
+            }
+            if (cfg.gtm) {
+              (function (w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" }); var f = d.getElementsByTagName(s)[0], j = d.createElement(s); j.async = true; j.src = "https://www.googletagmanager.com/gtm.js?id=" + i; f.parentNode.insertBefore(j, f); })(window, document, "script", "dataLayer", cfg.gtm);
+            }
+            if (cfg.googleAds) {
+              var a = document.createElement("script"); a.async = true;
+              a.src = "https://www.googletagmanager.com/gtag/js?id=" + cfg.googleAds;
+              document.head.appendChild(a);
+              gtag("js", new Date()); gtag("config", cfg.googleAds);
+            }
+            if (cfg.meta) {
+              !function (f, b, e, v, n, t, s) { if (f.fbq) return; n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments) }; if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = "2.0"; n.queue = []; t = b.createElement(e); t.async = !0; t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s) }(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
+              window.fbq("init", cfg.meta); window.fbq("track", "PageView");
+            }
+            if (cfg.tiktok) {
+              !function (w, d, t) { w.TiktokAnalyticsObject = t; var ttq = w[t] = w[t] || []; ttq.methods = ["page", "track", "identify", "instances", "debug", "on", "off", "once", "ready", "alias", "group", "enableCookie", "disableCookie"]; ttq.setAndDefer = function (t, e) { t[e] = function () { t.push([e].concat(Array.prototype.slice.call(arguments, 0))) } }; for (var i = 0; i < ttq.methods.length; i++) ttq.setAndDefer(ttq, ttq.methods[i]); ttq.load = function (e, n) { var r = "https://analytics.tiktok.com/i18n/pixel/events.js"; ttq._i = ttq._i || {}; ttq._i[e] = []; ttq._i[e]._u = r; ttq._t = ttq._t || {}; ttq._t[e] = +new Date; var o = d.createElement("script"); o.type = "text/javascript"; o.async = !0; o.src = r + "?sdkid=" + e + "&lib=" + t; var a = d.getElementsByTagName("script")[0]; a.parentNode.insertBefore(o, a) }; ttq.load(cfg.tiktok); ttq.page() }(window, document, "ttq");
+            }
+          }
+
+          var choice = get();
+          if (choice === "granted") loadScripts();
+          else if (choice !== "denied") banner.hidden = false;
+
+          banner.querySelector('[data-consent="accept"]').addEventListener("click", function () { set("granted"); loadScripts(); banner.hidden = true; });
+          banner.querySelector('[data-consent="deny"]').addEventListener("click", function () { set("denied"); banner.hidden = true; });
+          window.openCookieSettings = function () { banner.hidden = false; };
+        })();
+      </script>
+    </div>
+  )
+}
+
+<style>
+  .cookie-consent {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+    z-index: 90;
+    max-width: 30rem;
+  }
+  @media (min-width: 640px) {
+    .cookie-consent { right: auto; }
+  }
+  .cookie-consent-inner {
+    background-color: var(--background);
+    border: var(--t-border-width) solid var(--theme-border);
+    border-radius: var(--t-radius);
+    box-shadow: var(--t-shadow-lg);
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .cookie-consent-text {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--theme-fg);
+  }
+  .cookie-consent-text a {
+    color: var(--theme-accent);
+    font-weight: 600;
+  }
+  .cookie-consent-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+  .cc-btn {
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.5rem 1.1rem;
+    border-radius: var(--t-radius);
+    cursor: pointer;
+    border: var(--t-border-width) solid transparent;
+  }
+  .cc-btn-ghost {
+    background: transparent;
+    color: var(--theme-fg-muted);
+    border-color: var(--theme-border);
+  }
+  .cc-btn-primary {
+    background: var(--color-primary);
+    color: #ffffff;
+  }
+</style>

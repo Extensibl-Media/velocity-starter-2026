@@ -158,6 +158,8 @@ export interface QuizStep {
  * all just config.
  */
 export interface FormSubmit {
+  /** Override the site default: stub (no network) | webhook (POST JSON) | netlify. */
+  adapter?: "stub" | "webhook" | "netlify";
   endpoint?: string;
   method?: string;
   redirect?: string;

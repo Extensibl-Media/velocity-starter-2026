@@ -9,6 +9,9 @@ export async function getStaticPaths() {
   const pages = await getCollection("pages");
   return pages
     .filter((page) => !page.data.draft)
+    // Demo/reference pages (e.g. /components) render every section — keep them in
+    // dev for reference, drop them from production builds (routes + their CSS).
+    .filter((page) => !(import.meta.env.PROD && page.data.demo))
     .filter((page) => page.id !== "")
     .map((page) => ({
       params: {

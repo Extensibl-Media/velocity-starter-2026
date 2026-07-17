@@ -18,7 +18,7 @@
       "theme": "inverse",
       "data": {
         "headline": "hero:full",
-        "subheadline": "Full-viewport centered hero \u2014 bold brand landing."
+        "subheadline": "Full-viewport centered hero — bold brand landing."
       }
     },
     {
@@ -257,7 +257,7 @@
           },
           "outcome": {
             "heading": "You're all set!",
-            "body": "Based on your answers ({{damage}} \u2014 {{urgency}}), a licensed specialist will call within the hour."
+            "body": "Based on your answers ({{damage}} — {{urgency}}), a licensed specialist will call within the hour."
           },
           "steps": [
             {
@@ -312,7 +312,7 @@
               "question": "How soon do you need it handled?",
               "options": [
                 {
-                  "label": "ASAP \u2014 today",
+                  "label": "ASAP — today",
                   "icon": "clock"
                 },
                 {
@@ -520,19 +520,19 @@
         ],
         "badges": [
           {
-            "icon": "\ud83d\udee1\ufe0f",
+            "icon": "🛡️",
             "label": "Licensed & Insured"
           },
           {
-            "icon": "\u2b50",
+            "icon": "⭐",
             "label": "4.9 on Google"
           },
           {
-            "icon": "\ud83c\udfc6",
+            "icon": "🏆",
             "label": "7+ Years"
           },
           {
-            "icon": "\u2705",
+            "icon": "✅",
             "label": "Free Estimates"
           }
         ]
@@ -779,7 +779,7 @@
             "description": "Preferred Contractor Network"
           },
           {
-            "label": "BBB Accredited \u2014 A+",
+            "label": "BBB Accredited — A+",
             "description": "Better Business Bureau"
           },
           {
@@ -803,7 +803,7 @@
       "data": {
         "seal": "10-Year Warranty",
         "heading": "The Peak Roofing Promise",
-        "body": "Every roof we install is backed by our workmanship guarantee and a manufacturer-backed warranty \u2014 in writing.",
+        "body": "Every roof we install is backed by our workmanship guarantee and a manufacturer-backed warranty — in writing.",
         "points": [
           "No hidden fees",
           "Free damage inspection",
@@ -886,7 +886,7 @@
           "variant": "text"
         },
         "heading": "Our Services",
-        "subheading": "Expandable rows \u2014 click to open."
+        "subheading": "Expandable rows — click to open."
       }
     },
     {
@@ -898,7 +898,7 @@
           "variant": "text"
         },
         "heading": "Our Services",
-        "subheading": "Tabbed \u2014 click a service."
+        "subheading": "Tabbed — click a service."
       }
     },
     {
@@ -1053,7 +1053,7 @@
           "variant": "text"
         },
         "heading": "Browse by Category",
-        "subheading": "One tab per category \u2014 click through the offerings."
+        "subheading": "One tab per category — click through the offerings."
       }
     },
     {
@@ -1116,7 +1116,7 @@
           "variant": "text"
         },
         "heading": "About Peak Roofing Co",
-        "body": "Centered stacked story block \u2014 short brand intro for interior pages and about sections.",
+        "body": "Centered stacked story block — short brand intro for interior pages and about sections.",
         "cta": {
           "label": "Get a Free Quote",
           "href": "/contact"
@@ -1132,7 +1132,7 @@
           "variant": "text"
         },
         "heading": "Your Trusted Roofing Partner",
-        "body": "We treat every project with the care and attention it deserves \u2014 craftsmanship, transparent communication, and exceptional service.",
+        "body": "We treat every project with the care and attention it deserves — craftsmanship, transparent communication, and exceptional service.",
         "image": {
           "src": "/src/assets/images/roofing-crew.jpg",
           "alt": "Team"
@@ -1297,12 +1297,12 @@
           "variant": "text"
         },
         "heading": "Meet the Owner",
-        "body": "I started Peak Roofing in 2019 to give Treasure Valley homeowners roofing they can actually trust \u2014 honest estimates, clean work, and a team that shows up.",
+        "body": "I started Peak Roofing in 2019 to give Treasure Valley homeowners roofing they can actually trust — honest estimates, clean work, and a team that shows up.",
         "video": "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
         "videoTitle": "Owner introduction",
         "name": "Marcus Reed",
         "role": "Founder & Lead Roofer",
-        "signature": "\u2014 Marcus",
+        "signature": "— Marcus",
         "imagePosition": "left",
         "cta": {
           "label": "Get a Free Quote",
@@ -1376,7 +1376,7 @@
           "variant": "text"
         },
         "heading": "15 years on Boise rooftops",
-        "subheading": "The work speaks for itself \u2014 here's what a decade and a half looks like.",
+        "subheading": "The work speaks for itself — here's what a decade and a half looks like.",
         "stats": [
           {
             "value": "2,400+",
@@ -1389,7 +1389,7 @@
             "description": "Locally owned since 2009"
           },
           {
-            "value": "4.9\u2605",
+            "value": "4.9★",
             "label": "Google rating",
             "description": "From 600+ verified reviews"
           },
@@ -1470,7 +1470,7 @@
         },
         "heading": "Rooted in Boise, built to last",
         "subheading": "Two generations of roofers, one Treasure Valley zip code.",
-        "body": "Peak Roofing Co started as a single truck and a ladder. Today we're the crew your neighbors call first \u2014 but we still answer the phone ourselves.",
+        "body": "Peak Roofing Co started as a single truck and a ladder. Today we're the crew your neighbors call first — but we still answer the phone ourselves.",
         "image": {
           "src": "/src/assets/images/roofing-crew.jpg",
           "alt": "Founder inspecting a roof on-site"
@@ -1480,7 +1480,7 @@
           "alt": "Boise neighborhood with freshly roofed homes"
         },
         "bullets": [
-          "Locally owned and operated \u2014 never a franchise",
+          "Locally owned and operated — never a franchise",
           "Every quote comes from an owner, not a salesperson",
           "We magnet-sweep for nails before we leave your yard"
         ],
@@ -1505,7 +1505,7 @@
           "variant": "text"
         },
         "heading": "Four promises we put in writing",
-        "subheading": "Every Peak Roofing Co project is backed by the same commitments \u2014 no fine print, no surprises.",
+        "subheading": "Every Peak Roofing Co project is backed by the same commitments — no fine print, no surprises.",
         "items": [
           {
             "title": "An honest inspection, always",
@@ -1654,19 +1654,19 @@
         "heading": "Your Project Timeline",
         "steps": [
           {
-            "heading": "Day 1 \u2014 Inspection",
+            "heading": "Day 1 — Inspection",
             "body": "Free on-site assessment."
           },
           {
-            "heading": "Day 2 \u2014 Estimate",
+            "heading": "Day 2 — Estimate",
             "body": "Itemized, no-pressure quote."
           },
           {
-            "heading": "Day 3 \u2014 Install",
+            "heading": "Day 3 — Install",
             "body": "Certified crew, clean site."
           },
           {
-            "heading": "Day 4 \u2014 Walkthrough",
+            "heading": "Day 4 — Walkthrough",
             "body": "Final review with you."
           }
         ]
@@ -1706,7 +1706,7 @@
           "variant": "text"
         },
         "heading": "A Clear Path From Leak to Fixed",
-        "subheading": "No guesswork, no surprises \u2014 just four straightforward steps from your first call to a roof that's done right.",
+        "subheading": "No guesswork, no surprises — just four straightforward steps from your first call to a roof that's done right.",
         "steps": [
           {
             "heading": "Book Your Free Inspection",
@@ -1740,7 +1740,7 @@
         "steps": [
           {
             "heading": "We Answer, Every Time",
-            "body": "A real person picks up. Tell us what's going on and we'll get a truck out fast \u2014 even for emergencies."
+            "body": "A real person picks up. Tell us what's going on and we'll get a truck out fast — even for emergencies."
           },
           {
             "heading": "Free On-Site Estimate",
@@ -1782,7 +1782,7 @@
           {
             "phase": "Week 1",
             "heading": "Repairs Begin",
-            "body": "Materials ordered and crews scheduled \u2014 most jobs start within a few days."
+            "body": "Materials ordered and crews scheduled — most jobs start within a few days."
           },
           {
             "phase": "Done",
@@ -1813,7 +1813,7 @@
           },
           {
             "heading": "Quote",
-            "body": "Clear, written estimate \u2014 no pressure, no upsells."
+            "body": "Clear, written estimate — no pressure, no upsells."
           },
           {
             "heading": "Repair",
@@ -1837,7 +1837,7 @@
         "steps": [
           {
             "heading": "Tell us what's wrong",
-            "body": "Call or send photos \u2014 we'll know how to help right away."
+            "body": "Call or send photos — we'll know how to help right away."
           },
           {
             "heading": "Get a free, honest estimate",
@@ -2317,7 +2317,7 @@
           "variant": "text"
         },
         "heading": "Cities We Serve",
-        "subheading": "Fast, friendly local service across the region \u2014 find your city below.",
+        "subheading": "Fast, friendly local service across the region — find your city below.",
         "limit": 24
       }
     },
@@ -2356,7 +2356,7 @@
           "variant": "text"
         },
         "heading": "See If You're In Our Zone",
-        "subheading": "Our coverage area at a glance \u2014 tap any city for details.",
+        "subheading": "Our coverage area at a glance — tap any city for details.",
         "limit": 18,
         "mapEmbedUrl": "https://maps.google.com/maps?q=Boise,ID&output=embed&z=9"
       }
@@ -2395,7 +2395,7 @@
           "variant": "text"
         },
         "heading": "About Our Process",
-        "bodyLeft": "<p>Every project starts with a free, no-pressure inspection. We document the condition of your roof and walk you through the options.</p><h3>Transparent Estimates</h3><p>You get a detailed, itemized quote \u2014 no hidden fees.</p>",
+        "bodyLeft": "<p>Every project starts with a free, no-pressure inspection. We document the condition of your roof and walk you through the options.</p><h3>Transparent Estimates</h3><p>You get a detailed, itemized quote — no hidden fees.</p>",
         "bodyRight": "<p>Our crews are licensed, insured, and background-checked. We install to manufacturer spec and clean up thoroughly.</p><ul><li>Premium materials</li><li>Written warranty</li><li>On-time completion</li></ul>"
       }
     },
@@ -2485,8 +2485,8 @@
         },
         "heading": "Why Boise homeowners trust Peak Roofing Co",
         "subheading": "Family-owned, GAF-certified, and built on 18 years of Treasure Valley roofs.",
-        "lead": "When a hailstorm rolls off the Boise Foothills, the difference between a quick patch and a lasting repair comes down to who is on your roof \u2014 and Peak Roofing Co has been the name Ada County families call first since 2007.",
-        "body": "<p>We started with a single truck and a simple promise: treat every roof like it was over our own family's heads. Today our crews replace and repair hundreds of roofs a year across Boise, Meridian, Eagle, and Nampa \u2014 and that promise hasn't changed.</p><h3>Idaho weather is hard on roofs</h3><p>Between summer UV, sudden hailstorms, and heavy winter snow load, a Treasure Valley roof works harder than most. We install architectural shingles rated for our climate and back every full replacement with a workmanship warranty that actually means something.</p><p>From the first free inspection to the final cleanup with our magnetic nail sweep, you deal with real people who live and work in this valley.</p>",
+        "lead": "When a hailstorm rolls off the Boise Foothills, the difference between a quick patch and a lasting repair comes down to who is on your roof — and Peak Roofing Co has been the name Ada County families call first since 2007.",
+        "body": "<p>We started with a single truck and a simple promise: treat every roof like it was over our own family's heads. Today our crews replace and repair hundreds of roofs a year across Boise, Meridian, Eagle, and Nampa — and that promise hasn't changed.</p><h3>Idaho weather is hard on roofs</h3><p>Between summer UV, sudden hailstorms, and heavy winter snow load, a Treasure Valley roof works harder than most. We install architectural shingles rated for our climate and back every full replacement with a workmanship warranty that actually means something.</p><p>From the first free inspection to the final cleanup with our magnetic nail sweep, you deal with real people who live and work in this valley.</p>",
         "cta": {
           "label": "Book a free roof inspection",
           "href": "/contact",
@@ -2509,7 +2509,7 @@
         },
         "heading": "What to expect during your roof replacement",
         "subheading": "A day-by-day walkthrough of a typical Peak Roofing Co install.",
-        "body": "<h3>Before we start</h3><p>Every project begins with a free, no-pressure inspection. We document the condition of your roof with photos, measure it precisely, and walk you through your options and financing \u2014 all before you sign anything.</p><h3>Tear-off day</h3><p>Our crew arrives early, protects your landscaping and siding, and strips the old roofing down to the deck.</p><h3>Installation</h3><p>We install ice-and-water shield, synthetic underlayment, and your chosen architectural shingles to GAF spec. Most Boise-area homes are completed in a single day.</p><h3>Cleanup & final walkthrough</h3><p>We run a magnetic sweep for stray nails, haul away every scrap, and do a final walkthrough with you before registering your warranty.</p>",
+        "body": "<h3>Before we start</h3><p>Every project begins with a free, no-pressure inspection. We document the condition of your roof with photos, measure it precisely, and walk you through your options and financing — all before you sign anything.</p><h3>Tear-off day</h3><p>Our crew arrives early, protects your landscaping and siding, and strips the old roofing down to the deck.</p><h3>Installation</h3><p>We install ice-and-water shield, synthetic underlayment, and your chosen architectural shingles to GAF spec. Most Boise-area homes are completed in a single day.</p><h3>Cleanup & final walkthrough</h3><p>We run a magnetic sweep for stray nails, haul away every scrap, and do a final walkthrough with you before registering your warranty.</p>",
         "sidebarTitle": "On this page",
         "links": [
           {
@@ -2545,7 +2545,7 @@
           "variant": "text"
         },
         "heading": "Nearly two decades on Treasure Valley roofs",
-        "bodyTop": "<p>Peak Roofing Co isn't a storm-chaser passing through after the next big hail event. We're a local, licensed Idaho contractor with deep roots in Boise, Meridian, and Eagle \u2014 and the track record to prove it.</p>",
+        "bodyTop": "<p>Peak Roofing Co isn't a storm-chaser passing through after the next big hail event. We're a local, licensed Idaho contractor with deep roots in Boise, Meridian, and Eagle — and the track record to prove it.</p>",
         "stats": [
           {
             "value": "3,200+",
@@ -2553,7 +2553,7 @@
             "description": "Across Ada & Canyon County since 2007"
           },
           {
-            "value": "4.9\u2605",
+            "value": "4.9★",
             "label": "Average rating",
             "description": "From 480+ verified Google reviews"
           },
@@ -2574,7 +2574,7 @@
           "text": "content:quote-band",
           "variant": "text"
         },
-        "quote": "I grew up in Boise, and I roof every house like it belongs to someone I'll run into at the grocery store \u2014 because usually it does.",
+        "quote": "I grew up in Boise, and I roof every house like it belongs to someone I'll run into at the grocery store — because usually it does.",
         "attribution": "Marcus Delgado",
         "role": "Founder & Owner, Peak Roofing Co",
         "image": {
@@ -2614,7 +2614,7 @@
           },
           {
             "question": "Do you offer financing?",
-            "answer": "<p>Yes \u2014 we offer flexible monthly payment plans with quick approval.</p>"
+            "answer": "<p>Yes — we offer flexible monthly payment plans with quick approval.</p>"
           }
         ],
         "cta": {
@@ -2684,7 +2684,7 @@
           {
             "before": "/src/assets/images/landing.jpg",
             "after": "/src/assets/images/roofing-crew.jpg",
-            "label": "Full roof replacement \u2014 Boise, ID",
+            "label": "Full roof replacement — Boise, ID",
             "alt": "Roof project"
           }
         ]
@@ -2781,17 +2781,17 @@
           {
             "src": "/src/assets/images/landing.jpg",
             "alt": "Roof",
-            "caption": "Full replacement \u2014 Boise"
+            "caption": "Full replacement — Boise"
           },
           {
             "src": "/src/assets/images/roofing-crew.jpg",
             "alt": "Crew",
-            "caption": "Crew on site \u2014 Meridian"
+            "caption": "Crew on site — Meridian"
           },
           {
             "src": "/src/assets/images/landing.jpg",
             "alt": "Roof",
-            "caption": "Repair \u2014 Nampa"
+            "caption": "Repair — Nampa"
           }
         ]
       }
@@ -2925,27 +2925,27 @@
           {
             "src": "/src/assets/images/roofing-crew.jpg",
             "alt": "Peak Roofing crew installing architectural shingles",
-            "caption": "Full architectural shingle re-roof \u2014 Boise Bench"
+            "caption": "Full architectural shingle re-roof — Boise Bench"
           },
           {
             "src": "/src/assets/images/landing.jpg",
             "alt": "Completed standing-seam metal roof",
-            "caption": "Standing-seam metal roof \u2014 Eagle, ID"
+            "caption": "Standing-seam metal roof — Eagle, ID"
           },
           {
             "src": "/src/assets/images/roofing-crew.jpg",
             "alt": "Crew replacing storm-damaged roof",
-            "caption": "Storm-damage tear-off & replace \u2014 Meridian"
+            "caption": "Storm-damage tear-off & replace — Meridian"
           },
           {
             "src": "/src/assets/images/landing.jpg",
             "alt": "New roof on a Boise home at dusk",
-            "caption": "New construction roof \u2014 North End"
+            "caption": "New construction roof — North End"
           },
           {
             "src": "/src/assets/images/roofing-crew.jpg",
             "alt": "Peak Roofing team on a finished roof",
-            "caption": "Class 4 impact-resistant upgrade \u2014 Nampa"
+            "caption": "Class 4 impact-resistant upgrade — Nampa"
           }
         ]
       }
@@ -3016,13 +3016,13 @@
             "src": "/src/assets/images/landing.jpg",
             "alt": "Standing-seam metal roof on an Eagle hillside home",
             "caption": "A full tear-off and standing-seam metal install engineered for 50+ years of Idaho weather.",
-            "category": "Standing-Seam Metal \u2014 Eagle"
+            "category": "Standing-Seam Metal — Eagle"
           },
           {
             "src": "/src/assets/images/roofing-crew.jpg",
             "alt": "Architectural shingle re-roof in the Boise Bench",
             "caption": "Storm-damaged roof rebuilt in two days with GAF Timberline HDZ shingles.",
-            "category": "Architectural Shingle \u2014 Boise Bench"
+            "category": "Architectural Shingle — Boise Bench"
           }
         ]
       }
@@ -3036,7 +3036,7 @@
           "variant": "text"
         },
         "heading": "Snapshots From the Crew",
-        "subheading": "Real photos our team snaps on the roof \u2014 no stock imagery.",
+        "subheading": "Real photos our team snaps on the roof — no stock imagery.",
         "images": [
           {
             "src": "/src/assets/images/roofing-crew.jpg",
@@ -3210,7 +3210,7 @@
           "variant": "text"
         },
         "heading": "Prefer to Talk?",
-        "subheading": "Call us \u2014 we answer fast.",
+        "subheading": "Call us — we answer fast.",
         "showPhone": true,
         "cta": {
           "label": "Or request a quote online",
@@ -3250,7 +3250,7 @@
           "variant": "text"
         },
         "heading": "Roofing Tips & Seasonal Offers",
-        "subheading": "Join our list \u2014 no spam, ever.",
+        "subheading": "Join our list — no spam, ever.",
         "submitLabel": "Subscribe"
       }
     },
@@ -3258,7 +3258,7 @@
       "type": "cta:sticky-bar",
       "theme": "inverse",
       "data": {
-        "text": "cta:sticky-bar \u2014 Free roofing estimate, no obligation.",
+        "text": "cta:sticky-bar — Free roofing estimate, no obligation.",
         "cta": {
           "label": "Get a Quote",
           "href": "/contact"
@@ -3302,7 +3302,7 @@
         "subheading": "Whether it's an emergency leak or long-term planning, Peak Roofing Co has a next step for you.",
         "paths": [
           {
-            "icon": "\ud83d\udea8",
+            "icon": "🚨",
             "title": "I Have an Active Leak",
             "body": "Same-day emergency tarping and repair crews across the Treasure Valley. We stop the water first, then fix it right.",
             "cta": {
@@ -3312,7 +3312,7 @@
             }
           },
           {
-            "icon": "\ud83d\udccb",
+            "icon": "📋",
             "title": "I'm Planning a Replacement",
             "body": "Free, no-pressure estimate with photos, material options, and financing built for Boise homeowners.",
             "cta": {
@@ -3333,7 +3333,7 @@
           "variant": "text"
         },
         "heading": "A Roof Built for Idaho's Toughest Weather",
-        "subheading": "From Boise foothills wind to Meridian hail, Peak Roofing Co installs systems engineered to last decades \u2014 backed by a written workmanship warranty.",
+        "subheading": "From Boise foothills wind to Meridian hail, Peak Roofing Co installs systems engineered to last decades — backed by a written workmanship warranty.",
         "image": {
           "src": "/src/assets/images/landing.jpg",
           "alt": "Peak Roofing Co crew installing architectural shingles on a Boise home"
@@ -3360,7 +3360,7 @@
           "variant": "text"
         },
         "heading": "The Numbers Boise Homeowners Trust",
-        "subheading": "Two decades of roofs that hold up \u2014 and neighbors who recommend us.",
+        "subheading": "Two decades of roofs that hold up — and neighbors who recommend us.",
         "stats": [
           {
             "value": "2,400+",
@@ -3368,7 +3368,7 @@
             "description": "Across Ada & Canyon County"
           },
           {
-            "value": "4.9\u2605",
+            "value": "4.9★",
             "label": "Google Rating",
             "description": "From 380+ reviews"
           },
@@ -3404,12 +3404,12 @@
           "variant": "text"
         },
         "heading": "The Peak Roofing No-Leak Guarantee",
-        "subheading": "If it isn't right, we make it right \u2014 at no cost to you. That's in writing on every job.",
+        "subheading": "If it isn't right, we make it right — at no cost to you. That's in writing on every job.",
         "sealText": "100% Satisfaction Guaranteed",
         "bullets": [
           "Written workmanship warranty on every install",
           "Free re-inspection within 12 months",
-          "No hidden fees \u2014 the quote is the price",
+          "No hidden fees — the quote is the price",
           "Fully licensed, bonded, and insured in Idaho"
         ],
         "cta": {
@@ -3606,7 +3606,7 @@
           "variant": "text"
         },
         "heading": "Get Your Free Roofing Estimate",
-        "subheading": "Talk to a real Peak Roofing Co estimator today \u2014 no call centers, no pressure.",
+        "subheading": "Talk to a real Peak Roofing Co estimator today — no call centers, no pressure.",
         "cta": {
           "label": "Request a Quote",
           "href": "/contact",
@@ -3619,7 +3619,7 @@
       "type": "banner:announcement",
       "theme": "brand-secondary",
       "data": {
-        "text": "banner:announcement \u2014 Storm season is here. Free roof inspections through the end of the month.",
+        "text": "banner:announcement — Storm season is here. Free roof inspections through the end of the month.",
         "cta": {
           "label": "Book now",
           "href": "/contact"
@@ -3632,7 +3632,7 @@
       "theme": "inverse",
       "data": {
         "text": "Talk to a local Boise roofer today",
-        "hoursNote": "Mon\u2013Sat 7am\u20137pm",
+        "hoursNote": "Mon–Sat 7am–7pm",
         "cta": {
           "label": "Free Estimate",
           "href": "/contact",
@@ -3648,7 +3648,7 @@
       "type": "banner:promo-strip",
       "theme": "primary",
       "data": {
-        "icon": "\ud83c\udfe0",
+        "icon": "🏠",
         "badge": "Limited Time",
         "text": "$500 off any full roof replacement this month",
         "code": "PEAK500",
@@ -3668,7 +3668,7 @@
       "theme": "brand-secondary",
       "data": {
         "label": "Storm Alert",
-        "text": "Hail hit the Treasure Valley \u2014 free storm-damage roof inspections now booking.",
+        "text": "Hail hit the Treasure Valley — free storm-damage roof inspections now booking.",
         "cta": {
           "label": "Book Inspection",
           "href": "/storm-damage",
@@ -4171,32 +4171,32 @@
           "text": "pricing:quote",
           "variant": "text"
         },
-        "heading": "Every Roof Is Different \u2014 Get a Real Quote",
+        "heading": "Every Roof Is Different — Get a Real Quote",
         "subheading": "No pushy sales visits. We inspect, measure, and send a clear written estimate you can hold us to.",
         "rangesTitle": "What projects typically cost in the Treasure Valley",
         "rows": [
           {
             "service": "Asphalt Shingle Re-Roof",
-            "from": "$8.5k\u2013$18k",
-            "note": "1,500\u20132,500 sq ft home"
+            "from": "$8.5k–$18k",
+            "note": "1,500–2,500 sq ft home"
           },
           {
             "service": "Standing-Seam Metal Roof",
-            "from": "$18k\u2013$40k",
-            "note": "40\u201350 year lifespan"
+            "from": "$18k–$40k",
+            "note": "40–50 year lifespan"
           },
           {
             "service": "Flat / Low-Slope (TPO)",
-            "from": "$9k\u2013$22k",
+            "from": "$9k–$22k",
             "note": "Additions & garages"
           },
           {
             "service": "Storm & Hail Repair",
-            "from": "$500\u2013$4k",
+            "from": "$500–$4k",
             "note": "Often insurance-covered"
           }
         ],
-        "trustNote": "Locally owned in Boise since 2009 \u2022 Licensed, bonded & insured.",
+        "trustNote": "Locally owned in Boise since 2009 • Licensed, bonded & insured.",
         "disclaimer": "Ranges reflect recent Peak Roofing projects and vary with size, pitch, and materials.",
         "cta": {
           "label": "Request Free Quote",
@@ -4219,7 +4219,7 @@
           "variant": "text"
         },
         "heading": "Good, Better, Best",
-        "subheading": "Three honest options for your replacement \u2014 pick the protection and lifespan that fit your home.",
+        "subheading": "Three honest options for your replacement — pick the protection and lifespan that fit your home.",
         "plans": [
           {
             "name": "Essential",
@@ -4297,7 +4297,7 @@
         "rows": [
           {
             "heading": "Licensed & Insured",
-            "body": "Fully licensed and insured in Idaho \u2014 proof provided before any job starts.",
+            "body": "Fully licensed and insured in Idaho — proof provided before any job starts.",
             "image": {
               "src": "/src/assets/images/roofing-crew.jpg",
               "alt": "Crew"
@@ -4470,7 +4470,7 @@
           "variant": "text"
         },
         "heading": "Built to Last",
-        "body": "We install complete roof systems engineered for Idaho weather \u2014 not just shingles.",
+        "body": "We install complete roof systems engineered for Idaho weather — not just shingles.",
         "image": {
           "src": "/src/assets/images/roofing-crew.jpg",
           "alt": "Crew"
@@ -4501,7 +4501,7 @@
           {
             "icon": "shield",
             "title": "Lifetime workmanship warranty",
-            "body": "Every roof we install is backed in writing \u2014 not just the shingle maker's coverage, but our own labor guarantee.",
+            "body": "Every roof we install is backed in writing — not just the shingle maker's coverage, but our own labor guarantee.",
             "bullets": [
               "Transferable to new owners",
               "No fine-print exclusions"
@@ -4529,7 +4529,7 @@
           {
             "icon": "home",
             "title": "Local, family-owned",
-            "body": "Boise-based since 2009 \u2014 the same crew from estimate to final nail."
+            "body": "Boise-based since 2009 — the same crew from estimate to final nail."
           },
           {
             "icon": "clock",
@@ -4597,7 +4597,7 @@
           "variant": "text"
         },
         "heading": "Four reasons Boise homeowners choose Peak",
-        "subheading": "No pressure, no surprises \u2014 just the standards we hold on every single roof.",
+        "subheading": "No pressure, no surprises — just the standards we hold on every single roof.",
         "cta": {
           "label": "Book your free estimate",
           "href": "/contact",
@@ -4644,7 +4644,7 @@
           "variant": "text"
         },
         "heading": "Roofs engineered for hail, wind, and sun",
-        "subheading": "Treasure Valley homes take a beating. We build for it \u2014 and the numbers back it up.",
+        "subheading": "Treasure Valley homes take a beating. We build for it — and the numbers back it up.",
         "imagePosition": "right",
         "image": {
           "src": "/src/assets/images/landing.jpg",
@@ -4659,7 +4659,7 @@
           {
             "icon": "bolt",
             "title": "Class 4 impact-rated shingles",
-            "body": "The top hail rating available \u2014 and often a discount on your homeowner's insurance."
+            "body": "The top hail rating available — and often a discount on your homeowner's insurance."
           },
           {
             "icon": "droplet",
@@ -4678,7 +4678,7 @@
             "label": "Treasure Valley roofs installed"
           },
           {
-            "value": "4.9\u2605",
+            "value": "4.9★",
             "label": "Average Google rating"
           },
           {
@@ -4887,7 +4887,7 @@
         "rows": [
           {
             "feature": "Old roof torn off first",
-            "them": "Shingled over \u2014 hides rot",
+            "them": "Shingled over — hides rot",
             "us": "Full tear-off & deck inspection"
           },
           {
@@ -5246,7 +5246,7 @@
           "variant": "text"
         },
         "heading": "The Peak Roofing Team",
-        "subheading": "Licensed, background-checked, and Boise-proud \u2014 the same faces on every job.",
+        "subheading": "Licensed, background-checked, and Boise-proud — the same faces on every job.",
         "members": [
           {
             "name": "Dave Thornton",
@@ -5290,7 +5290,7 @@
           "variant": "text"
         },
         "heading": "One Team, Every Roof",
-        "subheading": "When Peak Roofing shows up, you get the whole crew \u2014 no subcontractors, no strangers.",
+        "subheading": "When Peak Roofing shows up, you get the whole crew — no subcontractors, no strangers.",
         "groupPhoto": {
           "src": "/src/assets/images/roofing-crew.jpg",
           "alt": "The Peak Roofing Co crew on a Boise job site"
@@ -5360,7 +5360,7 @@
             "role": "Senior Roofer",
             "photo": "/src/assets/images/roofing-crew.jpg",
             "specialty": "Metal Roofing",
-            "bio": "Standing-seam metal is his craft \u2014 clean lines, no leaks."
+            "bio": "Standing-seam metal is his craft — clean lines, no leaks."
           },
           {
             "name": "Sam Whitfield",
@@ -5388,7 +5388,7 @@
           "variant": "text"
         },
         "heading": "Build Boise's Best Roofs With Us",
-        "subheading": "Peak Roofing Co is growing. Meet the crew \u2014 then come join it.",
+        "subheading": "Peak Roofing Co is growing. Meet the crew — then come join it.",
         "members": [
           {
             "name": "Dave Thornton",
@@ -5444,7 +5444,7 @@
           "variant": "text"
         },
         "heading": "Our Workmanship Guarantee",
-        "body": "Every job is backed by a written warranty. If something isn't right, we make it right \u2014 no runaround.",
+        "body": "Every job is backed by a written warranty. If something isn't right, we make it right — no runaround.",
         "badge": "100% Satisfaction"
       }
     },
@@ -5486,7 +5486,7 @@
           "variant": "text"
         },
         "heading": "Backed by a 25-Year Workmanship Warranty",
-        "subheading": "Every roof Peak Roofing Co installs across the Treasure Valley is covered in writing \u2014 materials and labor \u2014 so you're protected long after the crew drives away.",
+        "subheading": "Every roof Peak Roofing Co installs across the Treasure Valley is covered in writing — materials and labor — so you're protected long after the crew drives away.",
         "seal": "25-Year Warranty",
         "bullets": [
           "Full labor and workmanship coverage for 25 years",
@@ -5519,7 +5519,7 @@
         "items": [
           {
             "title": "100% Satisfaction",
-            "body": "If you're not thrilled with the finished roof, we'll make it right or refund your deposit \u2014 no questions asked.",
+            "body": "If you're not thrilled with the finished roof, we'll make it right or refund your deposit — no questions asked.",
             "bullets": [
               "Final walkthrough with the crew lead",
               "Punch-list items fixed within 48 hours"
@@ -5553,7 +5553,7 @@
           "variant": "text"
         },
         "heading": "My name is on every roof we build.",
-        "body": "I started Peak Roofing Co because Boise homeowners deserved a roofer who shows up, does the work right, and stands behind it. That's still how we operate. If anything about your project falls short of what we promised, call me directly \u2014 I'll personally see it made right.",
+        "body": "I started Peak Roofing Co because Boise homeowners deserved a roofer who shows up, does the work right, and stands behind it. That's still how we operate. If anything about your project falls short of what we promised, call me directly — I'll personally see it made right.",
         "seal": "Signed Guarantee",
         "signatureName": "Dan Whitaker",
         "signatureRole": "Founder & Owner, Peak Roofing Co"
@@ -5568,7 +5568,7 @@
           "variant": "text"
         },
         "heading": "Built to Handle Every Boise Season",
-        "body": "From July hailstorms to January ice dams, your roof is engineered and installed to keep water out \u2014 guaranteed. If it doesn't, we're back on the ladder the same week at no cost to you.",
+        "body": "From July hailstorms to January ice dams, your roof is engineered and installed to keep water out — guaranteed. If it doesn't, we're back on the ladder the same week at no cost to you.",
         "bullets": [
           "Ice-and-water shield on every eave and valley",
           "Wind-rated to 130 mph on all shingle installs",
@@ -5596,7 +5596,7 @@
           "variant": "text"
         },
         "heading": "Not Happy? You Don't Pay.",
-        "body": "Peak Roofing Co stands behind every job with a simple, written money-back guarantee. If we can't make it right, your deposit comes back \u2014 that's our promise to every Boise homeowner.",
+        "body": "Peak Roofing Co stands behind every job with a simple, written money-back guarantee. If we can't make it right, your deposit comes back — that's our promise to every Boise homeowner.",
         "bullets": [
           "We show up on the date we promised, or your inspection is free",
           "We finish on schedule, or we credit you for the delay",
@@ -5727,7 +5727,7 @@
             "label": "Roofing the Treasure Valley"
           },
           {
-            "value": "4.9\u2605",
+            "value": "4.9★",
             "label": "Average Google rating"
           },
           {
@@ -5761,7 +5761,7 @@
             "label": "Roofs installed"
           },
           {
-            "value": "4.9\u2605",
+            "value": "4.9★",
             "label": "Google rating"
           },
           {
@@ -5787,25 +5787,25 @@
         "subheading": "Proof we bring to every Boise roof.",
         "stats": [
           {
-            "icon": "\ud83c\udfe0",
+            "icon": "🏠",
             "value": "2,400+",
             "label": "Roofs installed",
             "description": "Residential & commercial across Ada and Canyon County."
           },
           {
-            "icon": "\u2b50",
+            "icon": "⭐",
             "value": "4.9",
             "label": "Google rating",
             "description": "From 640+ verified Boise homeowner reviews."
           },
           {
-            "icon": "\ud83d\udee1\ufe0f",
+            "icon": "🛡️",
             "value": "25-yr",
             "label": "Workmanship warranty",
             "description": "Backed in writing on every installation."
           },
           {
-            "icon": "\u26a1",
+            "icon": "⚡",
             "value": "48 hrs",
             "label": "Storm-damage response",
             "description": "Emergency tarping and repair turnaround."
@@ -5833,9 +5833,9 @@
             "description": "Ridge-vent airflow plus radiant-barrier decking."
           },
           {
-            "label": "Attic temperature on a 100\u00b0 day",
-            "before": "138\u00b0",
-            "after": "96\u00b0",
+            "label": "Attic temperature on a 100° day",
+            "before": "138°",
+            "after": "96°",
             "description": "Balanced intake and exhaust ventilation."
           },
           {
@@ -5846,8 +5846,8 @@
           },
           {
             "label": "Rating of their previous roofer",
-            "before": "3.2\u2605",
-            "after": "4.9\u2605",
+            "before": "3.2★",
+            "after": "4.9★",
             "description": "Why Boise homeowners switched to Peak Roofing Co."
           }
         ],
@@ -5900,7 +5900,7 @@
           "variant": "text"
         },
         "heading": "Why Homeowners Choose Us",
-        "subheading": "Vertical tabs \u2014 click to switch.",
+        "subheading": "Vertical tabs — click to switch.",
         "tabs": [
           {
             "label": "Craftsmanship",
@@ -6058,14 +6058,14 @@
           "variant": "text"
         },
         "heading": "Roofing headaches, solved",
-        "subheading": "The common frustrations Boise homeowners tell us about \u2014 and exactly how we handle them.",
+        "subheading": "The common frustrations Boise homeowners tell us about — and exactly how we handle them.",
         "problemLabel": "What goes wrong",
         "solutionLabel": "How we fix it",
         "pairs": [
           {
             "problem": "Contractors ghost you after the storm and never send the estimate they promised.",
             "solution": "A detailed written estimate within 24 hours of your inspection.",
-            "detail": "Photos, scope, and price in one clear PDF \u2014 no vague ballparks."
+            "detail": "Photos, scope, and price in one clear PDF — no vague ballparks."
           },
           {
             "problem": "Surprise change orders blow the budget halfway through the job.",
@@ -6075,7 +6075,7 @@
           {
             "problem": "Nails and debris left in the yard put pets and kids at risk.",
             "solution": "A magnetic sweep of your entire property every single day.",
-            "detail": "We treat your lawn like it's our own \u2014 guaranteed."
+            "detail": "We treat your lawn like it's our own — guaranteed."
           }
         ]
       }
@@ -6098,7 +6098,7 @@
             "icon": "home"
           },
           {
-            "stat": "4.9\u2605",
+            "stat": "4.9★",
             "title": "Average Google rating",
             "body": "Built from more than 230 verified reviews by local homeowners.",
             "icon": "star"
@@ -6263,7 +6263,7 @@
           {
             "label": "GAF Master Elite Contractor",
             "logo": "/src/assets/images/logo.png",
-            "description": "Awarded to the top 2% of roofers in North America \u2014 factory-trained crews and access to GAF's strongest workmanship warranties."
+            "description": "Awarded to the top 2% of roofers in North America — factory-trained crews and access to GAF's strongest workmanship warranties."
           },
           {
             "label": "Owens Corning Preferred Contractor",
@@ -6302,12 +6302,12 @@
           "variant": "text"
         },
         "heading": "Certified Installers for the Brands You Trust",
-        "subheading": "We're factory-authorized by the industry's leading manufacturers \u2014 which unlocks warranties independent roofers simply can't offer.",
+        "subheading": "We're factory-authorized by the industry's leading manufacturers — which unlocks warranties independent roofers simply can't offer.",
         "items": [
           {
             "label": "GAF Master Elite",
             "logo": "/src/assets/images/logo.png",
-            "description": "As a GAF Master Elite contractor \u2014 held by only 2% of roofers nationwide \u2014 Peak Roofing Co can register the Golden Pledge warranty."
+            "description": "As a GAF Master Elite contractor — held by only 2% of roofers nationwide — Peak Roofing Co can register the Golden Pledge warranty."
           },
           {
             "label": "Owens Corning",
@@ -6341,7 +6341,7 @@
           "variant": "text"
         },
         "heading": "Licensed, Bonded & Insured",
-        "subheading": "Don't take our word for it \u2014 every credential below links to the official issuing authority.",
+        "subheading": "Don't take our word for it — every credential below links to the official issuing authority.",
         "verifyLabel": "Verify",
         "items": [
           {
@@ -6380,7 +6380,7 @@
           "text": "certifications:split-copy",
           "variant": "text"
         },
-        "heading": "Certifications Aren't Decoration \u2014 They're Your Protection",
+        "heading": "Certifications Aren't Decoration — They're Your Protection",
         "body": "Anyone can buy a ladder and call themselves a roofer. Manufacturer certifications and state licensing are what separate a warranty you can count on from a handshake you can't.",
         "bullets": [
           "Factory training means your shingles are installed exactly the way the warranty requires",
@@ -6426,7 +6426,7 @@
           "variant": "text"
         },
         "heading": "Roof Backed by the Best in the Business",
-        "subheading": "Master Elite certified, fully insured, and locally trusted \u2014 book with the crew Boise homeowners rely on.",
+        "subheading": "Master Elite certified, fully insured, and locally trusted — book with the crew Boise homeowners rely on.",
         "cta": {
           "label": "Schedule Free Estimate",
           "href": "/contact",
@@ -6470,7 +6470,7 @@
           "variant": "text"
         },
         "heading": "Find Us",
-        "subheading": "Visit or call \u2014 we're local."
+        "subheading": "Visit or call — we're local."
       }
     },
     {
@@ -6525,24 +6525,24 @@
           "variant": "text"
         },
         "heading": "Two yards, one Treasure Valley crew",
-        "subheading": "Visit whichever branch is closest \u2014 same guarantee, same team.",
+        "subheading": "Visit whichever branch is closest — same guarantee, same team.",
         "locations": [
           {
-            "name": "Peak Roofing Co \u2014 Boise",
+            "name": "Peak Roofing Co — Boise",
             "address": "1420 W Fairview Ave, Boise, ID 83702",
             "phone": "(208) 555-0142",
-            "hoursNote": "Mon\u2013Fri 7:30a\u20135:30p",
+            "hoursNote": "Mon–Fri 7:30a–5:30p",
             "mapUrl": "https://www.google.com/maps/dir/?api=1&destination=1420+W+Fairview+Ave+Boise+ID"
           },
           {
-            "name": "Peak Roofing Co \u2014 Nampa",
+            "name": "Peak Roofing Co — Nampa",
             "address": "908 12th Ave S, Nampa, ID 83651",
             "phone": "(208) 555-0188",
-            "hoursNote": "Mon\u2013Fri 8:00a\u20135:00p",
+            "hoursNote": "Mon–Fri 8:00a–5:00p",
             "mapUrl": "https://www.google.com/maps/dir/?api=1&destination=908+12th+Ave+S+Nampa+ID"
           },
           {
-            "name": "Peak Roofing Co \u2014 Meridian",
+            "name": "Peak Roofing Co — Meridian",
             "address": "3300 E Overland Rd, Meridian, ID 83642",
             "phone": "(208) 555-0173",
             "hoursNote": "By appointment",
@@ -6578,7 +6578,7 @@
           "variant": "text"
         },
         "heading": "Covering the whole Treasure Valley",
-        "subheading": "Free roof inspections across Ada and Canyon counties \u2014 usually same week.",
+        "subheading": "Free roof inspections across Ada and Canyon counties — usually same week.",
         "mapEmbedUrl": "https://maps.google.com/maps?q=Boise,ID&output=embed&z=11",
         "areas": [
           "Boise",
@@ -6590,7 +6590,7 @@
           "Star",
           "Garden City"
         ],
-        "footnote": "Not sure if you're in range? Give us a call \u2014 we cover a 40-mile radius from downtown Boise.",
+        "footnote": "Not sure if you're in range? Give us a call — we cover a 40-mile radius from downtown Boise.",
         "cta": {
           "label": "Check my address",
           "href": "/contact",
@@ -6598,5 +6598,6 @@
         }
       }
     }
-  ]
+  ],
+  "demo": true
 }

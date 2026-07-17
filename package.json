@@ -14,7 +14,9 @@
     "generate:cms": "node scripts/generate-cms.mjs",
     "check:cms": "node scripts/generate-cms.mjs --check",
     "cms": "decap-server",
-    "check:contrast": "node scripts/check-contrast.mjs"
+    "check:contrast": "node scripts/check-contrast.mjs",
+    "typecheck": "astro check",
+    "validate": "astro check && astro build && npm run check:cms && npm run check:contrast"
   },
   "dependencies": {
     "@astrojs/markdoc": "^1.0.2",
@@ -33,7 +35,9 @@
     "wrangler": "^4.77.0"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.9",
     "@types/node": "^25.5.0",
-    "decap-server": "^3.9.1"
+    "decap-server": "^3.9.1",
+    "typescript": "^5.9.3"
   }
 }
