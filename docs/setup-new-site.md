@@ -78,11 +78,16 @@ Author content, compose pages from the section library (`/components` catalog +
 ## 6. Deploy
 
 ```sh
-npm run build
+SITE_URL=https://<domain> npm run build
 wrangler deploy    # → https://<site>.<subdomain>.workers.dev
 ```
 
-DB migrations run automatically on first request. Point the custom domain in the Cloudflare dashboard.
+DB migrations + seed run automatically on first request. Point the custom domain in the
+Cloudflare dashboard.
+
+> **Full hosting guide:** provisioning, bindings, secrets, custom domains, R2 public
+> media, cron/scheduling, KV cache, email, and gotchas live in
+> [deployment-cloudflare.md](deployment-cloudflare.md).
 
 ## 7. Verify
 

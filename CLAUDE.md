@@ -34,6 +34,7 @@ Any CMS that can produce that `sections[]` JSON drives the site unchanged.
 - **Target architecture:** [docs/architecture.md](docs/architecture.md).
 - **The migration checklist (where we are):** [docs/migration-plan.md](docs/migration-plan.md).
 - **Standing up a new site (EmDash era):** [docs/setup-new-site.md](docs/setup-new-site.md).
+- **Deploying & hosting on Cloudflare:** [docs/deployment-cloudflare.md](docs/deployment-cloudflare.md).
 
 **Decap is fully removed** (Phase 5): no `public/admin/`, `scripts/generate-cms.mjs`, `src/lib/cms/`,
 `src/pages/admin.astro`, or `decap-server`. Editing happens in the EmDash admin at `/_emdash/admin`.
@@ -77,7 +78,7 @@ npx emdash export-seed --with-content > .emdash/seed.json   # backup/IaC snapsho
 wrangler deploy      # deploy the Worker (after D1 + R2 provisioned)
 ```
 
-Deploy prerequisites, bindings, and secrets: see [docs/setup-new-site.md](docs/setup-new-site.md).
+Deploy prerequisites, bindings, secrets, and Cloudflare hosting: see [docs/deployment-cloudflare.md](docs/deployment-cloudflare.md) (and [docs/setup-new-site.md](docs/setup-new-site.md) for the full new-site flow).
 
 ## Conventions
 
