@@ -6,8 +6,8 @@ import type {
   SectionCTA,
   StatItem,
 } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 import SmartImage from "@/components/media/SmartImage.astro";
 
 /**
@@ -63,7 +63,7 @@ const hasRail = data?.image || stats.length > 0;
       <div class="section-container">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Content + feature list */}
-          <div class:list={["flex flex-col gap-6", contentOrderClass]}>
+          <div class:list={["flex flex-col gap-lg", contentOrderClass]}>
             {data?.eyebrow &&
               (data.eyebrow.variant === "badge" ? (
                 <div>
@@ -89,7 +89,7 @@ const hasRail = data?.image || stats.length > 0;
 
             <ul class="flex flex-col gap-5 list-none m-0 p-0 mt-1">
               {items.map((item) => (
-                <li class="flex items-start gap-4">
+                <li class="flex items-start gap-md">
                   <span class="rail-icon" aria-hidden="true">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -154,7 +154,7 @@ const hasRail = data?.image || stats.length > 0;
                       : "",
                   ]}
                 >
-                  <dl class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-4 m-0">
+                  <dl class="grid grid-cols-2 sm:grid-cols-3 gap-x-lg gap-y-md m-0">
                     {stats.map((stat) => (
                       <div class="flex flex-col gap-0.5">
                         <dt class="rail-stat-value">{stat.value}</dt>

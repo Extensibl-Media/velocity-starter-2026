@@ -1,0 +1,16 @@
+---
+/**
+ * Spacer — Element. Contextual spacing between atoms inside blocks/sections.
+ * Driven by the element-gap scale (--t-gap-*), so density is themeable.
+ *   <Spacer size="lg" />        vertical gap
+ *   <Spacer size="sm" axis="x" /> horizontal gap
+ */
+interface Props {
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
+  axis?: "y" | "x";
+}
+const { size = "md", axis = "y" } = Astro.props;
+const dim = axis === "x" ? "width" : "height";
+---
+
+<div aria-hidden="true" style={`${dim}:var(--t-gap-${size});flex-shrink:0`}></div>

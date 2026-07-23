@@ -1,13 +1,13 @@
 ---
-import { getCollection } from "astro:content";
+import { getServices } from "@/lib/content";
 import type { Eyebrow } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 import {
   Accordion,
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
-} from "@/components/starwind/accordion";
+} from "@/components/blocks/accordion";
 
 interface Props {
   theme?: string;
@@ -21,7 +21,7 @@ interface Props {
 
 const { theme = "default", data } = Astro.props;
 
-const services = await getCollection("services");
+const services = await getServices();
 const sorted = services
   .sort((a, b) => a.data.order - b.data.order)
   .slice(0, data?.limit ?? services.length);
@@ -30,7 +30,7 @@ const sorted = services
 <section class={`section-wrapper section-py theme-${theme}`}>
   <div class="section-container">
     {/* Section header */}
-    <div class="flex flex-col items-center text-center gap-3 mb-12">
+    <div class="flex flex-col items-center text-center gap-sm mb-12">
       {
         data?.eyebrow && (
           <div>
@@ -70,7 +70,7 @@ const sorted = services
             {sorted.map((service, i) => (
               <AccordionItem value={`svc-${i}`}>
                 <AccordionTrigger class="text-left font-semibold theme-heading">
-                  <span class="flex items-center gap-2">
+                  <span class="flex items-center gap-xs">
                     <span>{service.data.title}</span>
                     {service.data.isEmergency && (
                       <span
@@ -83,7 +83,7 @@ const sorted = services
                   </span>
                 </AccordionTrigger>
                 <AccordionContent class="theme-text-muted leading-relaxed">
-                  <div class="flex flex-col gap-3">
+                  <div class="flex flex-col gap-sm">
                     {service.data.description && (
                       <p class="theme-text-muted text-sm leading-relaxed m-0">
                         {service.data.description}

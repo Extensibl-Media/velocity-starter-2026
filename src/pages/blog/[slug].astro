@@ -1,36 +1,40 @@
 ---
+// Blog post — live from EmDash (D1) under SSR. Body = Portable Text rendered
+// inside Starwind's <Prose> (the `prose` class alone has no styles — Tailwind
+// Typography isn't installed; Prose carries its own sw-prose CSS). Meta tags
+// come from EmDash's native SEO panel (getSeoMeta).
 import BlogLayout from "@/layouts/BlogLayout.astro";
-import { getCollection, render } from "astro:content";
+import { PortableText, WidgetArea } from "emdash/ui";
+import Prose from "@/components/starwind/prose/Prose.astro";
+import { getSeoMeta } from "emdash/seo";
+import { getPost } from "@/lib/content";
+import siteConfig from "@/config/site.config";
 
-export async function getStaticPaths() {
-  const posts = await getCollection("posts");
-  return posts
-    .filter((post) => !post.data.draft)
-    .map((post) => ({
-      params: { slug: post.id },
-      props: { post },
-    }));
-}
+const slug = Astro.params.slug!;
+const post = await getPost(slug);
+if (!post) return Astro.rewrite("/404");
 
-const { post } = Astro.props;
-const { Content } = await render(post);
+const meta = getSeoMeta(post as any, {
+  siteUrl: Astro.site?.href,
+  path: Astro.url.pathname,
+  defaultOgImage: siteConfig.ogImage ? new URL(siteConfig.ogImage, Astro.site).toString() : undefined,
+});
 ---
 
 <BlogLayout
   page={post}
-  title={post.data.title}
-  description={post.data.description}
-  image={post.data.image}
-  article={{
-    publishedTime: post.data.date,
-    authors: [post.data.author],
-    tags: post.data.tags,
-  }}
+  title={meta.title || post.data.title}
+  description={meta.description ?? post.data.description}
+  noindex={!!meta.robots}
+  image={meta.ogImage ?? undefined}
+  canonical={meta.canonical ?? undefined}
+  article={{ publishedTime: post.data.date, authors: [post.data.author] }}
 >
-  <article class="section-wrapper section-py">
-    <div class="section-container prose mx-auto">
+  <article class="post-article">
+    <Prose>
       <h1>{post.data.title}</h1>
-      <Content />
-    </div>
+      <PortableText value={post.data.body} />
+    </Prose>
   </article>
+  <WidgetArea name="post-footer" class="widget-area post-footer" />
 </BlogLayout>

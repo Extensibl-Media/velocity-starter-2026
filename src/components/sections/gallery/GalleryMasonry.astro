@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 import SmartImage from "@/components/media/SmartImage.astro";
 
 /**
@@ -28,7 +28,7 @@ const images = data?.images ?? [];
       <div class="section-container">
         {/* Header */}
         {(data?.eyebrow || data?.heading || data?.subheading) && (
-          <div class="flex flex-col items-center text-center gap-3 mb-12">
+          <div class="flex flex-col items-center text-center gap-sm mb-12">
             {data?.eyebrow && (
               <div>
                 {data.eyebrow.variant === "badge" ? (
@@ -50,7 +50,7 @@ const images = data?.images ?? [];
         )}
 
         <div class="masonry" data-gallery>
-          <div class="columns-1 sm:columns-2 lg:columns-3 gap-4">
+          <div class="columns-1 sm:columns-2 lg:columns-3 gap-md">
             {images.map((img, i) => (
               <figure class="masonry-item break-inside-avoid mb-4 m-0">
                 <button

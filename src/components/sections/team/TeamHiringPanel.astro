@@ -1,8 +1,8 @@
 ---
 import type { Eyebrow, SectionCTA, TeamMember } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 import SmartImage from "@/components/media/SmartImage.astro";
-import { Button } from "@/components/starwind/button";
+import { Button } from "@/components/elements/button";
 
 interface Props {
   theme?: string;
@@ -42,7 +42,7 @@ function initials(name: string): string {
     >
       <div class="section-container">
         {/* Section header */}
-        <div class="flex flex-col items-center text-center gap-3 mb-12">
+        <div class="flex flex-col items-center text-center gap-sm mb-12">
           {data?.eyebrow &&
             (data.eyebrow.variant === "badge" ? (
               <Badge class="uppercase tracking-widest text-xs">
@@ -66,9 +66,9 @@ function initials(name: string): string {
         </div>
 
         {/* Team grid */}
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 mb-12">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-lg mb-12">
           {members.map((member) => (
-            <div class="flex flex-col items-center text-center gap-2">
+            <div class="flex flex-col items-center text-center gap-xs">
               {member.photo ? (
                 <SmartImage
                   src={member.photo}
@@ -97,8 +97,8 @@ function initials(name: string): string {
 
         {/* Hiring CTA panel */}
         {(data?.hiringHeading || data?.hiringBody || data?.cta?.href) && (
-          <div class="hiring-cta flex flex-col md:flex-row md:items-center md:justify-between gap-6 p-8">
-            <div class="flex flex-col gap-2">
+          <div class="hiring-cta flex flex-col md:flex-row md:items-center md:justify-between gap-lg p-8">
+            <div class="flex flex-col gap-xs">
               {data?.hiringHeading && (
                 <h3 class="theme-heading text-2xl font-bold m-0">
                   {data.hiringHeading}
@@ -109,7 +109,7 @@ function initials(name: string): string {
               )}
             </div>
             {(data?.cta?.href || data?.secondaryCta?.href) && (
-              <div class="flex flex-wrap gap-3 shrink-0">
+              <div class="flex flex-wrap gap-sm shrink-0">
                 {data?.cta?.href && data?.cta?.label && (
                   <Button
                     variant={data.cta.variant ?? "primary"}

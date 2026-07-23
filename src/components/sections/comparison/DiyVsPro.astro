@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, ComparisonRow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 interface Props {
   theme?: string;
@@ -40,7 +40,7 @@ function renderKind(value?: boolean | string): "yes" | "no" | "text" {
   <div class="section-container">
     {
       (data?.eyebrow || data?.heading || data?.subheading) && (
-        <div class="flex flex-col items-center text-center gap-3 mb-12">
+        <div class="flex flex-col items-center text-center gap-sm mb-12">
           {data?.eyebrow &&
             (data.eyebrow.variant === "badge" ? (
               <Badge class="uppercase tracking-widest text-xs">
@@ -168,7 +168,7 @@ function renderKind(value?: boolean | string): "yes" | "no" | "text" {
 
     {
       ctas.length > 0 && (
-        <div class="flex flex-wrap justify-center gap-3 mt-8">
+        <div class="flex flex-wrap justify-center gap-sm mt-8">
           {ctas.map((cta, i) => (
             <Button
               href={cta.href}

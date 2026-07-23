@@ -1,8 +1,8 @@
 ---
 import { getServiceGroups, type ServiceGroup } from "@/lib/services";
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 /**
  * services:category-filter — all services in one grid with category filter
@@ -38,7 +38,7 @@ const allLabel = data?.allLabel ?? "All";
 
 <section class={`services-category-filter section-wrapper section-py theme-${theme}`}>
   <div class="section-container" data-svc-filter>
-    <div class="flex flex-col items-center text-center gap-3 mb-8">
+    <div class="flex flex-col items-center text-center gap-sm mb-8">
       {
         data?.eyebrow &&
           (data.eyebrow.variant === "badge" ? (
@@ -54,7 +54,7 @@ const allLabel = data?.allLabel ?? "All";
     </div>
 
     {/* Filter pills */}
-    <div class="flex flex-wrap items-center justify-center gap-2 mb-10" role="tablist" aria-label="Filter services by category">
+    <div class="flex flex-wrap items-center justify-center gap-xs mb-10" role="tablist" aria-label="Filter services by category">
       <button type="button" class="svc-pill is-active" data-filter="all" aria-pressed="true">{allLabel}</button>
       {categories.map((cat) => (
         <button type="button" class="svc-pill" data-filter={cat} aria-pressed="false">{cat}</button>
@@ -62,15 +62,15 @@ const allLabel = data?.allLabel ?? "All";
     </div>
 
     {/* Grid */}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-lg">
       {
         services.map((service) => (
           <a
             href={`/services/${service.slug}`}
-            class="svc-item group flex flex-col gap-3 p-6 rounded-xl border theme-border bg-background hover:shadow-md transition-all duration-200 no-underline"
+            class="svc-item group flex flex-col gap-sm p-6 rounded-xl border theme-border bg-background hover:shadow-md transition-all duration-200 no-underline"
             data-category={service.categoryTitle}
           >
-            <div class="flex items-start justify-between gap-2">
+            <div class="flex items-start justify-between gap-xs">
               <h3 class="theme-heading text-lg font-semibold m-0">{service.title}</h3>
               {service.isEmergency && (
                 <span class="shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full svc-emergency">Emergency</span>

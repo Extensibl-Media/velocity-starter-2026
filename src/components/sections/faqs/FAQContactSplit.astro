@@ -1,8 +1,8 @@
 ---
-import { getCollection } from "astro:content";
+import { getFaqs } from "@/lib/content";
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 interface Props {
   theme?: string;
@@ -18,7 +18,7 @@ interface Props {
 
 const { theme = "default", data } = Astro.props;
 
-const allFaqs = await getCollection("faqs");
+const allFaqs = await getFaqs();
 
 const faqs = allFaqs
   .filter((f) => !data?.service || f.data.service === data.service)
@@ -31,7 +31,7 @@ const faqs = allFaqs
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-16">
       {/* Sticky intro + CTA */}
       <div class="lg:col-span-2">
-        <div class="lg:sticky lg:top-24 flex flex-col gap-4">
+        <div class="lg:sticky lg:top-24 flex flex-col gap-md">
           {data?.eyebrow && (
             <div>
               {data.eyebrow.variant === "badge" ? (

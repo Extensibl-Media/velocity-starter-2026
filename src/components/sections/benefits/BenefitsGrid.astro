@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow, FeatureItem } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 interface Props {
   theme?: string;
@@ -32,7 +32,7 @@ const gridClass =
       <div class="section-container">
         {/* Section header */}
         {(data?.eyebrow || data?.heading || data?.subheading) && (
-          <div class="flex flex-col items-center text-center gap-3 mb-12">
+          <div class="flex flex-col items-center text-center gap-sm mb-12">
             {data?.eyebrow &&
               (data.eyebrow.variant === "badge" ? (
                 <Badge class="uppercase tracking-widest text-xs">
@@ -57,9 +57,9 @@ const gridClass =
         )}
 
         {/* Benefits grid — non-card, spacing only */}
-        <div class={`grid ${gridClass} gap-x-8 gap-y-10`}>
+        <div class={`grid ${gridClass} gap-x-xl gap-y-10`}>
           {items.map((item) => (
-            <div class="flex flex-col gap-3">
+            <div class="flex flex-col gap-sm">
               <div class="benefit-icon" aria-hidden="true">
                 {item.icon === "shield" ? (
                   <svg
@@ -146,9 +146,9 @@ const gridClass =
                 </p>
               )}
               {item.bullets && item.bullets.length > 0 && (
-                <ul class="flex flex-col gap-2 m-0 p-0 list-none">
+                <ul class="flex flex-col gap-xs m-0 p-0 list-none">
                   {item.bullets.map((bullet) => (
-                    <li class="flex items-start gap-2">
+                    <li class="flex items-start gap-xs">
                       <svg
                         class="check-icon"
                         xmlns="http://www.w3.org/2000/svg"

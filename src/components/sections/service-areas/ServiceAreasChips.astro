@@ -1,7 +1,7 @@
 ---
-import { getCollection } from "astro:content";
+import { getServiceAreas } from "@/lib/content";
 import type { Eyebrow } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 /**
  * service-areas:chips — a compact "cities we serve" chip cloud pulled from the
@@ -20,7 +20,7 @@ interface Props {
 
 const { theme = "default", data } = Astro.props;
 
-const all = await getCollection("serviceAreas");
+const all = await getServiceAreas();
 let areas = all.sort((a, b) => a.data.order - b.data.order);
 if (data?.limit) areas = areas.slice(0, data.limit);
 ---
@@ -29,7 +29,7 @@ if (data?.limit) areas = areas.slice(0, data.limit);
   class:list={["service-areas-chips section-wrapper section-py", `theme-${theme}`]}
 >
   <div class="section-container">
-    <div class="flex flex-col items-center text-center gap-3 mb-10">
+    <div class="flex flex-col items-center text-center gap-sm mb-10">
       {
         data?.eyebrow && (
           <div>

@@ -1,8 +1,8 @@
 ---
-import { getCollection } from "astro:content";
+import { getServiceAreas } from "@/lib/content";
 import type { Eyebrow } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 /**
  * service-areas:featured-split — spotlights the primary service area in a large
@@ -22,7 +22,7 @@ interface Props {
 
 const { theme = "default", data } = Astro.props;
 
-const all = await getCollection("serviceAreas");
+const all = await getServiceAreas();
 const sorted = all.sort((a, b) => a.data.order - b.data.order);
 
 const primary = sorted.find((a) => a.data.featured) ?? sorted[0];
@@ -34,7 +34,7 @@ if (data?.limit) rest = rest.slice(0, data.limit);
   class:list={["service-areas-featured-split section-wrapper section-py", `theme-${theme}`]}
 >
   <div class="section-container">
-    <div class="flex flex-col gap-3 mb-10 max-w-2xl">
+    <div class="flex flex-col gap-sm mb-10 max-w-2xl">
       {
         data?.eyebrow && (
           <div>
@@ -60,7 +60,7 @@ if (data?.limit) rest = rest.slice(0, data.limit);
       }
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-xl items-start">
       {/* Featured city spotlight */}
       {
         primary && (

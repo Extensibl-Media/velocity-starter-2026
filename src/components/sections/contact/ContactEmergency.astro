@@ -1,8 +1,8 @@
 ---
 import { getBusinessData } from "@/lib/utils";
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 /**
  * contact:emergency — a single highlighted "urgent help" panel. A bold pulse
@@ -73,9 +73,9 @@ const cta = data?.cta;
 
       {
         points.length > 0 && (
-          <ul class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 m-0 mt-6 p-0 list-none">
+          <ul class="flex flex-wrap items-center justify-center gap-x-lg gap-y-xs m-0 mt-6 p-0 list-none">
             {points.map((point) => (
-              <li class="flex items-center gap-2 theme-text-muted text-sm font-medium">
+              <li class="flex items-center gap-xs theme-text-muted text-sm font-medium">
                 <span class="check-dot" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="20 6 9 17 4 12" />

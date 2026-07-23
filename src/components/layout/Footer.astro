@@ -1,21 +1,22 @@
 ---
-import { getBusinessData, getResolvedNav } from "@/lib/utils";
-import { getCollection } from "astro:content";
+import { getBusinessData, getResolvedNav, getMenuLinks } from "@/lib/utils";
+import { getWidgetArea } from "emdash";
+import { WidgetArea } from "emdash/ui";
 
 const business = await getBusinessData();
 const year = new Date().getFullYear();
-const navItems = await getResolvedNav();
 
-const services = await getCollection("services");
-const sortedServices = services
-  .sort((a, b) => a.data.order - b.data.order)
-  .slice(0, 6);
+// All footer nav comes from native, CMS-editable menus — nothing derived.
+const nav = await getResolvedNav(); // native `primary` menu
+const footerLinks = await getMenuLinks("footer"); // native `footer` menu
+const legalLinks = await getMenuLinks("footer-legal"); // native `footer-legal` menu
+const servicesNode = nav.find((n) => n.children?.length && /service/i.test(n.label) && !/area/i.test(n.label));
+const areasNode = nav.find((n) => n.children?.length && /area/i.test(n.label));
+const footerServices = (servicesNode?.children ?? []).slice(0, 6);
+const footerAreas = (areasNode?.children ?? []).slice(0, 6);
 
-const serviceAreas = await getCollection("serviceAreas");
-const featuredAreas = serviceAreas
-  .filter((a) => a.data.featured)
-  .sort((a, b) => a.data.order - b.data.order)
-  .slice(0, 6);
+// Native editable slot — rendered only when an editor has added widgets to it.
+const footerExtra = await getWidgetArea("footer-extra");
 ---
 
 <footer class="bg-bg-inverse text-fg-inverse">
@@ -179,21 +180,21 @@ const featuredAreas = serviceAreas
         }
       </div>
 
-      <!-- Services column -->
+      <!-- Services column (from the native `primary` menu → Services children) -->
       {
-        sortedServices.length > 0 && (
+        footerServices.length > 0 && (
           <div>
             <h3 class="text-sm font-semibold text-fg-inverse uppercase tracking-wider mb-4">
               Our Services
             </h3>
             <ul class="flex flex-col gap-2.5 list-none m-0 p-0">
-              {sortedServices.map((service) => (
+              {footerServices.map((s) => (
                 <li>
                   <a
-                    href={`/services/${service.data.slug}`}
+                    href={s.href}
                     class="text-sm text-fg-inverse/60 hover:text-fg-inverse transition-colors"
                   >
-                    {service.data.title}
+                    {s.label}
                   </a>
                 </li>
               ))}
@@ -202,19 +203,17 @@ const featuredAreas = serviceAreas
         )
       }
 
-      <!-- Service areas column -->
+      <!-- Service areas column (from the native `primary` menu → Service Areas children) -->
       {
-        featuredAreas.length > 0 && (
+        footerAreas.length > 0 && (
           <div>
             <h3 class="text-sm font-semibold text-fg-inverse uppercase tracking-wider mb-4">
               Service Areas
             </h3>
             <ul class="flex flex-col gap-2.5 list-none m-0 p-0">
-              {featuredAreas.map((area) => (
+              {footerAreas.map((a) => (
                 <li>
-                  <span class="text-sm text-fg-inverse/60">
-                    {area.data.city}, {area.data.state}
-                  </span>
+                  <span class="text-sm text-fg-inverse/60">{a.label}</span>
                 </li>
               ))}
             </ul>
@@ -222,49 +221,44 @@ const featuredAreas = serviceAreas
         )
       }
 
-      <!-- Quick links column -->
-      <div>
-        <h3
-          class="text-sm font-semibold text-fg-inverse uppercase tracking-wider mb-4"
-        >
-          Quick Links
-        </h3>
-        <ul class="flex flex-col gap-2.5 list-none m-0 p-0">
-          {
-            navItems
-              .filter((item) => item.href)
-              .map((item) => (
-                <li>
-                  <a
-                    href={item.href}
-                    class="text-sm text-fg-inverse/60 hover:text-fg-inverse transition-colors"
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))
-          }
-          <li>
-            <a
-              href="/components"
-              class="text-sm text-fg-inverse/60 hover:text-fg-inverse transition-colors"
-            >
-              Components
-            </a>
-          </li>
-        </ul>
-        <!-- {business.license && (
-          <div class="mt-6 pt-6 border-t border-fg-inverse/10">
-            <p class="text-xs text-fg-inverse/40">
-              License #{business.license}
-            </p>
+      <!-- Quick links column (native `footer` menu) -->
+      {
+        footerLinks.length > 0 && (
+          <div>
+            <h3 class="text-sm font-semibold text-fg-inverse uppercase tracking-wider mb-4">
+              Quick Links
+            </h3>
+            <ul class="flex flex-col gap-2.5 list-none m-0 p-0">
+              {footerLinks
+                .filter((item) => item.href)
+                .map((item) => (
+                  <li>
+                    <a
+                      href={item.href}
+                      class="text-sm text-fg-inverse/60 hover:text-fg-inverse transition-colors"
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+            </ul>
           </div>
-        )} -->
-      </div>
+        )
+      }
     </div>
   </div>
 
-  <!-- Bottom bar -->
+  {
+    footerExtra?.widgets?.length ? (
+      <div class="border-t border-fg-inverse/10">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8">
+          <WidgetArea name="footer-extra" class="widget-area footer-extra" />
+        </div>
+      </div>
+    ) : null
+  }
+
+  <!-- Bottom bar: copyright · legal (native `footer-legal` menu) · attribution -->
   <div class="border-t border-fg-inverse/10">
     <div
       class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4"
@@ -273,6 +267,22 @@ const featuredAreas = serviceAreas
         &copy; {year}
         {business.businessName}. All rights reserved.
       </p>
+      {
+        legalLinks.length > 0 && (
+          <nav class="flex flex-wrap items-center gap-x-4 gap-y-1">
+            {legalLinks
+              .filter((l) => l.href)
+              .map((l) => (
+                <a
+                  href={l.href}
+                  class="text-xs text-fg-inverse/40 hover:text-fg-inverse transition-colors"
+                >
+                  {l.label}
+                </a>
+              ))}
+          </nav>
+        )
+      }
       <p class="text-xs text-fg-inverse/40">
         Built by{" "}
         <a

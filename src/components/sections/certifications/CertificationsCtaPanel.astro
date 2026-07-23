@@ -1,8 +1,8 @@
 ---
 import type { Eyebrow, CertItem, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 import SmartImage from "@/components/media/SmartImage.astro";
-import { Button } from "@/components/starwind/button";
+import { Button } from "@/components/elements/button";
 
 /**
  * certifications:cta-panel — a single raised panel that stacks a centered
@@ -28,10 +28,10 @@ const items = data?.items ?? [];
 
 <section class:list={["certifications-cta-panel section-wrapper section-py", `theme-${theme}`]}>
   <div class="section-container">
-    <div class="cta-panel flex flex-col items-center text-center gap-8 p-8 md:p-12">
+    <div class="cta-panel flex flex-col items-center text-center gap-xl p-8 md:p-12">
       {
         (data?.eyebrow || data?.heading || data?.subheading) && (
-          <div class="flex flex-col items-center gap-3 max-w-2xl">
+          <div class="flex flex-col items-center gap-sm max-w-2xl">
             {data?.eyebrow && (
               <div>
                 {data.eyebrow.variant === "badge" ? (
@@ -55,9 +55,9 @@ const items = data?.items ?? [];
 
       {
         items.length > 0 && (
-          <ul class="flex flex-wrap items-center justify-center gap-x-8 gap-y-6 list-none m-0 p-0">
+          <ul class="flex flex-wrap items-center justify-center gap-x-xl gap-y-lg list-none m-0 p-0">
             {items.map((item) => (
-              <li class="flex flex-col items-center gap-2">
+              <li class="flex flex-col items-center gap-xs">
                 {item.logo ? (
                   <SmartImage
                     src={item.logo}
@@ -82,7 +82,7 @@ const items = data?.items ?? [];
 
       {
         (data?.cta || data?.secondaryCta) && (
-          <div class="flex flex-col sm:flex-row items-center gap-3">
+          <div class="flex flex-col sm:flex-row items-center gap-sm">
             {data?.cta && (
               <Button href={data.cta.href} variant={data.cta.variant ?? "primary"}>
                 {data.cta.label}

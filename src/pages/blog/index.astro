@@ -1,0 +1,32 @@
+---
+// Blog index — lists all published posts. Uses BlogLayout, so it inherits the
+// native blog-sidebar widget area.
+import BlogLayout from "@/layouts/BlogLayout.astro";
+import PostList from "@/components/blog/PostList.astro";
+import { getPosts } from "@/lib/content";
+
+const fmt = (d: Date) =>
+  d && !isNaN(d.getTime()) ? d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : undefined;
+
+const posts = (await getPosts()).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const items = posts.map((p) => ({
+  href: `/blog/${p.data.slug}`,
+  title: p.data.title,
+  description: p.data.description,
+  date: fmt(p.data.date),
+}));
+
+const page = { id: "blog", data: { title: "Blog" } };
+---
+
+<BlogLayout
+  page={page}
+  title="Blog"
+  description="News, tips, and roofing advice from our team."
+  includeLocalBusinessSchema={false}
+>
+  <div class="post-article">
+    <h1 class="blog-index-heading">From the Blog</h1>
+    <PostList posts={items} empty="No posts yet — check back soon." />
+  </div>
+</BlogLayout>

@@ -1,0 +1,35 @@
+---
+// Category archive — posts filtered by the native `category` taxonomy term.
+import BlogLayout from "@/layouts/BlogLayout.astro";
+import PostList from "@/components/blog/PostList.astro";
+import { getEntriesByTerm, getTerm } from "emdash";
+
+const { slug } = Astro.params;
+const [term, entries] = await Promise.all([
+  getTerm("category", slug!).catch(() => null),
+  getEntriesByTerm("posts", "category", slug!).catch(() => []),
+]);
+if (!term && entries.length === 0) return Astro.rewrite("/404");
+
+const title = term?.label ?? slug!;
+const items = entries.map((e) => ({
+  href: `/blog/${(e.data.slug as string) ?? e.id}`,
+  title: String(e.data.title ?? e.id),
+  description: e.data.description ? String(e.data.description) : undefined,
+}));
+
+const page = { id: `category-${slug}`, data: { title } };
+---
+
+<BlogLayout
+  page={page}
+  title={`${title} — Blog`}
+  description={`Posts filed under ${title}.`}
+  includeLocalBusinessSchema={false}
+>
+  <div class="post-article">
+    <p class="blog-eyebrow">Category</p>
+    <h1 class="blog-index-heading">{title}</h1>
+    <PostList posts={items} empty="No posts in this category yet." />
+  </div>
+</BlogLayout>

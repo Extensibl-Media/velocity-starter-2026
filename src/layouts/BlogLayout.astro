@@ -1,7 +1,9 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { getResolvedNav, getBusinessData } from "@/lib/utils";
+import { getResolvedNav } from "@/lib/utils";
+import { getAppearance } from "@/lib/content";
 import { resolveHeader, resolveFooter } from "@/lib/layoutRegistry";
+import { WidgetArea } from "emdash/ui";
 
 interface Props {
   page: {
@@ -24,6 +26,8 @@ interface Props {
   businessType?: string;
   openingHours?: string[];
   areaServed?: string[];
+  /** Override the canonical URL for this post (forwarded to BaseLayout). */
+  canonical?: string;
 }
 
 const {
@@ -39,12 +43,13 @@ const {
   businessType = "GeneralContractor",
   openingHours,
   areaServed,
+  canonical,
 } = Astro.props;
 
 const navItems = await getResolvedNav();
-const business = await getBusinessData();
-const Header = resolveHeader(business.headerVariant);
-const Footer = resolveFooter(business.footerVariant);
+const appearance = await getAppearance();
+const Header = resolveHeader(appearance.headerVariant);
+const Footer = resolveFooter(appearance.footerVariant);
 ---
 
 <BaseLayout
@@ -61,8 +66,16 @@ const Footer = resolveFooter(business.footerVariant);
   businessType={businessType}
   openingHours={openingHours}
   areaServed={areaServed}
+  canonical={canonical}
 >
   <Header slot="header" navItems={navItems} />
-  <slot />
+  <div class="section-wrapper">
+    <div class="section-container blog-shell">
+      <div class="blog-main"><slot /></div>
+      <aside class="blog-aside">
+        <WidgetArea name="blog-sidebar" class="widget-area" />
+      </aside>
+    </div>
+  </div>
   <Footer slot="footer" />
 </BaseLayout>

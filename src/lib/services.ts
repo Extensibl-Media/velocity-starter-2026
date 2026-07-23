@@ -1,4 +1,7 @@
-import { getCollection, type CollectionEntry } from "astro:content";
+import { getServiceCategories, getServices } from "@/lib/content";
+
+/** A service entry as returned by the EmDash adapter. */
+type Service = Awaited<ReturnType<typeof getServices>>[number];
 
 /**
  * A category with the services that belong to it, resolved against the
@@ -10,7 +13,7 @@ export interface ServiceGroup {
   title: string;
   description?: string;
   icon?: string;
-  services: CollectionEntry<"services">[];
+  services: Service[];
 }
 
 const UNCATEGORIZED = "__uncategorized__";
@@ -28,15 +31,15 @@ export async function getServiceGroups(
   categories?: string[],
 ): Promise<ServiceGroup[]> {
   const [services, cats] = await Promise.all([
-    getCollection("services"),
-    getCollection("serviceCategories"),
+    getServices(),
+    getServiceCategories(),
   ]);
 
   const catBySlug = new Map(cats.map((c) => [c.data.slug, c.data]));
   const orderOf = (slug: string) => catBySlug.get(slug)?.order ?? 999;
 
   const sorted = [...services].sort((a, b) => a.data.order - b.data.order);
-  const groupMap = new Map<string, CollectionEntry<"services">[]>();
+  const groupMap = new Map<string, Service[]>();
   for (const service of sorted) {
     const key = service.data.category?.trim() || UNCATEGORIZED;
     if (!groupMap.has(key)) groupMap.set(key, []);

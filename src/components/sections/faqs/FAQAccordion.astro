@@ -1,14 +1,14 @@
 ---
-import { getCollection } from "astro:content";
+import { getFaqs } from "@/lib/content";
 import { getBusinessData } from "@/lib/utils";
 import type { Eyebrow } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 import {
   Accordion,
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
-} from "@/components/starwind/accordion";
+} from "@/components/blocks/accordion";
 
 interface Props {
   theme?: string;
@@ -24,7 +24,7 @@ interface Props {
 const { theme = "default", data } = Astro.props;
 
 const business = await getBusinessData();
-const allFaqs = await getCollection("faqs");
+const allFaqs = await getFaqs();
 
 const faqs = allFaqs
   .filter((f) => !data?.service || f.data.service === data.service)
@@ -37,7 +37,7 @@ const faqs = allFaqs
     {/* Section header */}
     {
       (data?.eyebrow || data?.heading || data?.subheading) && (
-        <div class="flex flex-col items-center text-center gap-3 mb-12">
+        <div class="flex flex-col items-center text-center gap-sm mb-12">
           {data?.eyebrow && (
             <div>
               {data.eyebrow.variant === "badge" ? (
@@ -90,11 +90,11 @@ const faqs = allFaqs
     {/* Still have questions CTA */}
     {
       business.phone && (
-        <div class="flex flex-col items-center gap-3 mt-12">
+        <div class="flex flex-col items-center gap-sm mt-12">
           <p class="theme-text-muted text-sm m-0">Still have questions?</p>
           <a
             href={`tel:${business.phone}`}
-            class="inline-flex items-center gap-2 font-semibold text-primary hover:underline text-base"
+            class="inline-flex items-center gap-xs font-semibold text-primary hover:underline text-base"
           >
             <svg
               class="w-4 h-4 shrink-0"

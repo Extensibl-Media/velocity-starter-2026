@@ -1,27 +1,35 @@
-import tailwindcss from "@tailwindcss/vite";
 // @ts-check
 import { defineConfig, envField } from 'astro/config';
+import tailwindcss from '@tailwindcss/vite';
 import markdoc from '@astrojs/markdoc';
 import sitemap from '@astrojs/sitemap';
 import icon from 'astro-icon';
-
-import tailwindcss from '@tailwindcss/vite';
+import react from '@astrojs/react';
+import cloudflare from '@astrojs/cloudflare';
+import emdash from 'emdash/astro';
+import { d1, r2 } from '@emdash-cms/cloudflare';
+import { sectionBuilder } from './plugins/section-builder/register.mjs';
 
 // Loud warning if a production build runs without SITE_URL — canonical, sitemap,
 // robots, and JSON-LD would otherwise all point at https://example.com.
 const SITE_URL = process.env.SITE_URL;
+const isDev = process.argv.some((a) => a === 'dev');
 if (!SITE_URL && process.argv.some((a) => a === 'build')) {
   console.warn(
     '\n\x1b[33m⚠  SITE_URL is not set\x1b[0m — canonical/sitemap/robots/JSON-LD will use https://example.com.' +
       '\n   Set SITE_URL in your deploy environment before shipping this site.\n',
   );
 }
+// In dev, default `site` to localhost so EmDash's absolute admin/login redirects
+// stay on the local http server (otherwise they point at the prod placeholder).
+const SITE = SITE_URL || (isDev ? 'http://localhost:4321' : 'https://example.com');
 
 // https://astro.build/config
 export default defineConfig({
-	output: 'static',
+  output: 'server',
+  adapter: cloudflare(),
 
-  site: SITE_URL || 'https://example.com',
+  site: SITE,
 
   env: {
     schema: {
@@ -53,10 +61,20 @@ export default defineConfig({
     layout: 'constrained',
   },
 
-  integrations: [markdoc(),
+  integrations: [
+    react(),
+    // D1 + R2 for both dev and prod. `astro dev` runs under the Cloudflare
+    // adapter's workerd emulation, which serves a local (miniflare) D1 + R2 from
+    // the wrangler.jsonc bindings — so there is no Node-native SQLite dev path.
+    emdash({
+      database: d1({ binding: 'DB' }),
+      storage: r2({ binding: 'MEDIA' }),
+      plugins: [/** @type {any} */ (sectionBuilder())],
+    }),
+    markdoc(),
     sitemap({
       // Keep internal/dev preview pages out of the sitemap (they are noindex).
-      filter: (page) => !/\/(components|section-preview)(\/|$)/.test(page),
+      filter: (page) => !/\/(sections|components|section-preview)(\/|$)/.test(page),
     }),
     icon(),
   ],

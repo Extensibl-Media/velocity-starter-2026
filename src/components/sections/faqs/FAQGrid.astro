@@ -1,7 +1,7 @@
 ---
-import { getCollection } from "astro:content";
+import { getFaqs } from "@/lib/content";
 import type { Eyebrow } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 interface Props {
   theme?: string;
@@ -15,7 +15,7 @@ interface Props {
 
 const { theme = "default", data } = Astro.props;
 
-const allFaqs = await getCollection("faqs");
+const allFaqs = await getFaqs();
 
 const faqs = allFaqs
   .filter((f) => !data?.service || f.data.service === data.service)
@@ -28,7 +28,7 @@ const faqs = allFaqs
       <div class="section-container">
         {/* Section header */}
         {(data?.eyebrow || data?.heading || data?.subheading) && (
-          <div class="flex flex-col items-center text-center gap-3 mb-12">
+          <div class="flex flex-col items-center text-center gap-sm mb-12">
             {data?.eyebrow &&
               (data.eyebrow.variant === "badge" ? (
                 <Badge class="uppercase tracking-widest text-xs">
@@ -53,7 +53,7 @@ const faqs = allFaqs
         )}
 
         {/* Q&A grid */}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
           {faqs.map((faq) => (
             <div class="rounded-xl border theme-border bg-background p-6">
               <h3 class="theme-heading font-semibold text-lg m-0">

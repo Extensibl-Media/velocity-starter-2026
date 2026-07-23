@@ -1,8 +1,8 @@
 ---
 import type { Eyebrow, ImageRef, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 import SmartImage from "@/components/media/SmartImage.astro";
-import { Button } from "@/components/starwind/button";
+import { Button } from "@/components/elements/button";
 
 /**
  * content:image-text — prose `body` on one side and an image on the other,
@@ -32,9 +32,9 @@ const imageRight = (data?.imagePosition ?? "right") === "right";
   (hasContent || data?.image) && (
     <section class={`section-wrapper section-py theme-${theme}`}>
       <div class="section-container">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-xl lg:gap-16 items-center">
           {/* Text */}
-          <div class={`flex flex-col gap-4 ${imageRight ? "lg:order-1" : "lg:order-2"}`}>
+          <div class={`flex flex-col gap-md ${imageRight ? "lg:order-1" : "lg:order-2"}`}>
             {data?.eyebrow &&
               (data.eyebrow.variant === "badge" ? (
                 <div>

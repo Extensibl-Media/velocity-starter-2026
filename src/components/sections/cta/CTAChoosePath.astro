@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 /**
  * cta:choose-path — a "pick your next step" CTA. A shared header on top, then
@@ -24,7 +24,7 @@ const paths = data?.paths ?? [];
 
 <section class:list={["cta-choose-path section-wrapper section-py", `theme-${theme}`]}>
   <div class="section-container">
-    <div class="flex flex-col items-center text-center gap-4 max-w-2xl mx-auto mb-10">
+    <div class="flex flex-col items-center text-center gap-md max-w-2xl mx-auto mb-10">
       {data?.eyebrow &&
         (data.eyebrow.variant === "badge" ? (
           <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
@@ -46,9 +46,9 @@ const paths = data?.paths ?? [];
     </div>
 
     {paths.length > 0 && (
-      <div class="grid gap-6 md:grid-cols-2">
+      <div class="grid gap-lg md:grid-cols-2">
         {paths.map((path) => (
-          <div class="path-card flex flex-col items-start gap-4 h-full">
+          <div class="path-card flex flex-col items-start gap-md h-full">
             {path.icon && (
               <span class="path-icon inline-flex items-center justify-center text-2xl" aria-hidden="true">
                 {path.icon}

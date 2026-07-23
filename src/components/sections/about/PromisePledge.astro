@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA, FeatureItem } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 /**
  * about:promise — an "our promise to you" pledge. The intro sits on the left;
@@ -61,7 +61,7 @@ const hasIntro = Boolean(data?.eyebrow || data?.heading || data?.subheading);
             )}
 
             {ctas.length > 0 && (
-              <div class="flex flex-wrap gap-4 mt-2">
+              <div class="flex flex-wrap gap-md mt-2">
                 {ctas.map((cta, i) => (
                   <Button variant={cta.variant ?? (i === 0 ? "primary" : "outline")} href={cta.href}>
                     {cta.label}
@@ -91,7 +91,7 @@ const hasIntro = Boolean(data?.eyebrow || data?.heading || data?.subheading);
                     {item.bullets && item.bullets.length > 0 && (
                       <ul class="flex flex-col gap-1.5 m-0 p-0 list-none mt-1">
                         {item.bullets.map((bullet) => (
-                          <li class="theme-text-subtle text-sm flex items-start gap-2">
+                          <li class="theme-text-subtle text-sm flex items-start gap-xs">
                             <svg
                               class="w-4 h-4 theme-accent shrink-0 mt-0.5"
                               xmlns="http://www.w3.org/2000/svg"

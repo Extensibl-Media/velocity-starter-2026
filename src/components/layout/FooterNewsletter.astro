@@ -1,6 +1,5 @@
 ---
 import { getBusinessData, getResolvedNav } from "@/lib/utils";
-import { getCollection } from "astro:content";
 import { Input } from "@/components/starwind/input";
 import { Button } from "@/components/starwind/button";
 
@@ -8,16 +7,11 @@ const business = await getBusinessData();
 const year = new Date().getFullYear();
 const navItems = await getResolvedNav();
 
-const services = await getCollection("services");
-const sortedServices = services
-  .sort((a, b) => a.data.order - b.data.order)
-  .slice(0, 6);
-
-const serviceAreas = await getCollection("serviceAreas");
-const featuredAreas = serviceAreas
-  .filter((a) => a.data.featured)
-  .sort((a, b) => a.data.order - b.data.order)
-  .slice(0, 6);
+// Services + areas from the native `primary` menu — not derived.
+const servicesNode = navItems.find((n) => n.children?.length && /service/i.test(n.label) && !/area/i.test(n.label));
+const sortedServices = (servicesNode?.children ?? []).slice(0, 6);
+const areasNode = navItems.find((n) => n.children?.length && /area/i.test(n.label));
+const featuredAreas = (areasNode?.children ?? []).slice(0, 6);
 ---
 
 <footer class="bg-bg-inverse text-fg-inverse">
@@ -224,10 +218,10 @@ const featuredAreas = serviceAreas
               {sortedServices.map((service) => (
                 <li>
                   <a
-                    href={`/services/${service.data.slug}`}
+                    href={service.href}
                     class="text-sm text-fg-inverse/60 hover:text-fg-inverse transition-colors"
                   >
-                    {service.data.title}
+                    {service.label}
                   </a>
                 </li>
               ))}
@@ -246,9 +240,7 @@ const featuredAreas = serviceAreas
             <ul class="flex flex-col gap-2.5 list-none m-0 p-0">
               {featuredAreas.map((area) => (
                 <li>
-                  <span class="text-sm text-fg-inverse/60">
-                    {area.data.city}, {area.data.state}
-                  </span>
+                  <span class="text-sm text-fg-inverse/60">{area.label}</span>
                 </li>
               ))}
             </ul>
@@ -278,14 +270,6 @@ const featuredAreas = serviceAreas
                 </li>
               ))
           }
-          <li>
-            <a
-              href="/components"
-              class="text-sm text-fg-inverse/60 hover:text-fg-inverse transition-colors"
-            >
-              Components
-            </a>
-          </li>
         </ul>
       </div>
     </div>

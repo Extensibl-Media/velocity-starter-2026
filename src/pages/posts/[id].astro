@@ -1,0 +1,6 @@
+---
+// The native core:recent-posts widget links to /posts/{id}. This theme serves
+// posts at /blog/{slug} (id === slug for posts), so redirect there.
+const { id } = Astro.params;
+return Astro.redirect(`/blog/${id}`, 301);
+---

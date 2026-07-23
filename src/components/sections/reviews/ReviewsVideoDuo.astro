@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 interface VideoItem {
   video?: string;
@@ -39,7 +39,7 @@ const videos = (data?.videos ?? []).slice(0, 2);
     {/* Header */}
     {
       (data?.eyebrow || data?.heading || data?.subheading) && (
-        <div class="flex flex-col items-center text-center gap-3 mb-12">
+        <div class="flex flex-col items-center text-center gap-sm mb-12">
           {data?.eyebrow && (
             <div>
               {data.eyebrow.variant === "badge" ? (
@@ -67,7 +67,7 @@ const videos = (data?.videos ?? []).slice(0, 2);
       )
     }
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-xl lg:gap-10">
       {
         videos.map((item) => {
           const id = ytId(item.video);
@@ -93,7 +93,7 @@ const videos = (data?.videos ?? []).slice(0, 2);
                 </div>
               )}
 
-              <div class="flex flex-col gap-3">
+              <div class="flex flex-col gap-sm">
                 {stars && (
                   <div class="flex items-center gap-1">
                     {stars.map((filled) => (

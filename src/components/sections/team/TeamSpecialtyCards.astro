@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow, TeamMember } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 import SmartImage from "@/components/media/SmartImage.astro";
 
 interface Props {
@@ -37,7 +37,7 @@ function initials(name: string): string {
     >
       <div class="section-container">
         {/* Section header */}
-        <div class="flex flex-col items-center text-center gap-3 mb-12">
+        <div class="flex flex-col items-center text-center gap-sm mb-12">
           {data?.eyebrow &&
             (data.eyebrow.variant === "badge" ? (
               <Badge class="uppercase tracking-widest text-xs">
@@ -61,9 +61,9 @@ function initials(name: string): string {
         </div>
 
         {/* Specialty cards */}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-lg">
           {members.map((member) => (
-            <div class="specialty-card flex items-start gap-4 p-5">
+            <div class="specialty-card flex items-start gap-md p-5">
               {member.photo ? (
                 <SmartImage
                   src={member.photo}

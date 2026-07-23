@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 import SmartImage from "@/components/media/SmartImage.astro";
 
 /**
@@ -28,7 +28,7 @@ const images = data?.images ?? [];
   <div class="section-container">
     {
       (data?.eyebrow || data?.heading || data?.subheading) && (
-        <div class="flex flex-col items-center text-center gap-3 mb-12">
+        <div class="flex flex-col items-center text-center gap-sm mb-12">
           {data?.eyebrow &&
             (data.eyebrow.variant === "badge" ? (
               <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>

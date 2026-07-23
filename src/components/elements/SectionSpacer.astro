@@ -1,0 +1,15 @@
+---
+/**
+ * SectionSpacer — Element. Section-level vertical rhythm (the padding between
+ * page sections). Driven by the section scale (--t-section-*), so a theme sets
+ * an airy vs tight feel globally.
+ *   <SectionSpacer size="lg" />   (xs | sm | md | lg | xl; md = --t-section)
+ */
+interface Props {
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
+}
+const { size = "md" } = Astro.props;
+const token = size === "md" ? "var(--t-section)" : `var(--t-section-${size})`;
+---
+
+<div aria-hidden="true" style={`height:${token};flex-shrink:0`}></div>

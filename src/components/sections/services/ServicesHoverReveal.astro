@@ -1,8 +1,8 @@
 ---
-import { getCollection } from "astro:content";
+import { getServices } from "@/lib/content";
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 interface Props {
   theme?: string;
@@ -17,7 +17,7 @@ interface Props {
 
 const { theme = "default", data } = Astro.props;
 
-const services = (await getCollection("services"))
+const services = (await getServices())
   .sort((a, b) => a.data.order - b.data.order)
   .slice(0, data?.limit ?? undefined);
 
@@ -38,7 +38,7 @@ const gridClass =
   <div class="section-container">
     {
       (data?.eyebrow || data?.heading || data?.subheading) && (
-        <div class="flex flex-col items-center text-center gap-3 mb-12">
+        <div class="flex flex-col items-center text-center gap-sm mb-12">
           {data?.eyebrow &&
             (data.eyebrow.variant === "badge" ? (
               <Badge class="uppercase tracking-widest text-xs">
@@ -100,7 +100,7 @@ const gridClass =
                 </Badge>
               )}
 
-              <div class="relative flex flex-col gap-2">
+              <div class="relative flex flex-col gap-xs">
                 <h3 class="theme-heading text-xl font-semibold m-0 transition-colors group-hover:theme-accent">
                   {service.data.title}
                 </h3>

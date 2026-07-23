@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA, TeamMember } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 import SmartImage from "@/components/media/SmartImage.astro";
 
 /**
@@ -41,7 +41,7 @@ function initials(name: string): string {
       <div class="section-container">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Story — left */}
-          <div class="flex flex-col gap-6">
+          <div class="flex flex-col gap-lg">
             {data?.eyebrow &&
               (data.eyebrow.variant === "badge" ? (
                 <Badge class="uppercase tracking-widest text-xs">
@@ -79,9 +79,9 @@ function initials(name: string): string {
 
           {/* Team preview — right */}
           {members.length > 0 && (
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-md">
               {members.map((member) => (
-                <div class="member-card flex items-center gap-4 p-4 rounded-xl border theme-border">
+                <div class="member-card flex items-center gap-md p-4 rounded-xl border theme-border">
                   {member.photo ? (
                     <SmartImage
                       src={member.photo}

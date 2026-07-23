@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow, FeatureRow } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 import SmartImage from "@/components/media/SmartImage.astro";
 
 interface Props {
@@ -23,7 +23,7 @@ const rows = data?.rows ?? [];
     <section class={`section-wrapper section-py theme-${theme}`}>
       <div class="section-container">
         {/* Section header */}
-        <div class="flex flex-col items-center text-center gap-3 mb-12">
+        <div class="flex flex-col items-center text-center gap-sm mb-12">
           {data?.eyebrow &&
             (data.eyebrow.variant === "badge" ? (
               <Badge class="uppercase tracking-widest text-xs">
@@ -51,10 +51,10 @@ const rows = data?.rows ?? [];
           {rows.map((row, i) => {
             const imageRight = i % 2 === 0;
             return (
-              <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-xl lg:gap-16 items-center">
                 {/* Text */}
                 <div
-                  class={`flex flex-col gap-4 ${imageRight ? "lg:order-1" : "lg:order-2"}`}
+                  class={`flex flex-col gap-md ${imageRight ? "lg:order-1" : "lg:order-2"}`}
                 >
                   <h3 class="theme-heading text-2xl font-bold m-0">
                     {row.heading}

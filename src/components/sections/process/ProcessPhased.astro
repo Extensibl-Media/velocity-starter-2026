@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 /**
  * process:phased — a "Day 1 / Week 1 / Done" phased timeline. Each phase is a
@@ -57,7 +57,7 @@ const steps = data?.steps?.length ? data.steps : defaultSteps;
 >
   <div class="section-container">
     {/* Section header */}
-    <div class="flex flex-col items-center text-center gap-3 mb-16">
+    <div class="flex flex-col items-center text-center gap-sm mb-16">
       {
         data?.eyebrow &&
           (data.eyebrow.variant === "badge" ? (

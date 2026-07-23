@@ -1,0 +1,35 @@
+---
+// Tag archive — posts filtered by the native `tag` taxonomy term.
+import BlogLayout from "@/layouts/BlogLayout.astro";
+import PostList from "@/components/blog/PostList.astro";
+import { getEntriesByTerm, getTerm } from "emdash";
+
+const { slug } = Astro.params;
+const [term, entries] = await Promise.all([
+  getTerm("tag", slug!).catch(() => null),
+  getEntriesByTerm("posts", "tag", slug!).catch(() => []),
+]);
+if (!term && entries.length === 0) return Astro.rewrite("/404");
+
+const title = term?.label ?? slug!;
+const items = entries.map((e) => ({
+  href: `/blog/${(e.data.slug as string) ?? e.id}`,
+  title: String(e.data.title ?? e.id),
+  description: e.data.description ? String(e.data.description) : undefined,
+}));
+
+const page = { id: `tag-${slug}`, data: { title } };
+---
+
+<BlogLayout
+  page={page}
+  title={`#${title} — Blog`}
+  description={`Posts tagged ${title}.`}
+  includeLocalBusinessSchema={false}
+>
+  <div class="post-article">
+    <p class="blog-eyebrow">Tag</p>
+    <h1 class="blog-index-heading">{title}</h1>
+    <PostList posts={items} empty="No posts with this tag yet." />
+  </div>
+</BlogLayout>

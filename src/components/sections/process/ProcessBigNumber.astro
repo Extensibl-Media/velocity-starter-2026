@@ -1,8 +1,8 @@
 ---
 import { getBusinessData } from "@/lib/utils";
 import type { Eyebrow, ProcessStep, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 /**
  * process:big-number — oversized step numerals paired with detail. Each row is
@@ -56,7 +56,7 @@ const ctas = (
 >
   <div class="section-container">
     {/* Section header */}
-    <div class="flex flex-col gap-3 mb-14 max-w-2xl">
+    <div class="flex flex-col gap-sm mb-14 max-w-2xl">
       {
         data?.eyebrow &&
           (data.eyebrow.variant === "badge" ? (
@@ -108,7 +108,7 @@ const ctas = (
 
     {
       (ctas.length > 0 || data?.showPhone) && (
-        <div class="flex flex-wrap items-center gap-4 mt-12">
+        <div class="flex flex-wrap items-center gap-md mt-12">
           {ctas.map((cta, i) => (
             <Button
               variant={cta.variant ?? (i === 0 ? "primary" : "outline")}
@@ -120,7 +120,7 @@ const ctas = (
           {data?.showPhone && business.phone && (
             <a
               href={`tel:${business.phone}`}
-              class="inline-flex items-center gap-2 font-semibold text-base theme-text no-underline hover:opacity-80 transition-opacity"
+              class="inline-flex items-center gap-xs font-semibold text-base theme-text no-underline hover:opacity-80 transition-opacity"
             >
               <svg
                 class="w-4 h-4 shrink-0"

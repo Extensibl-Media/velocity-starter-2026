@@ -1,8 +1,8 @@
 ---
-import { getCollection } from "astro:content";
+import { getHoursSettings, getServices } from "@/lib/content";
 import { getBusinessData } from "@/lib/utils";
 import type { Eyebrow, FormConfig } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 import FormRenderer from "@/components/forms/FormRenderer.astro";
 
 /**
@@ -25,10 +25,10 @@ interface Props {
 
 const { theme = "default", data } = Astro.props;
 const business = await getBusinessData();
-const services = await getCollection("services");
+const services = await getServices();
 const sortedServices = services.sort((a, b) => a.data.order - b.data.order);
 
-const hoursEntries = await getCollection("hoursSettings");
+const hoursEntries = await getHoursSettings();
 const hours = hoursEntries[0]?.data.hours ?? [];
 
 const fullAddress = [
@@ -48,7 +48,7 @@ const mapSrc =
 <section class:list={["contact-hours-map-form section-wrapper section-py", `theme-${theme}`]}>
   <div class="section-container">
     {/* Header */}
-    <div class="flex flex-col items-center text-center gap-3 mb-12">
+    <div class="flex flex-col items-center text-center gap-sm mb-12">
       {
         data?.eyebrow && (
           <div>
@@ -66,13 +66,13 @@ const mapSrc =
       {data?.subheading && <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>}
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-xl items-start">
       {/* Hours */}
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-md">
         {
           hours.length > 0 ? (
             <div class="rounded-xl border theme-border overflow-hidden">
-              <div class="flex items-center gap-3 px-5 py-4 border-b theme-border">
+              <div class="flex items-center gap-sm px-5 py-4 border-b theme-border">
                 <span class="contact-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <circle cx="12" cy="12" r="10" />
@@ -85,7 +85,7 @@ const mapSrc =
                 {hours.map((row: any, i: number) => (
                   <div
                     class:list={[
-                      "flex items-center justify-between gap-4 px-5 py-3",
+                      "flex items-center justify-between gap-md px-5 py-3",
                       i > 0 && "border-t theme-border",
                     ]}
                   >

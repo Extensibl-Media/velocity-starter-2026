@@ -1,7 +1,7 @@
 ---
-import { getCollection } from "astro:content";
+import { getReviews } from "@/lib/content";
 import type { Eyebrow } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 interface Props {
   theme?: string;
@@ -17,7 +17,7 @@ interface Props {
 
 const { theme = "default", data } = Astro.props;
 
-const allReviews = await getCollection("reviews");
+const allReviews = await getReviews();
 
 const reviews = allReviews
   .filter((r) => (data?.filter === "all" ? true : r.data.featured))
@@ -30,7 +30,7 @@ const reviews = allReviews
   <div class="section-container">
     {
       (data?.eyebrow || data?.heading || data?.subheading) && (
-        <div class="flex flex-col items-center text-center gap-3 mb-12">
+        <div class="flex flex-col items-center text-center gap-sm mb-12">
           {data?.eyebrow &&
             (data.eyebrow.variant === "badge" ? (
               <Badge class="uppercase tracking-widest text-xs">
@@ -61,7 +61,7 @@ const reviews = allReviews
           <div class="wall-grid">
             {reviews.map((review) => (
               <article class="wall-item">
-                <div class="flex items-center justify-between gap-3 mb-3">
+                <div class="flex items-center justify-between gap-sm mb-3">
                   <div class="flex items-center gap-0.5">
                     {Array.from(
                       { length: 5 },
@@ -88,7 +88,7 @@ const reviews = allReviews
 
                 <p class="wall-body theme-text">{review.data.body}</p>
 
-                <div class="flex items-baseline gap-2 mt-4">
+                <div class="flex items-baseline gap-xs mt-4">
                   <span class="theme-heading font-semibold text-sm leading-tight">
                     {review.data.author}
                   </span>

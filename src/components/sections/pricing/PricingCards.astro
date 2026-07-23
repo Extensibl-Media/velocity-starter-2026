@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 interface PriceCard {
   title: string;
@@ -30,7 +30,7 @@ const items = data?.items ?? [];
     <section class={`section-wrapper section-py theme-${theme}`}>
       <div class="section-container">
         {/* Section header */}
-        <div class="flex flex-col items-center text-center gap-3 mb-12">
+        <div class="flex flex-col items-center text-center gap-sm mb-12">
           {data?.eyebrow &&
             (data.eyebrow.variant === "badge" ? (
               <Badge class="uppercase tracking-widest text-xs">
@@ -54,9 +54,9 @@ const items = data?.items ?? [];
         </div>
 
         {/* Price cards */}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-lg items-stretch">
           {items.map((item) => (
-            <div class="flex flex-col gap-3 p-6 rounded-xl border theme-border bg-background text-center">
+            <div class="flex flex-col gap-sm p-6 rounded-xl border theme-border bg-background text-center">
               <h3 class="theme-heading text-lg font-semibold m-0">
                 {item.title}
               </h3>

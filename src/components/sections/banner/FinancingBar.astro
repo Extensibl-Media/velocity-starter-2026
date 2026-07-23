@@ -1,6 +1,6 @@
 ---
 import type { SectionCTA } from "@/types/sections";
-import { Button } from "@/components/starwind/button";
+import { Button } from "@/components/elements/button";
 
 interface Props {
   theme?: string;
@@ -19,7 +19,7 @@ const highlights = data?.highlights ?? [];
 
 <section class:list={["banner-financing", `theme-${theme}`]}>
   <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-5 gap-y-1 px-4 py-3 text-sm sm:justify-between">
-    <div class="flex items-center gap-3 text-center sm:text-left">
+    <div class="flex items-center gap-sm text-center sm:text-left">
       <svg
         class="hidden h-6 w-6 shrink-0 theme-accent sm:block"
         xmlns="http://www.w3.org/2000/svg"
@@ -32,7 +32,7 @@ const highlights = data?.highlights ?? [];
         <rect x="2" y="5" width="20" height="14" rx="2" />
         <path d="M2 10h20" />
       </svg>
-      <div class="flex flex-wrap items-baseline gap-x-2">
+      <div class="flex flex-wrap items-baseline gap-x-xs">
         <span class="theme-heading font-bold">{headline}</span>
         {data?.subtext && (
           <span class="theme-text-muted">{data.subtext}</span>
@@ -41,7 +41,7 @@ const highlights = data?.highlights ?? [];
     </div>
 
     {highlights.length > 0 && (
-      <ul class="hidden items-center gap-4 md:flex">
+      <ul class="hidden items-center gap-md md:flex">
         {highlights.map((h) => (
           <li class="theme-text inline-flex items-center gap-1.5 font-medium">
             <svg

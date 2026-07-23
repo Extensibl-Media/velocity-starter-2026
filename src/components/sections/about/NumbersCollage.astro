@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA, StatItem, ImageRef } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 import SmartImage from "@/components/media/SmartImage.astro";
 
 /**
@@ -38,7 +38,7 @@ const hasContent = Boolean(data?.heading || data?.subheading || stats.length);
       <div class="section-container">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Copy + stats */}
-          <div class="flex flex-col gap-6">
+          <div class="flex flex-col gap-lg">
             {data?.eyebrow &&
               (data.eyebrow.variant === "badge" ? (
                 <Badge class="uppercase tracking-widest text-xs self-start">
@@ -63,7 +63,7 @@ const hasContent = Boolean(data?.heading || data?.subheading || stats.length);
             )}
 
             {stats.length > 0 && (
-              <div class="grid grid-cols-2 gap-x-8 gap-y-6 mt-2">
+              <div class="grid grid-cols-2 gap-x-xl gap-y-lg mt-2">
                 {stats.map((stat) => (
                   <div class="flex flex-col gap-1">
                     <span class="stat-value">{stat.value}</span>
@@ -81,7 +81,7 @@ const hasContent = Boolean(data?.heading || data?.subheading || stats.length);
             )}
 
             {ctas.length > 0 && (
-              <div class="flex flex-wrap gap-4 mt-2">
+              <div class="flex flex-wrap gap-md mt-2">
                 {ctas.map((cta, i) => (
                   <Button variant={cta.variant ?? (i === 0 ? "primary" : "outline")} href={cta.href}>
                     {cta.label}

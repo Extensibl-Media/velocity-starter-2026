@@ -1,13 +1,13 @@
 ---
-import { getCollection } from "astro:content";
+import { getServiceAreas } from "@/lib/content";
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 import {
   Tabs,
   TabsList,
   TabsTrigger,
   TabsContent,
-} from "@/components/starwind/tabs";
+} from "@/components/blocks/tabs";
 
 /**
  * service-areas:tabs — cities grouped into tabs by `county` (cities without a
@@ -30,7 +30,7 @@ interface Props {
 
 const { theme = "default", data } = Astro.props;
 
-const all = await getCollection("serviceAreas");
+const all = await getServiceAreas();
 let areas = all.sort((a, b) => a.data.order - b.data.order);
 if (data?.featuredOnly) areas = areas.filter((a) => a.data.featured);
 if (data?.limit) areas = areas.slice(0, data.limit);
@@ -52,7 +52,7 @@ const counties = [...groups.entries()].map(([name, cities]) => ({ name, cities }
     <section class={`section-wrapper section-py theme-${theme}`}>
       <div class="section-container">
         {/* Header */}
-        <div class="flex flex-col items-center text-center gap-3 mb-10">
+        <div class="flex flex-col items-center text-center gap-sm mb-10">
           {data?.eyebrow &&
             (data.eyebrow.variant === "badge" ? (
               <div>
@@ -81,7 +81,7 @@ const counties = [...groups.entries()].map(([name, cities]) => ({ name, cities }
 
           {counties.map((county, i) => (
             <TabsContent value={`cty-${i}`}>
-              <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-md">
                 {county.cities.map((area) => {
                   const label = `${area.data.city}, ${area.data.state}`;
                   const inner = (

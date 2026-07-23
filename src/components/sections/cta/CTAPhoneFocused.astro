@@ -1,8 +1,8 @@
 ---
 import { getBusinessData } from "@/lib/utils";
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 interface Props {
   theme?: string;
@@ -27,7 +27,7 @@ const hasContent = !!(data?.heading || data?.subheading || hasPhone || data?.cta
   hasContent && (
     <section class:list={["cta-phone-focused section-wrapper section-py-lg", `theme-${theme}`]}>
       <div class="section-container">
-        <div class="flex flex-col items-center text-center gap-4 max-w-2xl mx-auto">
+        <div class="flex flex-col items-center text-center gap-md max-w-2xl mx-auto">
           {data?.eyebrow &&
             (data.eyebrow.variant === "badge" ? (
               <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
@@ -46,7 +46,7 @@ const hasContent = !!(data?.heading || data?.subheading || hasPhone || data?.cta
           {hasPhone && (
             <a
               href={`tel:${business.phone}`}
-              class="giant-phone inline-flex items-center gap-3 text-4xl lg:text-5xl font-bold text-primary hover:opacity-80 transition-opacity no-underline"
+              class="giant-phone inline-flex items-center gap-sm text-4xl lg:text-5xl font-bold text-primary hover:opacity-80 transition-opacity no-underline"
             >
               <svg
                 class="w-8 h-8 lg:w-10 lg:h-10 shrink-0"

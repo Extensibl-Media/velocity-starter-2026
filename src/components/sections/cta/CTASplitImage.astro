@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA, ImageRef } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 import SmartImage from "@/components/media/SmartImage.astro";
 
 interface Props {
@@ -30,7 +30,7 @@ const hasImage = !!data?.image?.src;
       <div class="section-container">
         <div
           class:list={[
-            "flex flex-col gap-8 lg:gap-12 items-center",
+            "flex flex-col gap-xl lg:gap-12 items-center",
             imagePosition === "left" ? "lg:flex-row" : "lg:flex-row-reverse",
           ]}
         >
@@ -50,7 +50,7 @@ const hasImage = !!data?.image?.src;
           {hasContent && (
             <div
               class:list={[
-                "flex flex-col gap-4",
+                "flex flex-col gap-md",
                 hasImage ? "w-full lg:w-1/2" : "max-w-2xl mx-auto text-center",
               ]}
             >
@@ -81,7 +81,7 @@ const hasImage = !!data?.image?.src;
               )}
 
               {(data?.cta || data?.secondaryCta) && (
-                <div class="flex flex-wrap gap-3 mt-2">
+                <div class="flex flex-wrap gap-sm mt-2">
                   {data?.cta && (
                     <Button variant={data.cta.variant ?? "primary"} href={data.cta.href}>
                       {data.cta.label}

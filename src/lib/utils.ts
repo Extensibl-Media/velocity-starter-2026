@@ -1,13 +1,29 @@
-import { getCollection } from "astro:content";
+import { getMenu, getSiteSettings } from "emdash";
 import type { BusinessData, SiteData } from "@/lib/schema";
 import siteConfig from "@/config/site.config";
+import { getBusiness } from "@/lib/content";
 
+/** Compose BusinessData from the two native-first sources: native SiteSettings
+ * (title→businessName, tagline, social) + the custom `business` singleton
+ * (NAP/GBP — no native slot). Falls back to site.config when settings are absent. */
 export async function getBusinessData(): Promise<BusinessData> {
   try {
-    const entries = await getCollection("generalSettings");
-    const entry = entries[0];
-    if (!entry) throw new Error("No general settings found");
-    return entry.data as BusinessData;
+    const [settings, biz] = await Promise.all([getSiteSettings(), getBusiness()]);
+    const businessName = settings.title;
+    if (!businessName) throw new Error("No site settings found");
+    const s = settings.social;
+    return {
+      businessName,
+      tagline: settings.tagline,
+      phone: biz.phone ?? "",
+      email: biz.email ?? "",
+      address: biz.address ?? "",
+      city: biz.city ?? "",
+      state: biz.state ?? "",
+      zip: biz.zip ?? "",
+      gbpUrl: biz.gbp_url || undefined,
+      social: s ? { facebook: s.facebook, instagram: s.instagram, youtube: s.youtube } : undefined,
+    };
   } catch {
     return {
       businessName: siteConfig.name,
@@ -35,121 +51,32 @@ export interface NavNode {
   children?: NavNode[];
 }
 
-async function resolveNavItem(
-  item: {
-    label: string;
-    href?: string;
-    enabled: boolean;
-    autoPopulate?: string;
-    children?: Array<{
-      label: string;
-      href?: string;
-      enabled: boolean;
-      children?: Array<{ label: string; href: string; enabled: boolean }>;
-    }>;
-  },
-  collections: {
-    services: Awaited<ReturnType<typeof getCollection<"services">>>;
-    serviceAreas: Awaited<ReturnType<typeof getCollection<"serviceAreas">>>;
-    pages: Awaited<ReturnType<typeof getCollection<"pages">>>;
-  }
-): Promise<NavNode> {
-  const { services, serviceAreas, pages } = collections;
-
-  if (item.autoPopulate === "services") {
-    const sorted = services.sort((a, b) => a.data.order - b.data.order);
-    return {
-      label: item.label,
-      href: item.href,
-      children: sorted.map((s) => ({
-        label: s.data.title,
-        href: `/services/${s.data.slug}`,
-      })),
-    };
-  }
-
-  if (item.autoPopulate === "service-areas") {
-    const sortedAreas = serviceAreas.sort(
-      (a, b) => a.data.order - b.data.order
-    );
-    const sortedServices = services.sort((a, b) => a.data.order - b.data.order);
-
-    // Use pages collection — find pages whose id matches area/service pattern
-    const validPages = new Set(
-      pages.filter((p) => !p.data.draft).map((p) => p.id)
-    );
-
-    const areaNodes: NavNode[] = sortedAreas
-      .map((area) => {
-        const areaServices = sortedServices.filter((service) =>
-          validPages.has(`${area.data.slug}/${service.data.slug}`)
-        );
-
-        if (areaServices.length === 0) return null;
-
-        return {
-          label: `${area.data.city}, ${area.data.state}`,
-          children: areaServices.map((service) => ({
-            label: service.data.title,
-            href: `/${area.data.slug}/${service.data.slug}`,
-          })),
-        };
-      })
-      .filter(Boolean) as NavNode[];
-
-    return {
-      label: item.label,
-      href: item.href,
-      children: areaNodes,
-    };
-  }
-
-  if (item.children && item.children.length > 0) {
-    return {
-      label: item.label,
-      href: item.href,
-      children: item.children
-        .filter((child) => child.enabled)
-        .map((child) => ({
-          label: child.label,
-          href: child.href,
-          children: child.children
-            ?.filter((gc) => gc.enabled)
-            .map((gc) => ({
-              label: gc.label,
-              href: gc.href,
-            })),
-        })),
-    };
-  }
-
-  return {
-    label: item.label,
-    href: item.href,
-  };
+/** A native EmDash menu item as returned by getMenu(). */
+interface MenuItem {
+  label: string;
+  url: string;
+  children?: MenuItem[];
 }
 
-export async function getResolvedNav(): Promise<NavNode[]> {
+const toNode = (i: MenuItem): NavNode => ({
+  label: i.label,
+  href: i.url && i.url !== "#" ? i.url : undefined,
+  children: i.children?.length ? i.children.map(toNode) : undefined,
+});
+
+/** Read any native EmDash menu (primary, footer, footer-legal, …) recursively,
+ * exactly as authored in the CMS Navigation admin. Nothing is derived — the menu
+ * IS the source of truth for what links appear. */
+export async function getMenuLinks(name: string): Promise<NavNode[]> {
   try {
-    const entries = await getCollection("navigationSettings");
-    const entry = entries[0];
-    if (!entry) return [];
-
-    const enabledItems = entry.data.items.filter((item) => item.enabled);
-    const needsCollections = enabledItems.some((item) => item.autoPopulate);
-
-    const [services, serviceAreas, pages] = await Promise.all([
-      needsCollections ? getCollection("services") : Promise.resolve([]),
-      needsCollections ? getCollection("serviceAreas") : Promise.resolve([]),
-      needsCollections ? getCollection("pages") : Promise.resolve([]),
-    ]);
-
-    const collections = { services, serviceAreas, pages };
-
-    return Promise.all(
-      enabledItems.map((item) => resolveNavItem(item, collections))
-    );
-  } catch {
+    const menu = await getMenu(name);
+    if (!menu) return [];
+    return (menu.items as unknown as MenuItem[]).map(toNode);
+  } catch (e) {
+    console.error(`[emdash] getMenuLinks("${name}")`, e);
     return [];
   }
 }
+
+/** The site's primary navigation — the native `primary` menu, verbatim. */
+export const getResolvedNav = (): Promise<NavNode[]> => getMenuLinks("primary");

@@ -1,8 +1,8 @@
 ---
 import { getBusinessData } from "@/lib/utils";
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 interface Props {
   theme?: string;
@@ -26,7 +26,7 @@ const hasContent = !!(data?.heading || data?.subheading || data?.ctas?.length ||
     <section class:list={["cta-card-section section-wrapper section-py-lg", `theme-${theme}`]}>
       <div class="section-container">
         <div class="cta-card rounded-2xl border theme-border bg-background px-6 py-12 sm:px-12 sm:py-16 max-w-3xl mx-auto">
-          <div class="flex flex-col items-center text-center gap-6">
+          <div class="flex flex-col items-center text-center gap-lg">
             {data?.eyebrow &&
               (data.eyebrow.variant === "badge" ? (
                 <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
@@ -47,7 +47,7 @@ const hasContent = !!(data?.heading || data?.subheading || data?.ctas?.length ||
             )}
 
             {(data?.ctas?.length || data?.showPhone) && (
-              <div class="flex flex-wrap items-center justify-center gap-4 mt-2">
+              <div class="flex flex-wrap items-center justify-center gap-md mt-2">
                 {data?.ctas?.map((cta) => (
                   <Button variant={cta.variant ?? "primary"} href={cta.href}>
                     {cta.label}
@@ -56,7 +56,7 @@ const hasContent = !!(data?.heading || data?.subheading || data?.ctas?.length ||
                 {data?.showPhone && business.phone && (
                   <a
                     href={`tel:${business.phone}`}
-                    class="inline-flex items-center gap-2 font-bold text-lg theme-text hover:opacity-80 transition-opacity no-underline"
+                    class="inline-flex items-center gap-xs font-bold text-lg theme-text hover:opacity-80 transition-opacity no-underline"
                   >
                     <svg
                       class="w-5 h-5 shrink-0"

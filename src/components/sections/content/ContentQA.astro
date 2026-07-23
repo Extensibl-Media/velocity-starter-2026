@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 /**
  * content:qa — a static, accordion-free question-and-answer block. Every answer
@@ -33,7 +33,7 @@ const hasHeader = Boolean(data?.eyebrow || data?.heading || data?.subheading);
       <div class="section-container">
         <div class="max-w-3xl mx-auto">
           {hasHeader && (
-            <div class="flex flex-col gap-3 mb-10">
+            <div class="flex flex-col gap-sm mb-10">
               {data?.eyebrow &&
                 (data.eyebrow.variant === "badge" ? (
                   <div>
@@ -60,7 +60,7 @@ const hasHeader = Boolean(data?.eyebrow || data?.heading || data?.subheading);
                   <span class="qa-num theme-accent" aria-hidden="true">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <div class="flex flex-col gap-2 flex-1">
+                  <div class="flex flex-col gap-xs flex-1">
                     {item.question && (
                       <h3 class="theme-heading text-lg lg:text-xl font-semibold m-0">
                         {item.question}

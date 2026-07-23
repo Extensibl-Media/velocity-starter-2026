@@ -1,0 +1,52 @@
+---
+// Site search — backs the native core:search widget (which posts to /search?q=).
+// Uses EmDash's native full-text search over the `posts` collection.
+import BlogLayout from "@/layouts/BlogLayout.astro";
+import PostList from "@/components/blog/PostList.astro";
+import { search } from "emdash";
+
+const q = (Astro.url.searchParams.get("q") ?? "").trim();
+
+let items: Array<{ href: string; title: string; description?: string }> = [];
+if (q) {
+  const res = await search(q, { collections: ["posts"], limit: 20 }).catch(() => null);
+  items = (res?.items ?? []).map((r) => ({
+    href: `/blog/${r.slug ?? r.id}`,
+    title: r.title ?? r.slug ?? r.id,
+    description: r.snippet?.replace(/<\/?mark>/g, ""),
+  }));
+}
+
+const page = { id: "search", data: { title: "Search" } };
+---
+
+<BlogLayout
+  page={page}
+  title={q ? `Search: ${q}` : "Search"}
+  description="Search the blog."
+  noindex={true}
+  includeLocalBusinessSchema={false}
+>
+  <div class="post-article">
+    <h1 class="blog-index-heading">Search</h1>
+    <form method="get" action="/search" class="blog-search-form" role="search">
+      <input
+        type="search"
+        name="q"
+        value={q}
+        placeholder="Search posts…"
+        aria-label="Search posts"
+        class="blog-search-input"
+      />
+      <button type="submit" class="blog-search-btn">Search</button>
+    </form>
+    {
+      q && (
+        <p class="blog-eyebrow">
+          {items.length} result{items.length === 1 ? "" : "s"} for “{q}”
+        </p>
+      )
+    }
+    {q && <PostList posts={items} empty="No matching posts." />}
+  </div>
+</BlogLayout>

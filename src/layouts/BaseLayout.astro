@@ -23,6 +23,8 @@ import type {
 } from "schema-dts";
 import siteConfig from "@/config/site.config";
 import { getBusinessData, getSiteData } from "@/lib/utils";
+import { getSiteSetting } from "emdash";
+import { WidgetArea } from "emdash/ui";
 
 interface Props {
   page: {
@@ -73,6 +75,9 @@ const {
 
 const business = await getBusinessData();
 const site = getSiteData();
+// Native SiteSettings SEO block (search-console verification codes). Emitted only
+// when an editor has filled them in the native Settings panel.
+const seoSettings = await getSiteSetting("seo");
 
 let ogImage: string;
 if (image) {
@@ -151,6 +156,13 @@ if (breadcrumbItems.length > 1 && page.id !== "index") {
     />
     <meta name="theme-color" content={siteConfig.branding.colors.themeColor} />
 
+    {seoSettings?.googleVerification && (
+      <meta name="google-site-verification" content={seoSettings.googleVerification} />
+    )}
+    {seoSettings?.bingVerification && (
+      <meta name="msvalidate.01" content={seoSettings.bingVerification} />
+    )}
+
     <SEO
       title={title}
       description={description ?? business.tagline}
@@ -213,6 +225,8 @@ if (breadcrumbItems.length > 1 && page.id !== "index") {
       class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:font-semibold focus:text-fg-on-primary focus:no-underline focus:shadow-lg"
       >Skip to content</a
     >
+
+    <WidgetArea name="announcement-bar" class="announcement-bar" />
 
     <slot name="header" />
 

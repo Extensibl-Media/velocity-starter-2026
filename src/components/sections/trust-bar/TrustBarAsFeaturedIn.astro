@@ -25,7 +25,7 @@ const logos = data?.logos ?? [];
       ]}
     >
       <div class="section-container">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-center gap-6 md:gap-10">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-center gap-lg md:gap-10">
           <p class="theme-text-subtle text-xs font-semibold uppercase tracking-widest text-center md:text-right shrink-0 m-0 md:max-w-[10rem]">
             {heading}
           </p>
@@ -36,7 +36,7 @@ const logos = data?.logos ?? [];
             aria-hidden="true"
           />
 
-          <ul class="flex flex-wrap items-center justify-center gap-x-8 gap-y-6 md:gap-x-10 list-none m-0 p-0">
+          <ul class="flex flex-wrap items-center justify-center gap-x-xl gap-y-lg md:gap-x-10 list-none m-0 p-0">
             {logos.map((logo) => (
               <li class="flex items-center justify-center">
                 {logo.href ? (

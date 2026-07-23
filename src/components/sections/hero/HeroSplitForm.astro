@@ -1,11 +1,11 @@
 ---
 import FormRenderer from "@/components/forms/FormRenderer.astro";
 import type { HeroData } from "./types";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 import { getBusinessData } from "@/lib/utils";
 import { getBackgroundImage } from "@/lib/images";
-import { getCollection } from "astro:content";
+import { getServices } from "@/lib/content";
 
 interface Props {
   theme?: string;
@@ -14,7 +14,7 @@ interface Props {
 
 const { theme = "default", data } = Astro.props;
 const business = await getBusinessData();
-const services = await getCollection("services");
+const services = await getServices();
 const sortedServices = services.sort((a, b) => a.data.order - b.data.order);
 
 const bgUrl = await getBackgroundImage(data?.backgroundImage?.src, { width: 2000 });
@@ -69,7 +69,7 @@ const overlayOpacity = (data?.backgroundImage?.overlayOpacity ?? 60) / 100;
 
         {
           data?.body && (
-            <div class="flex flex-col gap-3 text-base leading-relaxed theme-text">
+            <div class="flex flex-col gap-sm text-base leading-relaxed theme-text">
               {Array.isArray(data.body) ? (
                 data.body.map((p) => <p class="m-0">{p}</p>)
               ) : (
@@ -81,7 +81,7 @@ const overlayOpacity = (data?.backgroundImage?.overlayOpacity ?? 60) / 100;
 
         {
           data?.trustBadges && data.trustBadges.length > 0 && (
-            <div class="flex flex-wrap gap-x-6 gap-y-2">
+            <div class="flex flex-wrap gap-x-lg gap-y-xs">
               {data.trustBadges.map((badge) => (
                 <span class="flex items-center gap-1.5 text-sm font-medium theme-text-muted">
                   <svg
@@ -105,7 +105,7 @@ const overlayOpacity = (data?.backgroundImage?.overlayOpacity ?? 60) / 100;
         {
           data?.offer && (
             <div
-              class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm"
+              class="inline-flex items-center gap-xs px-4 py-2.5 rounded-lg border text-sm"
               style="background: color-mix(in srgb, var(--color-brand-secondary) 12%, transparent); border-color: color-mix(in srgb, var(--color-brand-secondary) 30%, transparent)"
             >
               {data.offer.label && (
@@ -120,7 +120,7 @@ const overlayOpacity = (data?.backgroundImage?.overlayOpacity ?? 60) / 100;
 
         {
           data?.ctas && data.ctas.length > 0 && (
-            <div class="flex flex-wrap items-center gap-4 mt-2">
+            <div class="flex flex-wrap items-center gap-md mt-2">
               {data.ctas.map((cta) => (
                 <Button variant={cta.variant ?? "primary"} href={cta.href}>
                   {cta.label}
@@ -129,7 +129,7 @@ const overlayOpacity = (data?.backgroundImage?.overlayOpacity ?? 60) / 100;
               {data?.showPhone && business.phone && (
                 <a
                   href={`tel:${business.phone}`}
-                  class="flex items-center gap-2 font-semibold text-base theme-text no-underline hover:opacity-80 transition-opacity"
+                  class="flex items-center gap-xs font-semibold text-base theme-text no-underline hover:opacity-80 transition-opacity"
                 >
                   <svg
                     class="w-4 h-4 shrink-0"

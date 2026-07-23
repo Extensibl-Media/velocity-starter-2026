@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 /**
  * content:callout — a highlighted, primary-tinted panel that draws the eye to
@@ -29,7 +29,7 @@ const hasContent = Boolean(data?.heading || data?.body || data?.eyebrow || data?
   hasContent && (
     <section class={`section-wrapper section-py theme-${theme}`}>
       <div class="section-container">
-        <div class="callout theme-border max-w-3xl mx-auto flex flex-col items-center text-center gap-4">
+        <div class="callout theme-border max-w-3xl mx-auto flex flex-col items-center text-center gap-md">
           {/* Icon */}
           <span class="callout-icon" aria-hidden="true">
             <svg

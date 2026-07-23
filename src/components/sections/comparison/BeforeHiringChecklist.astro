@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, FeatureItem, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 import { getBusinessData } from "@/lib/utils";
 
 interface Props {
@@ -39,7 +39,7 @@ const ctas = (data?.ctas?.length
   <div class="section-container">
     {
       (data?.eyebrow || data?.heading || data?.subheading) && (
-        <div class="flex flex-col items-center text-center gap-3 mb-12">
+        <div class="flex flex-col items-center text-center gap-sm mb-12">
           {data?.eyebrow &&
             (data.eyebrow.variant === "badge" ? (
               <Badge class="uppercase tracking-widest text-xs">
@@ -93,7 +93,7 @@ const ctas = (data?.ctas?.length
                 {String(i + 1).padStart(2, "0")}
               </span>
               <div class="flex flex-col gap-1 flex-1">
-                <div class="flex items-start justify-between gap-3">
+                <div class="flex items-start justify-between gap-sm">
                   <h4 class="theme-heading text-base font-bold m-0">
                     {item.title}
                   </h4>

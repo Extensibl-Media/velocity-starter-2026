@@ -31,10 +31,10 @@ const items = data?.items ?? [];
           </p>
         )}
 
-        <ul class="flex flex-wrap items-center justify-center gap-2.5 md:gap-3 list-none m-0 p-0">
+        <ul class="flex flex-wrap items-center justify-center gap-2.5 md:gap-sm list-none m-0 p-0">
           {items.map((item) => (
             <li
-              class="surface-base inline-flex items-center gap-2 px-3.5 py-2"
+              class="surface-base inline-flex items-center gap-xs px-3.5 py-2"
               style="border: 1px solid var(--theme-border); border-radius: 9999px;"
               title={item.description ?? undefined}
             >

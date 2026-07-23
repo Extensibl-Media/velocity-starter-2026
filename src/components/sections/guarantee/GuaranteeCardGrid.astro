@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow, FeatureItem } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 /**
  * guarantee:card-grid — a grid of raised guarantee cards (satisfaction, price,
@@ -34,7 +34,7 @@ const gridClass =
     <section class:list={["guarantee-card-grid section-wrapper section-py", `theme-${theme}`]}>
       <div class="section-container">
         {(data?.eyebrow || data?.heading || data?.subheading) && (
-          <div class="flex flex-col items-center text-center gap-3 mb-12">
+          <div class="flex flex-col items-center text-center gap-sm mb-12">
             {data?.eyebrow &&
               (data.eyebrow.variant === "badge" ? (
                 <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
@@ -52,10 +52,10 @@ const gridClass =
           </div>
         )}
 
-        <div class:list={["grid grid-cols-1 gap-6", gridClass]}>
+        <div class:list={["grid grid-cols-1 gap-lg", gridClass]}>
           {items.map((item, i) => (
-            <div class="guarantee-card flex flex-col gap-4 p-7">
-              <div class="flex items-center gap-4">
+            <div class="guarantee-card flex flex-col gap-md p-7">
+              <div class="flex items-center gap-md">
                 <div class="card-seal flex items-center justify-center w-12 h-12 rounded-xl shrink-0">
                   {item.icon ? (
                     <Fragment set:html={item.icon} />
@@ -69,9 +69,9 @@ const gridClass =
                 <p class="theme-text-muted text-base leading-relaxed m-0">{item.body}</p>
               )}
               {item.bullets && item.bullets.length > 0 && (
-                <ul class="flex flex-col gap-2 list-none m-0 p-0 mt-1">
+                <ul class="flex flex-col gap-xs list-none m-0 p-0 mt-1">
                   {item.bullets.map((b) => (
-                    <li class="flex items-start gap-2 theme-text text-sm">
+                    <li class="flex items-start gap-xs theme-text text-sm">
                       <svg class="w-4 h-4 theme-accent shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
                         <path d="M20 6 9 17l-5-5" />
                       </svg>

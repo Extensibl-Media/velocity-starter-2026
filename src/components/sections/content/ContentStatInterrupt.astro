@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow, StatItem } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 /**
  * content:stat-interrupt — long-form prose split by a full-width band of big
@@ -33,7 +33,7 @@ const hasHeader = Boolean(data?.eyebrow || data?.heading || data?.subheading);
       <div class="section-container">
         <div class="max-w-2xl mx-auto">
           {hasHeader && (
-            <div class="flex flex-col gap-3 mb-8">
+            <div class="flex flex-col gap-sm mb-8">
               {data?.eyebrow &&
                 (data.eyebrow.variant === "badge" ? (
                   <div>
@@ -58,7 +58,7 @@ const hasHeader = Boolean(data?.eyebrow || data?.heading || data?.subheading);
 
         {stats.length > 0 && (
           <div class="stat-band my-12">
-            <dl class="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-4 text-center m-0">
+            <dl class="grid grid-cols-1 sm:grid-cols-3 gap-xl sm:gap-md text-center m-0">
               {stats.map((stat) => (
                 <div class="flex flex-col gap-1">
                   <dt class="stat-value theme-accent font-extrabold m-0">{stat.value}</dt>

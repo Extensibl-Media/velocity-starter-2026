@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 import SmartImage from "@/components/media/SmartImage.astro";
 
 /**
@@ -28,7 +28,7 @@ const cols = data?.columns === 2 ? "sm:grid-cols-2" : "sm:grid-cols-2 lg:grid-co
   <div class="section-container">
     {
       (data?.eyebrow || data?.heading || data?.subheading) && (
-        <div class="flex flex-col items-center text-center gap-3 mb-12">
+        <div class="flex flex-col items-center text-center gap-sm mb-12">
           {data?.eyebrow &&
             (data.eyebrow.variant === "badge" ? (
               <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
@@ -49,7 +49,7 @@ const cols = data?.columns === 2 ? "sm:grid-cols-2" : "sm:grid-cols-2 lg:grid-co
 
     {
       images.length > 0 && (
-        <div class={`grid grid-cols-1 ${cols} gap-6`}>
+        <div class={`grid grid-cols-1 ${cols} gap-lg`}>
           {images.map((img) => (
             <figure class="project-card m-0">
               <div class="project-card-frame">

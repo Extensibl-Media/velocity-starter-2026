@@ -1,8 +1,8 @@
 ---
 import type { Eyebrow, CertItem, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 import SmartImage from "@/components/media/SmartImage.astro";
-import { Button } from "@/components/starwind/button";
+import { Button } from "@/components/elements/button";
 
 /**
  * certifications:split-copy — a two-column layout: trust copy (eyebrow, heading,
@@ -52,9 +52,9 @@ const flip = data?.flip ?? false;
           <p class="theme-text-muted text-lg leading-relaxed m-0">{data.body}</p>
         )}
         {bullets.length > 0 && (
-          <ul class="flex flex-col gap-3 list-none m-0 p-0">
+          <ul class="flex flex-col gap-sm list-none m-0 p-0">
             {bullets.map((b) => (
-              <li class="flex items-start gap-3">
+              <li class="flex items-start gap-sm">
                 <span class="check-dot">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                     <path d="m5 13 4 4L19 7" />
@@ -76,9 +76,9 @@ const flip = data?.flip ?? false;
 
       {/* Badge column */}
       {items.length > 0 && (
-        <ul class:list={["grid grid-cols-2 gap-4 list-none m-0 p-0", flip && "lg:order-1"]}>
+        <ul class:list={["grid grid-cols-2 gap-md list-none m-0 p-0", flip && "lg:order-1"]}>
           {items.map((item) => (
-            <li class="badge-cell flex flex-col items-center text-center gap-3 p-6">
+            <li class="badge-cell flex flex-col items-center text-center gap-sm p-6">
               {item.logo ? (
                 <SmartImage
                   src={item.logo}

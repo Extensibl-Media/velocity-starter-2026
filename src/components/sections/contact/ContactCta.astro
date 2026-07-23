@@ -1,8 +1,8 @@
 ---
 import { getBusinessData } from "@/lib/utils";
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 /**
  * contact:cta — a simple centered contact CTA band. Heading + subheading, a big
@@ -30,7 +30,7 @@ const cta = data?.cta;
 
 <section class={`section-wrapper section-py theme-${theme}`}>
   <div class="section-container">
-    <div class="flex flex-col items-center text-center gap-6 max-w-3xl mx-auto">
+    <div class="flex flex-col items-center text-center gap-lg max-w-3xl mx-auto">
       {
         data?.eyebrow && (
           <div>
@@ -55,7 +55,7 @@ const cta = data?.cta;
         showPhone && telHref && (
           <a
             href={telHref}
-            class="inline-flex items-center gap-3 text-2xl lg:text-3xl font-bold theme-heading hover:text-primary transition-colors no-underline mt-2"
+            class="inline-flex items-center gap-sm text-2xl lg:text-3xl font-bold theme-heading hover:text-primary transition-colors no-underline mt-2"
           >
             <svg
               class="w-6 h-6 lg:w-7 lg:h-7 shrink-0 text-primary"

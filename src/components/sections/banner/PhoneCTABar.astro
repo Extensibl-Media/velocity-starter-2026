@@ -1,7 +1,7 @@
 ---
 import { getBusinessData } from "@/lib/utils";
 import type { SectionCTA } from "@/types/sections";
-import { Button } from "@/components/starwind/button";
+import { Button } from "@/components/elements/button";
 
 interface Props {
   theme?: string;
@@ -19,8 +19,8 @@ const text = data?.text ?? "Talk to a local roofer today";
 ---
 
 <section class:list={["banner-phone-cta", `theme-${theme}`]}>
-  <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-4 gap-y-1 px-4 py-3 text-sm sm:justify-between">
-    <div class="flex items-center gap-2 text-center sm:text-left">
+  <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-md gap-y-1 px-4 py-3 text-sm sm:justify-between">
+    <div class="flex items-center gap-xs text-center sm:text-left">
       <svg
         class="hidden h-4 w-4 shrink-0 theme-accent sm:block"
         xmlns="http://www.w3.org/2000/svg"
@@ -39,11 +39,11 @@ const text = data?.text ?? "Talk to a local roofer today";
       )}
     </div>
 
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-sm">
       {business.phone && (
         <a
           href={`tel:${business.phone}`}
-          class="theme-text inline-flex items-center gap-2 text-base font-bold no-underline transition-opacity hover:opacity-80"
+          class="theme-text inline-flex items-center gap-xs text-base font-bold no-underline transition-opacity hover:opacity-80"
         >
           <svg
             class="h-5 w-5 shrink-0"

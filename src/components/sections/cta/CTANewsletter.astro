@@ -1,8 +1,8 @@
 ---
 import type { Eyebrow } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
-import { Input } from "@/components/starwind/input";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
+import { Input } from "@/components/elements/input";
 import siteConfig from "@/config/site.config";
 
 interface Props {
@@ -38,7 +38,7 @@ const submitCfg = {
   hasContent && (
     <section class={`section-wrapper section-py theme-${theme}`}>
       <div class="section-container">
-        <div class="flex flex-col items-center text-center gap-4 max-w-2xl mx-auto">
+        <div class="flex flex-col items-center text-center gap-md max-w-2xl mx-auto">
           {data?.eyebrow && (
             <div>
               {data.eyebrow.variant === "badge" ? (
@@ -69,7 +69,7 @@ const submitCfg = {
             <form
               name="newsletter"
               method="POST"
-              class="flex flex-col sm:flex-row w-full gap-3 mt-2"
+              class="flex flex-col sm:flex-row w-full gap-sm mt-2"
               data-newsletter-form
             >
               <label for="newsletter-email" class="sr-only">Email address</label>

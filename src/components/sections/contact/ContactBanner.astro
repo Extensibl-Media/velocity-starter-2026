@@ -1,9 +1,9 @@
 ---
-import { getCollection } from "astro:content";
+import { getHoursSettings } from "@/lib/content";
 import { getBusinessData } from "@/lib/utils";
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 /**
  * contact:banner — a raised, full-width "call us" banner. Copy sits on the left;
@@ -30,7 +30,7 @@ const telHref = business.phone ? `tel:${business.phone.replace(/[^\d+]/g, "")}` 
 const cta = data?.cta;
 
 const showHours = data?.showHours ?? true;
-const hoursEntries = showHours ? await getCollection("hoursSettings") : [];
+const hoursEntries = showHours ? await getHoursSettings() : [];
 const hours = hoursEntries[0]?.data.hours ?? [];
 const todayName = new Date().toLocaleDateString("en-US", { weekday: "long" });
 const today = hours.find((h: any) => h.day?.toLowerCase() === todayName.toLowerCase());
@@ -43,7 +43,7 @@ const todayLabel = today
 
 <section class:list={["contact-banner section-wrapper section-py", `theme-${theme}`]}>
   <div class="section-container">
-    <div class="surface-base banner-panel flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-12">
+    <div class="surface-base banner-panel flex flex-col lg:flex-row lg:items-center gap-xl lg:gap-12">
       {/* Copy */}
       <div class="flex flex-col gap-2.5 lg:flex-1">
         {
@@ -64,7 +64,7 @@ const todayLabel = today
       </div>
 
       {/* Actions */}
-      <div class="flex flex-col items-start lg:items-end gap-4 lg:shrink-0">
+      <div class="flex flex-col items-start lg:items-end gap-md lg:shrink-0">
         {
           telHref && (
             <a href={telHref} class="banner-phone theme-heading no-underline group">

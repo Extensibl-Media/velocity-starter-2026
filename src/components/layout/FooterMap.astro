@@ -1,12 +1,12 @@
 ---
 import { getBusinessData, getResolvedNav } from "@/lib/utils";
-import { getCollection } from "astro:content";
+import { getHoursSettings } from "@/lib/content";
 
 const business = await getBusinessData();
 const year = new Date().getFullYear();
 const navItems = await getResolvedNav();
 
-const h = await getCollection("hoursSettings");
+const h = await getHoursSettings();
 const hours = h[0]?.data.hours ?? [];
 
 const fullAddress = [
@@ -174,14 +174,6 @@ const mapSrc = fullAddress
               </li>
             ))
         }
-        <li>
-          <a
-            href="/components"
-            class="text-sm text-fg-inverse/60 hover:text-fg-inverse transition-colors"
-          >
-            Components
-          </a>
-        </li>
       </ul>
     </div>
   </div>

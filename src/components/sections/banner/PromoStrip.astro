@@ -19,7 +19,7 @@ const hasContent = !!(data?.text || data?.cta);
 {
   hasContent && (
     <section class:list={["banner-promo-strip", `theme-${theme}`]}>
-      <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-3 text-center text-sm">
+      <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-sm gap-y-1 px-4 py-3 text-center text-sm">
         {data?.icon && (
           <span class="text-lg leading-none" aria-hidden="true">
             {data.icon}

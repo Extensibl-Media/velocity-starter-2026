@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow, ImageRef, TeamMember } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 import SmartImage from "@/components/media/SmartImage.astro";
 
 interface Props {
@@ -67,9 +67,9 @@ const groupPhoto = data?.groupPhoto;
             )}
 
             {members.length > 0 && (
-              <ul class="flex flex-col gap-3 m-0 mt-2 p-0 list-none">
+              <ul class="flex flex-col gap-sm m-0 mt-2 p-0 list-none">
                 {members.map((member) => (
-                  <li class="crew-row flex items-baseline justify-between gap-4 pb-3">
+                  <li class="crew-row flex items-baseline justify-between gap-md pb-3">
                     <span class="theme-heading font-semibold">
                       {member.name}
                     </span>

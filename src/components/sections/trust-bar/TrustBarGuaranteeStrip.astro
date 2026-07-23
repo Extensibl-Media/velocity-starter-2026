@@ -1,6 +1,6 @@
 ---
 import type { SectionCTA } from "@/types/sections";
-import { Button } from "@/components/starwind/button";
+import { Button } from "@/components/elements/button";
 
 interface Props {
   theme?: string;
@@ -31,7 +31,7 @@ const cta = data?.cta ?? null;
       ]}
     >
       <div class="section-container">
-        <div class="flex flex-col md:flex-row md:items-center gap-6 md:gap-8">
+        <div class="flex flex-col md:flex-row md:items-center gap-lg md:gap-xl">
           <div
             class="shrink-0 mx-auto md:mx-0 flex flex-col items-center justify-center text-center w-24 h-24 rounded-full"
             style="border: 2px solid var(--theme-accent); color: var(--theme-accent);"
@@ -76,7 +76,7 @@ const cta = data?.cta ?? null;
               </p>
             )}
             {points.length > 0 && (
-              <ul class="flex flex-wrap justify-center md:justify-start gap-x-5 gap-y-2 list-none m-0 mt-3 p-0">
+              <ul class="flex flex-wrap justify-center md:justify-start gap-x-5 gap-y-xs list-none m-0 mt-3 p-0">
                 {points.map((point) => (
                   <li class="flex items-center gap-1.5">
                     <svg

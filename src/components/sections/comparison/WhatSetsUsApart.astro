@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, FeatureItem, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 interface Props {
   theme?: string;
@@ -33,7 +33,7 @@ const ctas = (data?.ctas?.length
   <div class="section-container">
     <div class="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] items-start">
       {/* Left: header + CTA */}
-      <div class="flex flex-col gap-4 lg:sticky lg:top-24">
+      <div class="flex flex-col gap-md lg:sticky lg:top-24">
         {
           data?.eyebrow &&
             (data.eyebrow.variant === "badge" ? (
@@ -60,7 +60,7 @@ const ctas = (data?.ctas?.length
         }
         {
           ctas.length > 0 && (
-            <div class="flex flex-wrap gap-3 mt-2">
+            <div class="flex flex-wrap gap-sm mt-2">
               {ctas.map((cta, i) => (
                 <Button
                   href={cta.href}

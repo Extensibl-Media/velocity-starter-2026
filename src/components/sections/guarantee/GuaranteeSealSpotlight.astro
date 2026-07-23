@@ -1,8 +1,8 @@
 ---
 import { getBusinessData } from "@/lib/utils";
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 /**
  * guarantee:seal-spotlight — a warranty "seal" medallion spotlighted beside a
@@ -64,9 +64,9 @@ const bullets = data?.bullets ?? [];
         )}
 
         {bullets.length > 0 && (
-          <ul class="flex flex-col gap-3 list-none m-0 p-0">
+          <ul class="flex flex-col gap-sm list-none m-0 p-0">
             {bullets.map((b) => (
-              <li class="flex items-start gap-3 theme-text">
+              <li class="flex items-start gap-sm theme-text">
                 <svg class="w-5 h-5 theme-accent shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                   <path d="M20 6 9 17l-5-5" />
                 </svg>
@@ -77,7 +77,7 @@ const bullets = data?.bullets ?? [];
         )}
 
         {ctas.length > 0 && (
-          <div class="flex flex-wrap items-center gap-4 mt-2">
+          <div class="flex flex-wrap items-center gap-md mt-2">
             {ctas.map((cta, i) => (
               <Button variant={cta.variant ?? (i === 0 ? "primary" : "outline")} href={cta.href}>
                 {cta.label}

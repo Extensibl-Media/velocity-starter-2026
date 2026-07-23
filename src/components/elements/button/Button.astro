@@ -1,0 +1,52 @@
+---
+/**
+ * Button — Element. Inherits the vendored Starwind primitive and ADDS our brand
+ * variants that Starwind lacks — notably `brand-secondary` (the amber brand
+ * color). Starwind's own `secondary` is a neutral gray; the theme's real second
+ * brand color lives in --color-brand-secondary, so we expose it as a first-class
+ * button variant here (our layer = where design-system variants live).
+ *
+ * Standard variants (default/primary/secondary/outline/ghost/…) pass straight
+ * through to Starwind. Our variants render on Starwind's base + recolor.
+ */
+import StarwindButton from "@/components/starwind/button/Button.astro";
+
+interface Props {
+  variant?: string;
+  size?: string;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const { variant = "default", class: className, ...rest } = Astro.props;
+
+// Our variant overrides: { baseVariant (for size/shape/states), added classes }.
+// NOTE: the VWS theme remaps Starwind's `secondary` to the brand AMBER
+// (global.css: --secondary = --t-secondary). Its default text is a brown
+// (--t-secondary-fg) that reads as orange-on-orange on the amber fill — so we
+// override the text to a high-contrast near-black. This is the brand's second
+// button; there is no separate `brand-secondary` (it would be a duplicate).
+const OURS: Record<string, { base: string; override: string }> = {
+  secondary: {
+    base: "secondary",
+    override: "text-neutral-950!",
+  },
+};
+const brand = OURS[variant];
+
+// Cast to any so our extended variants/props aren't rejected by Starwind's
+// strict prop union (this wrapper is the type surface).
+const SB = StarwindButton as any;
+---
+
+{
+  brand ? (
+    <SB variant={brand.base} class:list={[brand.override, className]} {...rest}>
+      <slot />
+    </SB>
+  ) : (
+    <SB variant={variant} class={className} {...rest}>
+      <slot />
+    </SB>
+  )
+}
