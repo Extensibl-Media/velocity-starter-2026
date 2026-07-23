@@ -26,7 +26,7 @@ const points = data?.points ?? [];
       ]}
     >
       <div class="section-container">
-        <div class="flex flex-col items-center text-center gap-4">
+        <div class="flex flex-col items-center text-center gap-md">
           <p class="text-lg md:text-xl leading-tight m-0">
             {prefix && <span class="theme-text-muted">{prefix} </span>}
             <span
@@ -39,9 +39,9 @@ const points = data?.points ?? [];
           </p>
 
           {points.length > 0 && (
-            <ul class="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 list-none m-0 p-0">
+            <ul class="flex flex-wrap items-center justify-center gap-x-sm gap-y-xs list-none m-0 p-0">
               {points.map((point, i) => (
-                <li class="flex items-center gap-x-3">
+                <li class="flex items-center gap-x-sm">
                   {i > 0 && (
                     <span
                       class="w-1 h-1 rounded-full shrink-0"

@@ -12,7 +12,11 @@ Every section receives `{ theme, data }` and must be theme-pure (tokens only). N
 
 **Today: 237 section variants across 22 groups**, plus **10 header + 10 footer chrome variants**. This planning doc predates the current library; the **canonical live catalog is [`/components`](/components)** (every section) + [`/components/chrome`](/components/chrome) (every header/footer), and the source of truth is [`src/lib/sectionRegistry.ts`](../src/lib/sectionRegistry.ts) / [`layoutRegistry.ts`](../src/lib/layoutRegistry.ts). Every group now carries 8–16 variants; the tables below are only the original ~55-item roadmap.
 
-> **Every section variant is also CMS-editable.** Field shapes live in [`src/lib/cms/sectionFields.mjs`](../src/lib/cms/sectionFields.mjs) and are generated into the Decap `sections` widget via `npm run generate:cms` (see [CMS.md](CMS.md)). When you add a section, register it **and** add its field entry, then regenerate — the generator's parity check fails the build if the registry and the CMS manifest drift.
+> **Content is stored/edited in EmDash (Cloudflare D1).** A page's `sections` array is a `json` field
+> holding `[{type, theme, data}]`; `PageRenderer` looks each `type` up in the section registry. When you
+> add a section variant, register it in [`src/lib/sectionRegistry.ts`](../src/lib/sectionRegistry.ts)
+> (import + `"group:variant"` key). (A richer per-section editing UI in the EmDash admin is a planned
+> plugin — see [decisions/0001-cms-decap-to-emdash.md](decisions/0001-cms-decap-to-emdash.md).)
 
 ---
 
@@ -194,5 +198,5 @@ Then the **P2** conversion/credibility set: `cta:sticky-bar`, `banner:announceme
 ## Notes on the taxonomy
 
 - Keep `group:variant` naming consistent — the group is the *purpose*, the variant is the *layout*. A new **layout** of an existing purpose is a new variant in the same group; a genuinely new purpose is a new group.
-- The registry, the Decap `pages` section field, and this manifest should stay in sync. When you add a variant, add it in all three.
+- The section registry and this manifest should stay in sync. When you add a variant, add it in both.
 - Every variant reads design tokens only, so a new section automatically works under every theme (Peak Roofing, Harbor, and any future clone).

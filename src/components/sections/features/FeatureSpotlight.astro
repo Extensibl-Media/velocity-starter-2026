@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, FeatureItem, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 /**
  * feature:spotlight — a numbered feature spotlight. Each feature is a full-width
@@ -31,7 +31,7 @@ const items = data?.items ?? [];
     >
       <div class="section-container">
         {/* Section header */}
-        <div class="flex flex-col gap-3 mb-12 max-w-2xl">
+        <div class="flex flex-col gap-sm mb-12 max-w-2xl">
           {data?.eyebrow &&
             (data.eyebrow.variant === "badge" ? (
               <div>
@@ -68,7 +68,7 @@ const items = data?.items ?? [];
               <span class="spotlight-num" aria-hidden="true">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <div class="flex flex-col gap-3">
+              <div class="flex flex-col gap-sm">
                 <h3 class="theme-heading text-xl lg:text-2xl font-bold m-0">
                   {item.title}
                 </h3>
@@ -78,9 +78,9 @@ const items = data?.items ?? [];
                   </p>
                 )}
                 {item.bullets && item.bullets.length > 0 && (
-                  <ul class="flex flex-wrap gap-x-8 gap-y-2 m-0 p-0 list-none mt-1">
+                  <ul class="flex flex-wrap gap-x-xl gap-y-xs m-0 p-0 list-none mt-1">
                     {item.bullets.map((bullet) => (
-                      <li class="flex items-start gap-2 theme-text text-sm leading-relaxed">
+                      <li class="flex items-start gap-xs theme-text text-sm leading-relaxed">
                         <svg
                           class="spotlight-check shrink-0"
                           xmlns="http://www.w3.org/2000/svg"

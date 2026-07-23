@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 interface Props {
   theme?: string;
@@ -61,7 +61,7 @@ const contentOrder = imagePosition === "right" ? "lg:order-1" : "lg:order-2";
       </div>
 
       {/* Content */}
-      <div class={`flex flex-col gap-6 ${contentOrder}`}>
+      <div class={`flex flex-col gap-lg ${contentOrder}`}>
         {
           data?.eyebrow && (
             <div>

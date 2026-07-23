@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, ImageRef, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 import SmartImage from "@/components/media/SmartImage.astro";
 
 interface Props {
@@ -47,7 +47,7 @@ const contentOrderClass = imagePosition === "right" ? "lg:order-1" : "lg:order-2
 
           {/* Content */}
           {hasContent && (
-            <div class={`flex flex-col gap-6 ${contentOrderClass}`}>
+            <div class={`flex flex-col gap-lg ${contentOrderClass}`}>
               {data?.eyebrow &&
                 (data.eyebrow.variant === "badge" ? (
                   <div>
@@ -74,9 +74,9 @@ const contentOrderClass = imagePosition === "right" ? "lg:order-1" : "lg:order-2
               )}
 
               {bullets.length > 0 && (
-                <ul class="flex flex-col gap-3 list-none m-0 p-0">
+                <ul class="flex flex-col gap-sm list-none m-0 p-0">
                   {bullets.map((bullet) => (
-                    <li class="flex items-start gap-3">
+                    <li class="flex items-start gap-sm">
                       <svg
                         class="check-icon shrink-0"
                         xmlns="http://www.w3.org/2000/svg"

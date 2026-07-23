@@ -1,6 +1,6 @@
 ---
 import type { SectionCTA } from "@/types/sections";
-import { Button } from "@/components/starwind/button";
+import { Button } from "@/components/elements/button";
 
 interface Props {
   theme?: string;
@@ -39,10 +39,10 @@ const starPath =
     >
       <div class="section-container">
         <div
-          class="surface-base flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10 p-6 md:p-8 mx-auto max-w-3xl"
+          class="surface-base flex flex-col md:flex-row items-center justify-center gap-lg md:gap-10 p-6 md:p-8 mx-auto max-w-3xl"
           style="border: 1px solid var(--theme-border); border-radius: var(--t-radius);"
         >
-          <div class="flex items-baseline gap-2 shrink-0">
+          <div class="flex items-baseline gap-xs shrink-0">
             <span class="theme-heading text-5xl md:text-6xl font-bold leading-none">
               {rating.toFixed(1)}
             </span>
@@ -55,7 +55,7 @@ const starPath =
             aria-hidden="true"
           />
 
-          <div class="flex flex-col items-center md:items-start gap-2 text-center md:text-left">
+          <div class="flex flex-col items-center md:items-start gap-xs text-center md:text-left">
             <span
               class="flex items-center gap-1"
               aria-label={`${rating} out of 5 stars`}

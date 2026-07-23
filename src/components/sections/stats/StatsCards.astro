@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow, StatItem } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 interface Props {
   theme?: string;
@@ -33,7 +33,7 @@ const gridClass =
       <div class="section-container">
         {/* Section header */}
         {(data?.eyebrow || data?.heading || data?.subheading) && (
-          <div class="flex flex-col items-center text-center gap-3 mb-12">
+          <div class="flex flex-col items-center text-center gap-sm mb-12">
             {data?.eyebrow &&
               (data.eyebrow.variant === "badge" ? (
                 <Badge class="uppercase tracking-widest text-xs">
@@ -58,9 +58,9 @@ const gridClass =
         )}
 
         {/* Stat cards */}
-        <div class={`grid ${gridClass} gap-6`}>
+        <div class={`grid ${gridClass} gap-lg`}>
           {stats.map((stat) => (
-            <div class="stat-card flex flex-col items-center text-center gap-3 rounded-xl border theme-border bg-background p-6 lg:p-8">
+            <div class="stat-card flex flex-col items-center text-center gap-sm rounded-xl border theme-border bg-background p-6 lg:p-8">
               <div class="stat-icon flex items-center justify-center w-14 h-14 rounded-full shrink-0">
                 <svg
                   class="w-7 h-7"

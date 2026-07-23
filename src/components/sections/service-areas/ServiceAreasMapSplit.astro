@@ -1,9 +1,9 @@
 ---
-import { getCollection } from "astro:content";
+import { getServiceAreas } from "@/lib/content";
 import { getBusinessData } from "@/lib/utils";
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 interface Props {
   theme?: string;
@@ -21,7 +21,7 @@ interface Props {
 const { theme = "default", data } = Astro.props;
 
 const business = await getBusinessData();
-const serviceAreas = await getCollection("serviceAreas");
+const serviceAreas = await getServiceAreas();
 
 const sorted = serviceAreas
   .filter((a) => !data?.featuredOnly || a.data.featured)
@@ -76,7 +76,7 @@ const mapSearchUrl = `https://maps.google.com/maps?q=${addressQuery}&output=embe
       </div>
 
       {/* Right — content */}
-      <div class="flex flex-col gap-6">
+      <div class="flex flex-col gap-lg">
         {
           data?.eyebrow && (
             <div>
@@ -110,7 +110,7 @@ const mapSearchUrl = `https://maps.google.com/maps?q=${addressQuery}&output=embe
         }
 
         {/* Service area cards grid */}
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-sm">
           {
             sorted.map((area) => {
               const hasPage = true; // future: check pages collection for area pages

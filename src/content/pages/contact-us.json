@@ -35,6 +35,15 @@
       }
     },
     {
+      "type": "contact:hours",
+      "theme": "muted",
+      "data": {
+        "eyebrow": { "text": "Business Hours", "variant": "text" },
+        "heading": "When You Can Reach Us",
+        "subheading": "We answer calls during business hours and respond to messages fast — even after hours."
+      }
+    },
+    {
       "type": "cta:banner",
       "theme": "primary",
       "data": {

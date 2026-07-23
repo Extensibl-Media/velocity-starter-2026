@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow, RatingSource } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 interface Props {
   theme?: string;
@@ -29,7 +29,7 @@ const brandColors: Record<string, string> = {
       <div class="section-container">
         {/* Section header */}
         {(data?.eyebrow || data?.heading) && (
-          <div class="flex flex-col items-center text-center gap-3 mb-8">
+          <div class="flex flex-col items-center text-center gap-sm mb-8">
             {data?.eyebrow && (
               <div>
                 {data.eyebrow.variant === "badge" ? (
@@ -52,14 +52,14 @@ const brandColors: Record<string, string> = {
         )}
 
         {/* Ratings row */}
-        <ul class="flex flex-wrap items-center justify-center gap-y-6 gap-x-8 md:gap-x-12 list-none m-0 p-0">
+        <ul class="flex flex-wrap items-center justify-center gap-y-lg gap-x-xl md:gap-x-12 list-none m-0 p-0">
           {sources.map((source) => {
             const filled = Math.round(source.rating);
             const empty = Math.max(0, 5 - filled);
             const brandColor = brandColors[source.name];
 
             const item = (
-              <div class="flex items-center gap-3">
+              <div class="flex items-center gap-sm">
                 <span
                   class:list={[
                     "text-sm font-bold leading-none",

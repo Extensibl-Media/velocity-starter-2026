@@ -59,6 +59,32 @@
   --spacing-section-lg: var(--t-section-lg);
   --spacing-section-xl: var(--t-section-xl);
 
+  /* Radius: starwind.css computes the rounded-* scale from a single --radius
+     base (see below, sourced from --t-radius) — no per-step mapping needed here. */
+
+  /* Type scale → tokens (text-* sizes follow the theme; line-heights stay Tailwind's) */
+  --text-xs: var(--t-text-xs);
+  --text-sm: var(--t-text-sm);
+  --text-base: var(--t-text-base);
+  --text-lg: var(--t-text-lg);
+  --text-xl: var(--t-text-xl);
+  --text-2xl: var(--t-text-2xl);
+  --text-3xl: var(--t-text-3xl);
+  --text-4xl: var(--t-text-4xl);
+  --text-5xl: var(--t-text-5xl);
+  --text-6xl: var(--t-text-6xl);
+
+  /* Spacing base unit → density knob (Tailwind derives its whole spacing scale from this) */
+  --spacing: var(--t-space-unit);
+  /* NOTE: do NOT add --spacing-{xs,sm,md,lg,xl} here — those names collide with
+     the width/container scale (max-w-md, w-xl, …). The semantic element-gap
+     utilities are defined as scoped @utility rules below instead. */
+
+  /* Control-size tokens (consumed by Elements: button/input/select heights) */
+  --spacing-control-sm: var(--t-control-h-sm);
+  --spacing-control-md: var(--t-control-h-md);
+  --spacing-control-lg: var(--t-control-h-lg);
+
   /* Starwind accordion animations */
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
@@ -263,6 +289,27 @@
   --color-fg-subtle: rgba(124, 45, 0, 0.5);
   --color-border: rgba(124, 45, 0, 0.22);
 }
+
+/* =====================
+   Semantic element-gap utilities — scoped to `gap` ONLY, so they don't collide
+   with the width/container scale (max-w-md, w-xl…) the way --spacing-* names do.
+   Backed by --t-gap-*; values match Tailwind's 2/3/4/6/8 rungs (no visual change).
+   ===================== */
+@utility gap-xs { gap: var(--t-gap-xs); }
+@utility gap-sm { gap: var(--t-gap-sm); }
+@utility gap-md { gap: var(--t-gap-md); }
+@utility gap-lg { gap: var(--t-gap-lg); }
+@utility gap-xl { gap: var(--t-gap-xl); }
+@utility gap-x-xs { column-gap: var(--t-gap-xs); }
+@utility gap-x-sm { column-gap: var(--t-gap-sm); }
+@utility gap-x-md { column-gap: var(--t-gap-md); }
+@utility gap-x-lg { column-gap: var(--t-gap-lg); }
+@utility gap-x-xl { column-gap: var(--t-gap-xl); }
+@utility gap-y-xs { row-gap: var(--t-gap-xs); }
+@utility gap-y-sm { row-gap: var(--t-gap-sm); }
+@utility gap-y-md { row-gap: var(--t-gap-md); }
+@utility gap-y-lg { row-gap: var(--t-gap-lg); }
+@utility gap-y-xl { row-gap: var(--t-gap-xl); }
 
 /* =====================
    Base Styles
@@ -652,3 +699,125 @@
   outline-offset: 2px;
   border-radius: var(--t-radius);
 }
+
+/* ---------------------------------------------------------------------------
+   EmDash native widget areas + blog shell.
+   The <WidgetArea> component and the core:* widgets render their own markup
+   (.widget-area / .widget / .widget-recent-posts / …). These rules theme that
+   native markup with our tokens so widgets inherit the site look.
+   --------------------------------------------------------------------------- */
+
+/* Blog: two-column shell (content + sidebar), collapses on small screens. */
+.blog-shell {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--t-gap-xl, 2rem);
+  padding-top: var(--spacing-section, 4rem);
+  padding-bottom: var(--spacing-section, 4rem);
+}
+@media (min-width: 1024px) {
+  .blog-shell {
+    grid-template-columns: minmax(0, 1fr) 20rem;
+    gap: var(--t-gap-xl, 2rem) 3rem;
+  }
+}
+.blog-main { min-width: 0; }
+.blog-aside { min-width: 0; }
+@media (min-width: 1024px) {
+  .blog-aside {
+    position: sticky;
+    top: 5rem;
+    align-self: start;
+  }
+}
+
+/* Announcement bar (top-of-page content widget area). Hidden when empty because
+   <WidgetArea> renders nothing without widgets. */
+.announcement-bar {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground, #fff);
+  text-align: center;
+  padding: 0.625rem 1rem;
+  font-size: var(--t-text-sm, 0.875rem);
+}
+.announcement-bar .widget { margin: 0; }
+.announcement-bar .widget__title { display: none; }
+.announcement-bar a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Generic widget scaffolding. */
+.widget-area { display: flex; flex-direction: column; gap: var(--t-gap-lg, 1.5rem); }
+.widget { margin: 0; }
+.widget__title {
+  font-size: var(--t-text-sm, 0.875rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 0.75rem;
+  color: var(--color-foreground);
+}
+.widget__content { font-size: var(--t-text-sm, 0.9375rem); }
+.widget ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.widget a { color: var(--color-foreground); text-decoration: none; transition: color 0.15s; }
+.widget a:hover { color: var(--color-primary); }
+.widget [class$="__count"] { color: var(--color-muted-foreground, color-mix(in srgb, currentColor 55%, transparent)); font-size: 0.85em; }
+
+/* core:search */
+.widget-search { display: flex; gap: 0.5rem; }
+.widget-search__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border, color-mix(in srgb, currentColor 20%, transparent));
+  border-radius: var(--t-radius);
+  background: var(--color-background);
+  color: var(--color-foreground);
+}
+.widget-search__button {
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--t-radius);
+  background: var(--color-primary);
+  color: var(--color-primary-foreground, #fff);
+  font-weight: 600;
+  cursor: pointer;
+  border: 0;
+}
+
+/* core:tags cloud */
+.widget-tags__cloud { flex-direction: row; flex-wrap: wrap; gap: 0.5rem; }
+.widget-tags__link {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--color-border, color-mix(in srgb, currentColor 20%, transparent));
+  border-radius: 999px;
+  font-size: 0.85em;
+}
+
+/* core:recent-posts */
+.widget-recent-posts__date { display: block; color: var(--color-muted-foreground, color-mix(in srgb, currentColor 55%, transparent)); font-size: 0.8em; margin-top: 0.15rem; }
+
+/* Footer-extra sits inside the inverse-colored footer → inherit its palette. */
+.footer-extra.widget-area { gap: var(--t-gap-md, 1rem); }
+.footer-extra .widget__title { color: inherit; opacity: 0.9; }
+.footer-extra a { color: inherit; opacity: 0.7; }
+.footer-extra a:hover { opacity: 1; }
+.footer-extra .widget-search__input { color: var(--color-foreground); }
+
+/* Blog index + category/tag archives + search results (PostList). */
+.blog-index-heading { font-size: var(--t-text-3xl, 1.875rem); font-weight: 700; margin: 0 0 1.5rem; color: var(--color-foreground); }
+.blog-eyebrow { font-size: var(--t-text-sm, 0.875rem); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-primary); margin: 0 0 0.25rem; }
+.blog-index-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1.75rem; }
+.blog-index-item { border-bottom: 1px solid var(--color-border, color-mix(in srgb, currentColor 12%, transparent)); padding-bottom: 1.75rem; }
+.blog-index-item:last-child { border-bottom: 0; }
+.blog-index-link { display: block; text-decoration: none; color: inherit; }
+.blog-index-title { font-size: var(--t-text-xl, 1.25rem); font-weight: 650; margin: 0 0 0.4rem; color: var(--color-foreground); transition: color 0.15s; }
+.blog-index-link:hover .blog-index-title { color: var(--color-primary); }
+.blog-index-desc { margin: 0 0 0.4rem; color: var(--color-muted-foreground, color-mix(in srgb, currentColor 65%, transparent)); }
+.blog-index-date { font-size: var(--t-text-sm, 0.85rem); color: var(--color-muted-foreground, color-mix(in srgb, currentColor 55%, transparent)); }
+.blog-empty { color: var(--color-muted-foreground, color-mix(in srgb, currentColor 60%, transparent)); }
+.blog-search-form { display: flex; gap: 0.5rem; margin: 0 0 1.5rem; max-width: 32rem; }
+.blog-search-input { flex: 1 1 auto; min-width: 0; padding: 0.55rem 0.85rem; border: 1px solid var(--color-border, color-mix(in srgb, currentColor 20%, transparent)); border-radius: var(--t-radius); background: var(--color-background); color: var(--color-foreground); }
+.blog-search-btn { padding: 0.55rem 1.1rem; border: 0; border-radius: var(--t-radius); background: var(--color-primary); color: var(--color-primary-foreground, #fff); font-weight: 600; cursor: pointer; }

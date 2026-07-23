@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, FeatureItem, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 /**
  * feature:sticky-list — a two-column layout where the heading block pins to the
@@ -76,7 +76,7 @@ const iconPaths: Record<string, string> = {
               </p>
             )}
             {ctas.length > 0 && (
-              <div class="flex flex-wrap items-center gap-4 mt-2">
+              <div class="flex flex-wrap items-center gap-md mt-2">
                 {ctas.map((cta, i) => (
                   <Button
                     variant={cta.variant ?? (i === 0 ? "primary" : "outline")}

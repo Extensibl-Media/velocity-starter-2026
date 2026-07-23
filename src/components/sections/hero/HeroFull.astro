@@ -1,8 +1,8 @@
 ---
 import type { Eyebrow, SectionCTA } from "@/types/sections";
 import { getBackgroundImage } from "@/lib/images";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 /**
  * hero:full — full-viewport, centered hero. Bold brand landing.
@@ -53,7 +53,7 @@ const overlayOpacity = (data?.backgroundImage?.overlayOpacity ?? 60) / 100;
       {subheadline && <p class="theme-text-muted text-lg lg:text-xl max-w-2xl m-0">{subheadline}</p>}
       {
         data?.ctas && data.ctas.length > 0 && (
-          <div class="flex flex-wrap items-center justify-center gap-3 mt-2">
+          <div class="flex flex-wrap items-center justify-center gap-sm mt-2">
             {data.ctas.map((cta) => (
               <Button variant={cta.variant ?? "primary"} href={cta.href}>
                 {cta.label}

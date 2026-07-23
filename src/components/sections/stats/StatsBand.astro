@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, StatItem, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 /**
  * stats:band — a contained panel washed in a subtle accent tint, with a centered
@@ -46,7 +46,7 @@ const gridClass =
       <div class="section-container">
         <div class="band-panel px-6 py-12 sm:px-10 lg:px-16 lg:py-16">
           {(data?.eyebrow || data?.heading || data?.subheading) && (
-            <div class="flex flex-col items-center text-center gap-3 mb-10">
+            <div class="flex flex-col items-center text-center gap-sm mb-10">
               {data?.eyebrow &&
                 (data.eyebrow.variant === "badge" ? (
                   <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
@@ -64,7 +64,7 @@ const gridClass =
             </div>
           )}
 
-          <div class:list={["grid gap-8", gridClass]}>
+          <div class:list={["grid gap-xl", gridClass]}>
             {stats.map((stat) => (
               <div class="flex flex-col items-center text-center gap-1.5">
                 <span class="theme-accent text-4xl lg:text-5xl font-extrabold leading-none tabular-nums">
@@ -81,7 +81,7 @@ const gridClass =
           </div>
 
           {ctas.length > 0 && (
-            <div class="flex flex-wrap justify-center gap-4 mt-10">
+            <div class="flex flex-wrap justify-center gap-md mt-10">
               {ctas.map((cta, i) => (
                 <Button variant={cta.variant ?? (i === 0 ? "primary" : "outline")} href={cta.href}>
                   {cta.label}

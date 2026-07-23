@@ -1,7 +1,7 @@
 ---
-import { getCollection } from "astro:content";
+import { getServices } from "@/lib/content";
 import type { Eyebrow } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 interface Props {
   theme?: string;
@@ -15,7 +15,7 @@ interface Props {
 
 const { theme = "default", data } = Astro.props;
 
-const services = await getCollection("services");
+const services = await getServices();
 const sorted = services
   .sort((a, b) => a.data.order - b.data.order)
   .slice(0, data?.limit ?? services.length);
@@ -24,7 +24,7 @@ const sorted = services
 <section class={`section-wrapper section-py theme-${theme}`}>
   <div class="section-container">
     {/* Section header */}
-    <div class="flex flex-col items-center text-center gap-3 mb-12">
+    <div class="flex flex-col items-center text-center gap-sm mb-12">
       {
         data?.eyebrow && (
           <div>
@@ -62,10 +62,10 @@ const sorted = services
         sorted.map((service) => (
           <a
             href={`/services/${service.data.slug}`}
-            class="group flex items-center justify-between gap-4 py-6 border-b theme-border no-underline transition-colors hover:bg-muted"
+            class="group flex items-center justify-between gap-md py-6 border-b theme-border no-underline transition-colors hover:bg-muted"
           >
             <div class="flex flex-col gap-1 min-w-0">
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-xs">
                 <h3 class="theme-heading text-lg font-semibold m-0 group-hover:text-primary transition-colors">
                   {service.data.title}
                 </h3>

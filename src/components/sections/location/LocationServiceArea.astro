@@ -1,8 +1,8 @@
 ---
 import { getBusinessData } from "@/lib/utils";
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 /**
  * location:service-area — a coverage-focused layout for mobile / on-site trades.
@@ -67,7 +67,7 @@ const mapEmbedUrl =
 
         {
           areas.length > 0 && (
-            <ul class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 mt-8 p-0 list-none">
+            <ul class="grid grid-cols-1 sm:grid-cols-2 gap-x-lg gap-y-sm mt-8 p-0 list-none">
               {areas.map((area) => (
                 <li class="flex items-center gap-2.5">
                   <span class="check-icon">
@@ -84,7 +84,7 @@ const mapEmbedUrl =
 
         {data?.footnote && <p class="theme-text-subtle text-sm m-0 mt-6">{data.footnote}</p>}
 
-        <div class="flex flex-col sm:flex-row gap-3 mt-8">
+        <div class="flex flex-col sm:flex-row gap-sm mt-8">
           {
             data?.cta && (
               <Button variant={data.cta.variant ?? "primary"} href={data.cta.href} class="w-full sm:w-auto">

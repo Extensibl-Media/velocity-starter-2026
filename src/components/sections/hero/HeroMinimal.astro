@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 /**
  * hero:minimal — a compact, centered page header for interior pages
@@ -28,7 +28,7 @@ const ctas = [data?.cta, data?.secondaryCta].filter(Boolean) as SectionCTA[];
 
 <section class={`section-wrapper section-py-lg theme-${theme}`}>
   <div class="section-container">
-    <div class="flex flex-col items-center text-center gap-4 max-w-2xl mx-auto">
+    <div class="flex flex-col items-center text-center gap-md max-w-2xl mx-auto">
       {
         data?.eyebrow && (
           data.eyebrow.variant === "badge" ? (
@@ -44,7 +44,7 @@ const ctas = [data?.cta, data?.secondaryCta].filter(Boolean) as SectionCTA[];
       {subheadline && <p class="theme-text-muted text-lg m-0">{subheadline}</p>}
       {
         ctas.length > 0 && (
-          <div class="flex flex-wrap items-center justify-center gap-3 mt-2">
+          <div class="flex flex-wrap items-center justify-center gap-sm mt-2">
             {ctas.map((cta, i) => (
               <Button variant={cta.variant ?? (i === 0 ? "primary" : "outline")} href={cta.href}>
                 {cta.label}

@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 /**
  * hero:badge-row — a centered hero that closes with a row of trust badges
@@ -50,7 +50,7 @@ const badges = data?.badges ?? [];
       )}
 
       {ctas.length > 0 && (
-        <div class="flex flex-wrap items-center justify-center gap-4 mt-1">
+        <div class="flex flex-wrap items-center justify-center gap-md mt-1">
           {ctas.map((cta, i) => (
             <Button variant={cta.variant ?? (i === 0 ? "primary" : "outline")} href={cta.href}>
               {cta.label}
@@ -60,9 +60,9 @@ const badges = data?.badges ?? [];
       )}
 
       {badges.length > 0 && (
-        <ul class="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 mt-6 pt-6 badge-divider list-none m-0 p-0">
+        <ul class="flex flex-wrap items-center justify-center gap-x-lg gap-y-sm mt-6 pt-6 badge-divider list-none m-0 p-0">
           {badges.map((b) => (
-            <li class="inline-flex items-center gap-2 text-sm font-semibold theme-text">
+            <li class="inline-flex items-center gap-xs text-sm font-semibold theme-text">
               {b.icon ? (
                 <span class="text-lg theme-accent leading-none" aria-hidden="true">{b.icon}</span>
               ) : (

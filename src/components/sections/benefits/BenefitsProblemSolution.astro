@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 /**
  * benefits:problem-solution — pairs a customer pain point with the benefit that
@@ -42,7 +42,7 @@ const solutionLabel = data?.solutionLabel ?? "How we fix it";
       <div class="section-container">
         {/* Section header */}
         {(data?.eyebrow || data?.heading || data?.subheading) && (
-          <div class="flex flex-col items-center text-center gap-3 mb-12">
+          <div class="flex flex-col items-center text-center gap-sm mb-12">
             {data?.eyebrow &&
               (data.eyebrow.variant === "badge" ? (
                 <Badge class="uppercase tracking-widest text-xs">
@@ -68,9 +68,9 @@ const solutionLabel = data?.solutionLabel ?? "How we fix it";
 
         <div class="flex flex-col gap-5 max-w-4xl mx-auto">
           {pairs.map((pair) => (
-            <div class="ps-row grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-stretch gap-4 md:gap-0">
+            <div class="ps-row grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-stretch gap-md md:gap-0">
               {/* Problem */}
-              <div class="ps-problem p-6 flex flex-col gap-2">
+              <div class="ps-problem p-6 flex flex-col gap-xs">
                 <span class="ps-label theme-text-subtle">{problemLabel}</span>
                 <p class="theme-text leading-relaxed m-0">{pair.problem}</p>
               </div>
@@ -92,7 +92,7 @@ const solutionLabel = data?.solutionLabel ?? "How we fix it";
               </div>
 
               {/* Solution */}
-              <div class="ps-solution p-6 flex flex-col gap-2">
+              <div class="ps-solution p-6 flex flex-col gap-xs">
                 <span class="ps-label theme-accent">{solutionLabel}</span>
                 <p class="theme-heading font-semibold leading-relaxed m-0">
                   {pair.solution}

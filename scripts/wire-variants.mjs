@@ -24,8 +24,7 @@ if (!pendingDir) {
 }
 
 const registryPath = resolve(root, "src/lib/sectionRegistry.ts");
-const fieldsPath = resolve(root, "src/lib/cms/sectionFields.mjs");
-const demoPath = resolve(root, "src/content/pages/components.json");
+const demoPath = resolve(root, "src/content/pages/sections.json");
 const imgDir = resolve(root, "src/assets/images");
 
 const sectionsRoot = resolve(root, "src/components/sections");
@@ -73,7 +72,6 @@ const existingKeys = new Set(
 const manifests = readdirSync(pendingDir).filter((f) => f.endsWith(".json"));
 const imports = [];
 const keys = [];
-const fields = [];
 const demosByGroup = {};
 let added = 0;
 const skipped = [];
@@ -91,7 +89,6 @@ for (const file of manifests) {
 
     imports.push(`import ${s.importName} from "@/components/sections/${loc.dir}/${base}.astro";`);
     keys.push(`  ${JSON.stringify(s.typeKey)}: ${s.importName},`);
-    fields.push(`  ${JSON.stringify(s.typeKey)}: def(${JSON.stringify(s.label)}, ${s.cmsFields}),`);
 
     const data = walk(s.demoData);
     data.eyebrow = { text: s.typeKey, variant: "badge" };
@@ -117,10 +114,6 @@ registry = insertBefore(registry, "// GEN:variant-imports", imports);
 registry = insertBefore(registry, "// GEN:variant-keys", keys);
 writeFileSync(registryPath, registry);
 
-let fieldsSrc = readFileSync(fieldsPath, "utf8");
-fieldsSrc = insertBefore(fieldsSrc, "// GEN:variant-fields", fields);
-writeFileSync(fieldsPath, fieldsSrc);
-
 // ── demo page: insert each group's demos after that group's last section ─────
 const demo = JSON.parse(readFileSync(demoPath, "utf8"));
 for (const [group, sections] of Object.entries(demosByGroup)) {
@@ -135,4 +128,4 @@ writeFileSync(demoPath, JSON.stringify(demo, null, 2) + "\n");
 
 console.log(`✓ Wired ${added} sections across ${Object.keys(demosByGroup).length} groups.`);
 if (skipped.length) console.log(`  Skipped ${skipped.length}:\n    ${skipped.join("\n    ")}`);
-console.log("  Next: npm run generate:cms && npm run build");
+console.log("  Next: npm run build");

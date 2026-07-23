@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 /**
  * content:quote — a large standalone pull-quote. A decorative quote mark in a
@@ -24,7 +24,7 @@ const { theme = "default", data } = Astro.props;
   data?.quote && (
     <section class={`section-wrapper section-py theme-${theme}`}>
       <div class="section-container">
-        <figure class="max-w-3xl mx-auto text-center m-0 flex flex-col items-center gap-6">
+        <figure class="max-w-3xl mx-auto text-center m-0 flex flex-col items-center gap-lg">
           {data.eyebrow && (
             <div>
               {data.eyebrow.variant === "badge" ? (

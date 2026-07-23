@@ -1,8 +1,8 @@
 ---
 import { getServiceGroups } from "@/lib/services";
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 /**
  * services:category-cards — a "browse by category" overview. One card per
@@ -35,7 +35,7 @@ const groups = (await getServiceGroups()).map((g) => ({
 
 <section class={`services-category-cards section-wrapper section-py theme-${theme}`}>
   <div class="section-container">
-    <div class="flex flex-col items-center text-center gap-3 mb-12">
+    <div class="flex flex-col items-center text-center gap-sm mb-12">
       {
         data?.eyebrow &&
           (data.eyebrow.variant === "badge" ? (
@@ -50,11 +50,11 @@ const groups = (await getServiceGroups()).map((g) => ({
       {data?.subheading && <p class="theme-text-muted text-lg max-w-2xl m-0">{data.subheading}</p>}
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-lg">
       {
         groups.map((group) => (
-          <div class="flex flex-col gap-4 p-6 rounded-xl border theme-border bg-background">
-            <div class="flex items-center justify-between gap-3">
+          <div class="flex flex-col gap-md p-6 rounded-xl border theme-border bg-background">
+            <div class="flex items-center justify-between gap-sm">
               <h3 class="theme-heading text-lg font-bold m-0">{group.title}</h3>
               <span class="cat-count shrink-0 text-xs font-semibold px-2.5 py-0.5 rounded-full">
                 {group.total}
@@ -65,12 +65,12 @@ const groups = (await getServiceGroups()).map((g) => ({
                 {group.description}
               </p>
             )}
-            <ul class="flex flex-col gap-2 list-none m-0 p-0">
+            <ul class="flex flex-col gap-xs list-none m-0 p-0">
               {group.services.map((service) => (
                 <li>
                   <a
                     href={`/services/${service.data.slug}`}
-                    class="flex items-center gap-2 theme-text hover:theme-accent no-underline text-sm font-medium transition-colors"
+                    class="flex items-center gap-xs theme-text hover:theme-accent no-underline text-sm font-medium transition-colors"
                   >
                     <svg class="w-4 h-4 theme-accent shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                       <path d="M9 6l6 6-6 6" />

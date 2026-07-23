@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, StatItem, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 /**
  * stats:spotlight — one hero stat blown up as the focal point with a supporting
@@ -37,7 +37,7 @@ const ctas = (
     <section class:list={["stats-spotlight section-wrapper section-py", `theme-${theme}`]}>
       <div class="section-container">
         {(data?.eyebrow || data?.heading || data?.subheading) && (
-          <div class="flex flex-col items-center text-center gap-3 mb-12">
+          <div class="flex flex-col items-center text-center gap-sm mb-12">
             {data?.eyebrow &&
               (data.eyebrow.variant === "badge" ? (
                 <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
@@ -55,7 +55,7 @@ const ctas = (
           </div>
         )}
 
-        <div class="flex flex-col items-center text-center gap-4">
+        <div class="flex flex-col items-center text-center gap-md">
           <span class="spotlight-number theme-accent font-extrabold leading-none tabular-nums m-0">
             {hero.value}
           </span>
@@ -70,7 +70,7 @@ const ctas = (
         </div>
 
         {rest.length > 0 && (
-          <div class="mt-14 pt-10 border-t border-[var(--theme-border)] grid grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div class="mt-14 pt-10 border-t border-[var(--theme-border)] grid grid-cols-2 lg:grid-cols-3 gap-xl max-w-4xl mx-auto">
             {rest.map((stat) => (
               <div class="flex flex-col items-center text-center gap-1.5">
                 <span class="theme-heading text-3xl lg:text-4xl font-bold leading-none tabular-nums">
@@ -88,7 +88,7 @@ const ctas = (
         )}
 
         {ctas.length > 0 && (
-          <div class="flex flex-wrap justify-center gap-4 mt-12">
+          <div class="flex flex-wrap justify-center gap-md mt-12">
             {ctas.map((cta, i) => (
               <Button variant={cta.variant ?? (i === 0 ? "primary" : "outline")} href={cta.href}>
                 {cta.label}

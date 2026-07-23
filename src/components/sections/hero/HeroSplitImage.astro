@@ -1,8 +1,8 @@
 ---
 import { getBusinessData } from "@/lib/utils";
 import type { Eyebrow, SectionCTA, ImageRef } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 import SmartImage from "@/components/media/SmartImage.astro";
 
 /**
@@ -61,7 +61,7 @@ const hasImage = !!data?.image?.src;
             )}
 
             {(data?.ctas?.length || data?.showPhone) && (
-              <div class="flex flex-wrap items-center gap-4 mt-2">
+              <div class="flex flex-wrap items-center gap-md mt-2">
                 {data?.ctas?.map((cta) => (
                   <Button variant={cta.variant ?? "primary"} href={cta.href}>
                     {cta.label}
@@ -70,7 +70,7 @@ const hasImage = !!data?.image?.src;
                 {data?.showPhone && business.phone && (
                   <a
                     href={`tel:${business.phone}`}
-                    class="inline-flex items-center gap-2 font-semibold text-base theme-text no-underline hover:opacity-80 transition-opacity"
+                    class="inline-flex items-center gap-xs font-semibold text-base theme-text no-underline hover:opacity-80 transition-opacity"
                   >
                     <svg
                       class="w-4 h-4 shrink-0"

@@ -1,0 +1,173 @@
+---
+// /components — the design-system catalog. Hierarchy: Elements (atoms) → Blocks
+// (molecules) → Sections (organisms, at /sections). Dev-only showcase.
+export const prerender = false;
+
+import MarketingLayout from "@/layouts/MarketingLayout.astro";
+
+// Elements (atoms) — the ones sections use come from OUR layer (same components)
+import { Button } from "@/components/elements/button";
+import { Badge } from "@/components/elements/badge";
+import { Input } from "@/components/elements/input";
+import { Label } from "@/components/elements/label";
+import Textarea from "@/components/elements/textarea";
+import Spacer from "@/components/elements/Spacer.astro";
+// catalog-only primitives (not yet wrapped — sections don't use them)
+import { Checkbox } from "@/components/starwind/checkbox";
+import { Switch } from "@/components/starwind/switch";
+import { Progress } from "@/components/starwind/progress";
+import { Avatar, AvatarFallback } from "@/components/starwind/avatar";
+import Separator from "@/components/starwind/separator/Separator.astro";
+import Kbd from "@/components/starwind/kbd/Kbd.astro";
+import Skeleton from "@/components/starwind/skeleton/Skeleton.astro";
+import Spinner from "@/components/starwind/spinner/Spinner.astro";
+
+// Blocks (molecules) — from OUR layer where sections use them
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/blocks/card";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/blocks/accordion";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/blocks/tabs";
+import { Alert, AlertTitle, AlertDescription } from "@/components/starwind/alert";
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from "@/components/starwind/breadcrumb";
+
+if (import.meta.env.PROD) return Astro.rewrite("/404");
+
+const ELEMENTS = ["Avatar", "Badge", "Button", "Checkbox", "Image", "Input", "Kbd", "Label", "Native Select", "Progress", "Radio Group", "Separator", "Skeleton", "Slider", "Spinner", "Switch", "Textarea", "Theme Toggle", "Toggle", "Video", "Aspect Ratio", "Prose"];
+const BLOCKS = ["Accordion", "Alert", "Alert Dialog", "Breadcrumb", "Button Group", "Card", "Carousel", "Collapsible", "Dialog", "Dropdown", "Dropzone", "Input Group", "Input OTP", "Item", "Pagination", "Popover", "Select", "Sheet", "Sidebar", "Table", "Tabs", "Toast", "Tooltip"];
+---
+
+<MarketingLayout page={{ id: "components", data: { title: "Components" } }} title="Components — Design System" description="Elements, Blocks, and Sections" noindex={true}>
+  <section class="section-wrapper section-py">
+    <div class="section-container" style="max-width:72rem;margin-inline:auto;display:flex;flex-direction:column;gap:3rem;">
+      <header>
+        <p class="theme-text-muted" style="font-size:var(--text-sm);text-transform:uppercase;letter-spacing:0.08em;">Design System</p>
+        <h1 class="theme-heading" style="font-size:var(--text-4xl);font-weight:700;margin:0.25rem 0;">Components</h1>
+        <p class="theme-text-muted">Hierarchy: <strong>Elements</strong> (atoms) → <strong>Blocks</strong> (molecules) → <a href="/sections" class="theme-accent" style="text-decoration:underline;">Sections</a> (organisms). All driven by the same tokens (radius, type, color, spacing).</p>
+      </header>
+
+      {/* ── Variant (color-scheme) switcher ─────────────────────── */}
+      <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
+        <span class="theme-text-muted" style="font-size:var(--text-sm);font-weight:600;">Surface:</span>
+        {["default", "alt", "muted", "inverse", "primary", "brand-secondary"].map((t) => (
+          <button type="button" class="ds-theme-btn" data-theme={t} style="display:inline-flex;align-items:center;gap:0.4rem;font-size:var(--text-sm);padding:0.3rem 0.6rem;border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-fg);cursor:pointer;text-transform:capitalize;">
+            <span style={`width:0.9rem;height:0.9rem;border-radius:3px;border:1px solid rgba(0,0,0,0.15);background:var(--color-bg${t === "default" ? "" : "-" + t});`}></span>
+            {t}
+          </button>
+        ))}
+      </div>
+
+      {/* ── Spacing hierarchy ───────────────────────────────────── */}
+      <div>
+        <h2 class="theme-heading" style="font-size:var(--text-2xl);font-weight:700;border-bottom:1px solid var(--color-border);padding-bottom:0.5rem;">Spacing</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:1rem;">
+          <div>
+            <p class="ds-name">Element spacing · &lt;Spacer&gt;</p>
+            {["xs", "sm", "md", "lg", "xl"].map((s) => (
+              <div style="display:flex;align-items:center;gap:0.75rem;margin-top:0.4rem;">
+                <span class="theme-text-muted" style="font-size:var(--text-xs);width:1.5rem;">{s}</span>
+                <div style={`height:1rem;width:var(--t-gap-${s});background:var(--color-primary);border-radius:2px;`}></div>
+              </div>
+            ))}
+          </div>
+          <div>
+            <p class="ds-name">Section rhythm · &lt;SectionSpacer&gt;</p>
+            {["xs", "sm", "md", "lg", "xl"].map((s) => (
+              <div style="display:flex;align-items:center;gap:0.75rem;margin-top:0.4rem;">
+                <span class="theme-text-muted" style="font-size:var(--text-xs);width:1.5rem;">{s}</span>
+                <div style={`height:0.75rem;width:${s === "md" ? "var(--t-section)" : `var(--t-section-${s})`};background:var(--color-brand-secondary);border-radius:2px;max-width:100%;`}></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Elements ─────────────────────────────────────────── */}
+      <div>
+        <h2 class="theme-heading" style="font-size:var(--text-2xl);font-weight:700;border-bottom:1px solid var(--color-border);padding-bottom:0.5rem;">Elements <span class="theme-text-muted" style="font-size:var(--text-sm);font-weight:400;">· {ELEMENTS.length} atoms</span></h2>
+        <div class="ds-surface theme-default" data-ds-surface style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin-top:1rem;">
+          <div class="ds-cell"><span class="ds-name">Button · variants</span><div class="ds-demo" style="gap:0.5rem;flex-wrap:wrap;"><Button variant="primary" size="sm">Primary</Button><Button variant="secondary" size="sm">Secondary</Button><Button variant="outline" size="sm">Outline</Button><Button variant="ghost" size="sm">Ghost</Button></div></div>
+          <div class="ds-cell"><span class="ds-name">Button · sizes</span><div class="ds-demo" style="gap:0.5rem;flex-wrap:wrap;"><Button variant="primary" size="sm">Small</Button><Button variant="primary" size="md">Medium</Button><Button variant="primary" size="lg">Large</Button></div></div>
+          <div class="ds-cell"><span class="ds-name">Badge</span><div class="ds-demo" style="gap:0.4rem;flex-wrap:wrap;"><Badge>Default</Badge><Badge variant="secondary">Secondary</Badge><Badge variant="outline">Outline</Badge></div></div>
+          <div class="ds-cell"><span class="ds-name">Input</span><div class="ds-demo"><Input placeholder="Email address" /></div></div>
+          <div class="ds-cell"><span class="ds-name">Textarea</span><div class="ds-demo"><Textarea placeholder="Message…" /></div></div>
+          <div class="ds-cell"><span class="ds-name">Label + Checkbox</span><div class="ds-demo" style="gap:0.5rem;align-items:center;"><Checkbox id="c1" /><Label for="c1">Accept terms</Label></div></div>
+          <div class="ds-cell"><span class="ds-name">Switch</span><div class="ds-demo"><Switch id="s1" /></div></div>
+          <div class="ds-cell"><span class="ds-name">Progress</span><div class="ds-demo"><Progress value={62} /></div></div>
+          <div class="ds-cell"><span class="ds-name">Avatar</span><div class="ds-demo"><Avatar><AvatarFallback>PR</AvatarFallback></Avatar></div></div>
+          <div class="ds-cell"><span class="ds-name">Spinner</span><div class="ds-demo"><Spinner /></div></div>
+          <div class="ds-cell"><span class="ds-name">Kbd</span><div class="ds-demo"><Kbd>⌘</Kbd><Kbd>K</Kbd></div></div>
+          <div class="ds-cell"><span class="ds-name">Separator</span><div class="ds-demo" style="flex-direction:column;width:100%;gap:0.5rem;"><span style="font-size:var(--text-sm);">Above</span><Separator /><span style="font-size:var(--text-sm);">Below</span></div></div>
+          <div class="ds-cell"><span class="ds-name">Skeleton</span><div class="ds-demo" style="flex-direction:column;width:100%;gap:0.4rem;"><Skeleton style="height:0.75rem;width:80%;" /><Skeleton style="height:0.75rem;width:60%;" /></div></div>
+        </div>
+        <p class="theme-text-muted" style="font-size:var(--text-sm);margin-top:0.75rem;">Also: Image, Native Select, Radio Group, Slider, Theme Toggle, Toggle, Video, Aspect Ratio, Prose.</p>
+      </div>
+
+      {/* ── Patterns (real compositions as sections use them) ─── */}
+      <div>
+        <h2 class="theme-heading" style="font-size:var(--text-2xl);font-weight:700;border-bottom:1px solid var(--color-border);padding-bottom:0.5rem;">Patterns <span class="theme-text-muted" style="font-size:var(--text-sm);font-weight:400;">· elements composed as sections use them (try the Surface switcher)</span></h2>
+        <div class="ds-surface theme-default" data-ds-surface style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;margin-top:1rem;">
+          <div class="ds-cell">
+            <span class="ds-name">CTA group · hero / cta</span>
+            <div style="display:flex;flex-direction:column;">
+              <Badge class="uppercase tracking-widest text-xs" style="align-self:flex-start;">Roofing</Badge>
+              <Spacer size="sm" />
+              <strong class="theme-heading" style="font-size:var(--text-xl);">Professional Roof Repair in Boise</strong>
+              <Spacer size="md" />
+              <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                <Button variant="primary">Get a Free Quote</Button>
+                <Button variant="outline">Call (208) 555‑0147</Button>
+              </div>
+            </div>
+          </div>
+          <div class="ds-cell">
+            <span class="ds-name">Trust badges · trust-bar</span>
+            <div class="ds-demo" style="gap:0.4rem;flex-wrap:wrap;"><Badge variant="secondary">Licensed & Insured</Badge><Badge variant="outline">★ 4.9 Google</Badge><Badge variant="outline">Since 2008</Badge></div>
+          </div>
+          <div class="ds-cell">
+            <span class="ds-name">Stat · stats</span>
+            <div style="display:flex;flex-direction:column;"><strong style="font-size:var(--text-4xl);color:var(--color-primary);line-height:1;">1,200+</strong><Spacer size="xs" /><span class="theme-text-muted" style="font-size:var(--text-sm);">Roofs installed since 2008</span></div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Blocks ───────────────────────────────────────────── */}
+      <div>
+        <h2 class="theme-heading" style="font-size:var(--text-2xl);font-weight:700;border-bottom:1px solid var(--color-border);padding-bottom:0.5rem;">Blocks <span class="theme-text-muted" style="font-size:var(--text-sm);font-weight:400;">· {BLOCKS.length} molecules</span></h2>
+        <div class="ds-surface theme-default" data-ds-surface style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;margin-top:1rem;">
+          <div class="ds-cell"><span class="ds-name">Card</span><div class="ds-demo" style="width:100%;"><Card><CardHeader><CardTitle>Roof Inspection</CardTitle><CardDescription>Free, no obligation</CardDescription></CardHeader><CardContent>Same-day availability across the Boise metro.</CardContent></Card></div></div>
+          <div class="ds-cell"><span class="ds-name">Alert</span><div class="ds-demo" style="width:100%;"><Alert><AlertTitle>Heads up</AlertTitle><AlertDescription>Storm season starts in April.</AlertDescription></Alert></div></div>
+          <div class="ds-cell"><span class="ds-name">Tabs</span><div class="ds-demo" style="width:100%;"><Tabs><TabsList><TabsTrigger value="a">Repair</TabsTrigger><TabsTrigger value="b">Replace</TabsTrigger></TabsList><TabsContent value="a">Repair details.</TabsContent><TabsContent value="b">Replacement details.</TabsContent></Tabs></div></div>
+          <div class="ds-cell"><span class="ds-name">Accordion</span><div class="ds-demo" style="width:100%;"><Accordion><AccordionItem value="1"><AccordionTrigger>How long does it take?</AccordionTrigger><AccordionContent>Most repairs, same day.</AccordionContent></AccordionItem></Accordion></div></div>
+          <div class="ds-cell"><span class="ds-name">Breadcrumb</span><div class="ds-demo" style="width:100%;"><Breadcrumb><BreadcrumbList><BreadcrumbItem><BreadcrumbLink href="/">Home</BreadcrumbLink></BreadcrumbItem><BreadcrumbSeparator /><BreadcrumbItem>Services</BreadcrumbItem></BreadcrumbList></Breadcrumb></div></div>
+        </div>
+        <p class="theme-text-muted" style="font-size:var(--text-sm);margin-top:0.75rem;">Also: Alert Dialog, Button Group, Carousel, Collapsible, Dialog, Dropdown, Dropzone, Input Group, Input OTP, Item, Pagination, Popover, Select, Sheet, Sidebar, Table, Toast, Tooltip.</p>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    /* Let the .theme-* class paint its own background-color (all 6 surfaces).
+       Do NOT set background here or it overrides the theme + breaks colored surfaces. */
+    .ds-surface { padding: 1.5rem; border-radius: var(--radius-lg); transition: background-color 0.2s ease; }
+    .ds-cell { border: 1px solid var(--theme-border, var(--color-border)); border-radius: var(--radius-lg); padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem; background: color-mix(in srgb, var(--theme-fg, #000) 4%, transparent); }
+    .ds-name { font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--theme-fg-muted, var(--color-fg-muted)); }
+    .ds-demo { display: flex; align-items: center; min-height: 3rem; }
+    .ds-theme-btn[aria-pressed="true"] { outline: 2px solid var(--color-primary); outline-offset: 1px; }
+  </style>
+
+  <script is:inline>
+    document.addEventListener("astro:page-load", () => {
+      const btns = document.querySelectorAll(".ds-theme-btn");
+      const surfaces = document.querySelectorAll("[data-ds-surface]");
+      if (!btns.length) return;
+      btns.forEach((btn) => {
+        if (btn.dataset.wired) return;
+        btn.dataset.wired = "1";
+        btn.addEventListener("click", () => {
+          const t = btn.dataset.theme;
+          surfaces.forEach((s) => { s.className = s.className.replace(/theme-[a-z-]+/g, "theme-" + t); });
+          btns.forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+        });
+      });
+    });
+  </script>
+</MarketingLayout>

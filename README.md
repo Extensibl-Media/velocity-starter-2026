@@ -1,6 +1,6 @@
 # VWS Starter 2026
 
-A reusable **local-services website starter** built on Astro 6 + Tailwind v4. Pages are composed from **JSON + a section registry**, styling flows from a **single theme file**, and content is editable through **Decap CMS**. Clone it once per business; reskin and refill without touching the engine.
+A reusable **local-services website starter** built on Astro 7 + Tailwind v4, running as a **Cloudflare SSR Worker**. Pages are composed from **a section registry**, styling flows from a **single theme file**, and content lives in **EmDash** (Cloudflare D1) — editable in the admin at `/_emdash/admin`. Clone it once per business; reskin and refill without touching the engine.
 
 The repo ships with a complete demo site — **Peak Roofing Co** (Boise, ID) — that doubles as the default content and a client-facing showcase.
 

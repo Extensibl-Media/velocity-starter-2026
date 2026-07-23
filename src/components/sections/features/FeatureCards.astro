@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow, FeatureItem } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 interface Props {
   theme?: string;
@@ -31,7 +31,7 @@ const gridClass =
     <section class={`section-wrapper section-py theme-${theme}`}>
       <div class="section-container">
         {/* Section header */}
-        <div class="flex flex-col items-center text-center gap-3 mb-12">
+        <div class="flex flex-col items-center text-center gap-sm mb-12">
           {data?.eyebrow &&
             (data.eyebrow.variant === "badge" ? (
               <Badge class="uppercase tracking-widest text-xs">
@@ -55,9 +55,9 @@ const gridClass =
         </div>
 
         {/* Cards grid */}
-        <div class={`grid ${gridClass} gap-6`}>
+        <div class={`grid ${gridClass} gap-lg`}>
           {items.map((item) => (
-            <div class="flex flex-col gap-4 p-6 rounded-xl border theme-border bg-background hover:shadow-md transition-all duration-200">
+            <div class="flex flex-col gap-md p-6 rounded-xl border theme-border bg-background hover:shadow-md transition-all duration-200">
               <div class="feature-icon" aria-hidden="true">
                 {item.icon === "shield" ? (
                   <svg
@@ -120,9 +120,9 @@ const gridClass =
                 </p>
               )}
               {item.bullets && item.bullets.length > 0 && (
-                <ul class="flex flex-col gap-2 m-0 p-0 list-none mt-auto">
+                <ul class="flex flex-col gap-xs m-0 p-0 list-none mt-auto">
                   {item.bullets.map((bullet) => (
-                    <li class="flex items-start gap-2">
+                    <li class="flex items-start gap-xs">
                       <svg
                         class="check-icon"
                         xmlns="http://www.w3.org/2000/svg"

@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 /**
  * content:lead-article — a magazine-style article opening. An emphasized
@@ -40,7 +40,7 @@ const hasBody = Boolean(data?.lead || data?.body);
       <div class="section-container">
         <article class="max-w-2xl mx-auto">
           {hasHeader && (
-            <header class="flex flex-col gap-3 mb-8">
+            <header class="flex flex-col gap-sm mb-8">
               {data?.eyebrow &&
                 (data.eyebrow.variant === "badge" ? (
                   <div>
@@ -69,7 +69,7 @@ const hasBody = Boolean(data?.lead || data?.body);
           {data?.body && <div class="rich-text theme-text mt-6" set:html={data.body} />}
 
           {ctas.length > 0 && (
-            <div class="flex flex-wrap gap-4 mt-8">
+            <div class="flex flex-wrap gap-md mt-8">
               {ctas.map((cta, i) => (
                 <Button href={cta.href} variant={cta.variant ?? (i === 0 ? "primary" : "outline")}>
                   {cta.label}

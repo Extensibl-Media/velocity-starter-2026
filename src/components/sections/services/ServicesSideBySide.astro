@@ -1,8 +1,8 @@
 ---
-import { getCollection } from "astro:content";
+import { getServices } from "@/lib/content";
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 import SmartImage from "@/components/media/SmartImage.astro";
 import roofingCrew from "@/assets/images/roofing-crew.jpg";
 
@@ -21,7 +21,7 @@ interface Props {
 
 const { theme = "default", data } = Astro.props;
 
-const services = await getCollection("services");
+const services = await getServices();
 const sorted = services
   .sort((a, b) => a.data.order - b.data.order)
   .slice(0, data?.limit ?? services.length);
@@ -50,7 +50,7 @@ const imageLeft = data?.imagePosition !== "right";
       </div>
 
       {/* Content */}
-      <div class="flex flex-col gap-6">
+      <div class="flex flex-col gap-lg">
         {
           data?.eyebrow && (
             <div>
@@ -84,10 +84,10 @@ const imageLeft = data?.imagePosition !== "right";
         }
 
         {/* Service list */}
-        <ul class="flex flex-col gap-4 list-none m-0 p-0">
+        <ul class="flex flex-col gap-md list-none m-0 p-0">
           {
             sorted.map((service) => (
-              <li class="flex items-start gap-3">
+              <li class="flex items-start gap-sm">
                 <div
                   class="shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-0.5"
                   style="background: color-mix(in srgb, var(--theme-accent) 10%, transparent)"

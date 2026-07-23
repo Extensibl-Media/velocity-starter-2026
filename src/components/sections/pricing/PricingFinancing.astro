@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 interface Props {
   theme?: string;
@@ -35,7 +35,7 @@ const hasContent = !!(data?.monthlyPrice || data?.heading || bullets.length > 0)
       ]}
     >
       <div class="section-container">
-        <div class="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12">
+        <div class="grid grid-cols-1 items-center gap-xl lg:grid-cols-2 lg:gap-12">
           {/* Left — messaging */}
           <div class="flex flex-col gap-5">
             {data?.eyebrow &&
@@ -62,7 +62,7 @@ const hasContent = !!(data?.monthlyPrice || data?.heading || bullets.length > 0)
             )}
 
             {bullets.length > 0 && (
-              <ul class="flex flex-col gap-3 m-0 p-0 list-none">
+              <ul class="flex flex-col gap-sm m-0 p-0 list-none">
                 {bullets.map((item) => (
                   <li class="flex items-start gap-2.5 text-sm theme-text">
                     <svg
@@ -85,7 +85,7 @@ const hasContent = !!(data?.monthlyPrice || data?.heading || bullets.length > 0)
             )}
 
             {(data?.cta || data?.secondaryCta) && (
-              <div class="flex flex-wrap items-center gap-3 pt-1">
+              <div class="flex flex-wrap items-center gap-sm pt-1">
                 {data?.cta && (
                   <Button
                     variant={data.cta.variant ?? "primary"}
@@ -107,7 +107,7 @@ const hasContent = !!(data?.monthlyPrice || data?.heading || bullets.length > 0)
           </div>
 
           {/* Right — payment callout card */}
-          <div class="financing-card flex flex-col items-center text-center gap-4 p-8 lg:p-10 rounded-[var(--t-radius)]">
+          <div class="financing-card flex flex-col items-center text-center gap-md p-8 lg:p-10 rounded-[var(--t-radius)]">
             {data?.financingLabel && (
               <span class="theme-text-subtle text-sm font-semibold uppercase tracking-widest">
                 {data.financingLabel}

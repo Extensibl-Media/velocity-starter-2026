@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow, TabItem } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 import SmartImage from "@/components/media/SmartImage.astro";
 
 interface Props {
@@ -24,7 +24,7 @@ const tabs = data?.tabs ?? [];
       <div class="section-container">
         {/* Section header */}
         {(data?.eyebrow || data?.heading || data?.subheading) && (
-          <div class="flex flex-col items-center text-center gap-3 mb-12">
+          <div class="flex flex-col items-center text-center gap-sm mb-12">
             {data?.eyebrow && (
               <div>
                 {data.eyebrow.variant === "badge" ? (
@@ -53,7 +53,7 @@ const tabs = data?.tabs ?? [];
 
         {/* Tabs */}
         <div
-          class="grid grid-cols-1 lg:grid-cols-[minmax(0,18rem)_1fr] gap-8"
+          class="grid grid-cols-1 lg:grid-cols-[minmax(0,18rem)_1fr] gap-xl"
           data-tabs
         >
           {/* Tab list */}
@@ -100,9 +100,9 @@ const tabs = data?.tabs ?? [];
                   <p class="theme-text-muted leading-relaxed m-0">{tab.body}</p>
                 )}
                 {tab.bullets && tab.bullets.length > 0 && (
-                  <ul class="flex flex-col gap-3 m-0 p-0 list-none">
+                  <ul class="flex flex-col gap-sm m-0 p-0 list-none">
                     {tab.bullets.map((bullet) => (
-                      <li class="flex items-start gap-3 theme-text">
+                      <li class="flex items-start gap-sm theme-text">
                         <svg
                           class="w-5 h-5 shrink-0 mt-0.5 text-primary"
                           xmlns="http://www.w3.org/2000/svg"

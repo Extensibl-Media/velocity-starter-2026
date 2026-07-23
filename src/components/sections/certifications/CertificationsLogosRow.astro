@@ -27,9 +27,9 @@ const heading = data?.heading ?? data?.eyebrow?.text;
           </p>
         )}
 
-        <ul class="flex flex-wrap items-start justify-center gap-x-10 gap-y-8 md:gap-x-14 list-none m-0 p-0">
+        <ul class="flex flex-wrap items-start justify-center gap-x-10 gap-y-xl md:gap-x-14 list-none m-0 p-0">
           {items.map((item) => (
-            <li class="flex flex-col items-center text-center gap-2 w-24">
+            <li class="flex flex-col items-center text-center gap-xs w-24">
               {item.logo ? (
                 <SmartImage
                   src={item.logo}

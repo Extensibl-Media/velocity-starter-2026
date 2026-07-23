@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow, CertItem } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 import SmartImage from "@/components/media/SmartImage.astro";
 
 /**
@@ -29,7 +29,7 @@ const rest = items.slice(1);
   <div class="section-container">
     {
       (data?.eyebrow || data?.heading || data?.subheading) && (
-        <div class="flex flex-col gap-3 mb-10 max-w-2xl">
+        <div class="flex flex-col gap-sm mb-10 max-w-2xl">
           {data?.eyebrow && (
             <div>
               {data.eyebrow.variant === "badge" ? (
@@ -53,7 +53,7 @@ const rest = items.slice(1);
 
     {
       featured && (
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-lg">
           <div class="featured-partner flex flex-col justify-center gap-5 p-8">
             <span class="featured-logo-wrap">
               {featured.logo ? (
@@ -67,7 +67,7 @@ const rest = items.slice(1);
                 <span class="theme-heading text-2xl font-bold">{featured.label}</span>
               )}
             </span>
-            <div class="flex flex-col gap-2">
+            <div class="flex flex-col gap-xs">
               <span class="theme-accent text-xs font-semibold uppercase tracking-widest">
                 Featured Partner
               </span>
@@ -79,9 +79,9 @@ const rest = items.slice(1);
           </div>
 
           {rest.length > 0 && (
-            <ul class="grid grid-cols-2 sm:grid-cols-3 gap-4 list-none m-0 p-0">
+            <ul class="grid grid-cols-2 sm:grid-cols-3 gap-md list-none m-0 p-0">
               {rest.map((item) => (
-                <li class="partner-tile flex flex-col items-center justify-center text-center gap-2 p-4">
+                <li class="partner-tile flex flex-col items-center justify-center text-center gap-xs p-4">
                   {item.logo ? (
                     <SmartImage
                       src={item.logo}

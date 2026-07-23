@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 import SmartImage from "@/components/media/SmartImage.astro";
 
 interface StatCard {
@@ -30,7 +30,7 @@ const { theme = "default", data } = Astro.props;
   <div class="section-container">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
       {/* Content — left */}
-      <div class="flex flex-col gap-6">
+      <div class="flex flex-col gap-lg">
         {
           data?.eyebrow && (
             <div>
@@ -67,7 +67,7 @@ const { theme = "default", data } = Astro.props;
         {
           data?.stats && data.stats.length > 0 && (
             <div
-              class={`grid gap-4 mt-2 ${data.stats.length === 2 ? "grid-cols-2" : data.stats.length === 3 ? "grid-cols-3" : "grid-cols-2"}`}
+              class={`grid gap-md mt-2 ${data.stats.length === 2 ? "grid-cols-2" : data.stats.length === 3 ? "grid-cols-3" : "grid-cols-2"}`}
             >
               {data.stats.map((stat) => (
                 <div class="flex flex-col gap-1 p-4 rounded-xl border theme-border">

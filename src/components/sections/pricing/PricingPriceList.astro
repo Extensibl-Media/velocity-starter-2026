@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, PricingPlan, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 interface Props {
   theme?: string;
@@ -31,7 +31,7 @@ const items = data?.items ?? [];
       <div class="section-container">
         {/* Section header */}
         {(data?.eyebrow || data?.heading || data?.subheading) && (
-          <div class="flex flex-col items-center text-center gap-3 mb-12">
+          <div class="flex flex-col items-center text-center gap-sm mb-12">
             {data?.eyebrow &&
               (data.eyebrow.variant === "badge" ? (
                 <Badge class="uppercase tracking-widest text-xs">
@@ -59,9 +59,9 @@ const items = data?.items ?? [];
         <div class="menu-card mx-auto max-w-4xl overflow-hidden rounded-[var(--t-radius)]">
           <ul class="menu-list m-0 p-0 list-none">
             {items.map((item) => (
-              <li class="menu-row flex flex-col gap-4 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-7">
+              <li class="menu-row flex flex-col gap-md px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-7">
                 <div class="flex flex-col gap-1 min-w-0">
-                  <div class="flex items-center gap-2 flex-wrap">
+                  <div class="flex items-center gap-xs flex-wrap">
                     <h3 class="theme-heading text-base font-semibold m-0">
                       {item.name}
                     </h3>
@@ -78,7 +78,7 @@ const items = data?.items ?? [];
                   )}
                 </div>
 
-                <div class="flex items-center justify-between gap-4 shrink-0 sm:justify-end">
+                <div class="flex items-center justify-between gap-md shrink-0 sm:justify-end">
                   <div class="text-right whitespace-nowrap">
                     <span class="theme-heading text-xl font-bold leading-none">
                       {item.price}

@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow, FeatureItem } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 interface Props {
   theme?: string;
@@ -24,7 +24,7 @@ const hasHeader = data?.eyebrow || data?.heading || data?.subheading;
       <div class="section-container">
         {/* Section header */}
         {hasHeader && (
-          <div class="flex flex-col items-center text-center gap-3 mb-12">
+          <div class="flex flex-col items-center text-center gap-sm mb-12">
             {data?.eyebrow &&
               (data.eyebrow.variant === "badge" ? (
                 <Badge class="uppercase tracking-widest text-xs">
@@ -51,7 +51,7 @@ const hasHeader = data?.eyebrow || data?.heading || data?.subheading;
         {/* Two-column checklist */}
         <ul class="checklist grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-5 list-none m-0 p-0 max-w-4xl mx-auto">
           {items.map((item) => (
-            <li class="flex items-start gap-3">
+            <li class="flex items-start gap-sm">
               <svg
                 class="check-icon shrink-0"
                 xmlns="http://www.w3.org/2000/svg"

@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 interface Props {
   theme?: string;
@@ -35,7 +35,7 @@ const hasRange = !!(data?.priceLow || data?.priceHigh);
       ]}
     >
       <div class="section-container">
-        <div class="range-banner mx-auto max-w-4xl flex flex-col items-center text-center gap-6 p-8 lg:p-12 rounded-[var(--t-radius)]">
+        <div class="range-banner mx-auto max-w-4xl flex flex-col items-center text-center gap-lg p-8 lg:p-12 rounded-[var(--t-radius)]">
           {data?.eyebrow &&
             (data.eyebrow.variant === "badge" ? (
               <Badge class="uppercase tracking-widest text-xs">
@@ -66,7 +66,7 @@ const hasRange = !!(data?.priceLow || data?.priceHigh);
                 {data.startingLabel}
               </span>
             )}
-            <div class="flex items-baseline justify-center flex-wrap gap-2">
+            <div class="flex items-baseline justify-center flex-wrap gap-xs">
               {data?.priceLow && (
                 <span class="theme-heading text-5xl lg:text-6xl font-bold leading-none">
                   {data.priceLow}
@@ -94,9 +94,9 @@ const hasRange = !!(data?.priceLow || data?.priceHigh);
 
           {/* Highlights */}
           {highlights.length > 0 && (
-            <ul class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 m-0 p-0 list-none">
+            <ul class="flex flex-wrap items-center justify-center gap-x-lg gap-y-xs m-0 p-0 list-none">
               {highlights.map((item) => (
-                <li class="flex items-center gap-2 text-sm theme-text">
+                <li class="flex items-center gap-xs text-sm theme-text">
                   <svg
                     class="w-4 h-4 shrink-0"
                     xmlns="http://www.w3.org/2000/svg"
@@ -118,7 +118,7 @@ const hasRange = !!(data?.priceLow || data?.priceHigh);
 
           {/* CTAs */}
           {(data?.cta || data?.secondaryCta) && (
-            <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <div class="flex flex-wrap items-center justify-center gap-sm pt-2">
               {data?.cta && (
                 <Button variant={data.cta.variant ?? "primary"} href={data.cta.href}>
                   {data.cta.label}

@@ -1,7 +1,7 @@
 ---
-import { getCollection } from "astro:content";
+import { getReviews, getServices } from "@/lib/content";
 import type { Eyebrow, FormConfig } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 import FormRenderer from "@/components/forms/FormRenderer.astro";
 
 /**
@@ -23,10 +23,10 @@ interface Props {
 }
 
 const { theme = "default", data } = Astro.props;
-const services = await getCollection("services");
+const services = await getServices();
 const sortedServices = services.sort((a, b) => a.data.order - b.data.order);
 
-const reviews = await getCollection("reviews");
+const reviews = await getReviews();
 const reviewCount = reviews.length;
 const avgRating =
   reviewCount > 0
@@ -40,7 +40,7 @@ const trustPoints = data?.trustPoints ?? [];
 <section class:list={["contact-form-trust section-wrapper section-py", `theme-${theme}`]}>
   <div class="section-container">
     {/* Header */}
-    <div class="flex flex-col items-center text-center gap-3 mb-12">
+    <div class="flex flex-col items-center text-center gap-sm mb-12">
       {
         data?.eyebrow && (
           <div>
@@ -60,11 +60,11 @@ const trustPoints = data?.trustPoints ?? [];
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
       {/* Trust panel */}
-      <div class="flex flex-col gap-8 lg:pt-2">
+      <div class="flex flex-col gap-xl lg:pt-2">
         {
           reviewCount > 0 && (
-            <div class="flex flex-col gap-2">
-              <div class="flex items-center gap-3">
+            <div class="flex flex-col gap-xs">
+              <div class="flex items-center gap-sm">
                 <div class="flex items-center gap-1" aria-hidden="true">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <svg
@@ -89,7 +89,7 @@ const trustPoints = data?.trustPoints ?? [];
 
         {
           featuredQuotes.length > 0 && (
-            <div class="flex flex-col gap-4">
+            <div class="flex flex-col gap-md">
               {featuredQuotes.map((r) => (
                 <figure class="surface-base quote-card m-0">
                   <blockquote class="theme-text text-base leading-relaxed m-0">
@@ -109,7 +109,7 @@ const trustPoints = data?.trustPoints ?? [];
           trustPoints.length > 0 && (
             <ul class="flex flex-col gap-2.5 m-0 p-0 list-none">
               {trustPoints.map((point) => (
-                <li class="flex items-start gap-3">
+                <li class="flex items-start gap-sm">
                   <span class="check-icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                       <polyline points="20 6 9 17 4 12" />

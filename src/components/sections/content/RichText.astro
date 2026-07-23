@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 /**
  * content:rich-text — a prose block for long-form copy (legal pages, SEO
@@ -29,7 +29,7 @@ const width = data?.width === "wide" ? "max-w-4xl" : "max-w-2xl";
     <div class={`${width} ${align === "center" ? "mx-auto text-center" : "mx-auto"}`}>
       {
         (data?.eyebrow || data?.heading || data?.subheading) && (
-          <div class={`flex flex-col gap-3 mb-8 ${align === "center" ? "items-center text-center" : ""}`}>
+          <div class={`flex flex-col gap-sm mb-8 ${align === "center" ? "items-center text-center" : ""}`}>
             {data?.eyebrow && (
               <div>
                 {data.eyebrow.variant === "badge" ? (

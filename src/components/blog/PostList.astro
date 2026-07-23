@@ -1,0 +1,26 @@
+---
+// Shared post list for the blog index + category/tag archives + search results.
+interface Props {
+  posts: Array<{ href: string; title: string; description?: string; date?: string }>;
+  empty?: string;
+}
+const { posts, empty = "No posts found." } = Astro.props;
+---
+
+{
+  posts.length === 0 ? (
+    <p class="blog-empty">{empty}</p>
+  ) : (
+    <ul class="blog-index-list">
+      {posts.map((p) => (
+        <li class="blog-index-item">
+          <a href={p.href} class="blog-index-link">
+            <h2 class="blog-index-title">{p.title}</h2>
+            {p.description && <p class="blog-index-desc">{p.description}</p>}
+            {p.date && <time class="blog-index-date">{p.date}</time>}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )
+}

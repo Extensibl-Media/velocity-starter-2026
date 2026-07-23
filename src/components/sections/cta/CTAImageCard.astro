@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA, ImageRef } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 import SmartImage from "@/components/media/SmartImage.astro";
 
 /**
@@ -69,7 +69,7 @@ const alignClass =
           )}
 
           {ctas.length > 0 && (
-            <div class="flex flex-wrap gap-3 mt-1">
+            <div class="flex flex-wrap gap-sm mt-1">
               {ctas.map((cta, i) => (
                 <Button variant={cta.variant ?? (i === 0 ? "primary" : "outline")} href={cta.href}>
                   {cta.label}

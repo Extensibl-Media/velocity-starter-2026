@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow, StatItem } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 /**
  * stats:bar — a single horizontal proof strip. Stats sit in one raised band,
@@ -27,7 +27,7 @@ const stats = data?.stats ?? [];
     <section class:list={["stats-bar section-wrapper section-py", `theme-${theme}`]}>
       <div class="section-container">
         {(data?.eyebrow || data?.heading || data?.subheading) && (
-          <div class="flex flex-col items-center text-center gap-3 mb-10">
+          <div class="flex flex-col items-center text-center gap-sm mb-10">
             {data?.eyebrow &&
               (data.eyebrow.variant === "badge" ? (
                 <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>

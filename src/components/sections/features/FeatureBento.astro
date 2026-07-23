@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow, FeatureItem } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 /**
  * feature:bento — an asymmetric "bento" grid of feature tiles. Rows alternate a
@@ -47,7 +47,7 @@ const isWide = (i: number) => i % 4 === 0 || i % 4 === 3;
     >
       <div class="section-container">
         {/* Section header */}
-        <div class="flex flex-col items-center text-center gap-3 mb-12">
+        <div class="flex flex-col items-center text-center gap-sm mb-12">
           {data?.eyebrow &&
             (data.eyebrow.variant === "badge" ? (
               <Badge class="uppercase tracking-widest text-xs">
@@ -75,7 +75,7 @@ const isWide = (i: number) => i % 4 === 0 || i % 4 === 3;
           {items.map((item, i) => (
             <div
               class:list={[
-                "bento-tile flex flex-col gap-4 p-6 lg:p-7",
+                "bento-tile flex flex-col gap-md p-6 lg:p-7",
                 spanFor(i),
                 i === 0 && "bento-tile--feature",
               ]}
@@ -109,9 +109,9 @@ const isWide = (i: number) => i % 4 === 0 || i % 4 === 3;
                 </p>
               )}
               {item.bullets && item.bullets.length > 0 && (
-                <ul class="flex flex-col gap-2 m-0 p-0 list-none mt-auto pt-1">
+                <ul class="flex flex-col gap-xs m-0 p-0 list-none mt-auto pt-1">
                   {item.bullets.map((bullet) => (
-                    <li class="flex items-start gap-2 theme-text text-sm leading-relaxed">
+                    <li class="flex items-start gap-xs theme-text text-sm leading-relaxed">
                       <svg
                         class="bento-check shrink-0"
                         xmlns="http://www.w3.org/2000/svg"

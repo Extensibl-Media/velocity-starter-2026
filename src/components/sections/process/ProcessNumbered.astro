@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 interface ProcessStep {
   icon?: string;
@@ -41,7 +41,7 @@ const steps = data?.steps ?? defaultSteps;
 <section class={`section-wrapper section-py theme-${theme}`}>
   <div class="section-container">
     {/* Section header */}
-    <div class="flex flex-col items-center text-center gap-3 mb-16">
+    <div class="flex flex-col items-center text-center gap-sm mb-16">
       {
         data?.eyebrow && (
           <div>

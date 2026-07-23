@@ -1,7 +1,7 @@
 ---
-import { getCollection } from "astro:content";
+import { getServiceAreas } from "@/lib/content";
 import type { Eyebrow } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 /**
  * service-areas:directory — an alphabetized A–Z directory of every city in the
@@ -20,7 +20,7 @@ interface Props {
 
 const { theme = "default", data } = Astro.props;
 
-const all = await getCollection("serviceAreas");
+const all = await getServiceAreas();
 let areas = all.slice();
 if (data?.limit) {
   areas = areas.sort((a, b) => a.data.order - b.data.order).slice(0, data.limit);
@@ -45,7 +45,7 @@ const groups = Array.from(groupMap.entries()).sort((a, b) =>
   class:list={["service-areas-directory section-wrapper section-py", `theme-${theme}`]}
 >
   <div class="section-container">
-    <div class="flex flex-col gap-3 mb-10 max-w-2xl">
+    <div class="flex flex-col gap-sm mb-10 max-w-2xl">
       {
         data?.eyebrow && (
           <div>

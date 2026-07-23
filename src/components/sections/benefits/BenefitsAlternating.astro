@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow, FeatureItem } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 /**
  * benefits:alternating — a 2-column alternating layout. Each benefit places its
@@ -45,7 +45,7 @@ const iconPaths: Record<string, string> = {
       <div class="section-container">
         {/* Section header */}
         {(data?.eyebrow || data?.heading || data?.subheading) && (
-          <div class="flex flex-col items-center text-center gap-3 mb-16">
+          <div class="flex flex-col items-center text-center gap-sm mb-16">
             {data?.eyebrow &&
               (data.eyebrow.variant === "badge" ? (
                 <Badge class="uppercase tracking-widest text-xs">
@@ -72,11 +72,11 @@ const iconPaths: Record<string, string> = {
         {/* Alternating rows */}
         <div class="flex flex-col gap-14 lg:gap-20">
           {items.map((item, i) => (
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-center">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-xl lg:gap-14 items-center">
               {/* Copy side */}
               <div
                 class:list={[
-                  "flex flex-col gap-4",
+                  "flex flex-col gap-md",
                   i % 2 === 1 && "lg:order-2",
                 ]}
               >
@@ -113,9 +113,9 @@ const iconPaths: Record<string, string> = {
                 ]}
               >
                 {item.bullets && item.bullets.length > 0 ? (
-                  <ul class="flex flex-col gap-4 m-0 p-0 list-none">
+                  <ul class="flex flex-col gap-md m-0 p-0 list-none">
                     {item.bullets.map((bullet) => (
-                      <li class="flex items-start gap-3">
+                      <li class="flex items-start gap-sm">
                         <svg
                           class="check-icon shrink-0"
                           xmlns="http://www.w3.org/2000/svg"

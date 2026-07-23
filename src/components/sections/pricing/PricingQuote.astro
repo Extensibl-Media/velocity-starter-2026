@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, EstimateRow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 interface Props {
   theme?: string;
@@ -30,7 +30,7 @@ const hasContent = !!(data?.heading || rows.length > 0 || data?.cta);
       class:list={["pricing-quote section-wrapper section-py", `theme-${theme}`]}
     >
       <div class="section-container">
-        <div class="grid grid-cols-1 gap-8 lg:grid-cols-5 lg:gap-10 lg:items-start">
+        <div class="grid grid-cols-1 gap-xl lg:grid-cols-5 lg:gap-10 lg:items-start">
           {/* Left — quote CTA */}
           <div class="flex flex-col gap-5 lg:col-span-2">
             {data?.eyebrow &&
@@ -55,7 +55,7 @@ const hasContent = !!(data?.heading || rows.length > 0 || data?.cta);
             )}
 
             {(data?.cta || data?.secondaryCta) && (
-              <div class="flex flex-wrap items-center gap-3 pt-1">
+              <div class="flex flex-wrap items-center gap-sm pt-1">
                 {data?.cta && (
                   <Button
                     variant={data.cta.variant ?? "primary"}
@@ -82,15 +82,15 @@ const hasContent = !!(data?.heading || rows.length > 0 || data?.cta);
 
           {/* Right — sample price ranges */}
           {rows.length > 0 && (
-            <div class="flex flex-col gap-4 lg:col-span-3">
+            <div class="flex flex-col gap-md lg:col-span-3">
               {data?.rangesTitle && (
                 <h3 class="theme-heading text-sm font-semibold uppercase tracking-widest m-0">
                   {data.rangesTitle}
                 </h3>
               )}
-              <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div class="grid grid-cols-1 gap-md sm:grid-cols-2">
                 {rows.map((row) => (
-                  <div class="range-card flex flex-col gap-2 p-5 rounded-[var(--t-radius)]">
+                  <div class="range-card flex flex-col gap-xs p-5 rounded-[var(--t-radius)]">
                     <span class="theme-heading font-semibold">
                       {row.service}
                     </span>

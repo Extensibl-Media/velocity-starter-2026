@@ -1,8 +1,8 @@
 ---
 import type { Eyebrow, ImageRef, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 import SmartImage from "@/components/media/SmartImage.astro";
-import { Button } from "@/components/starwind/button";
+import { Button } from "@/components/elements/button";
 
 /**
  * content:quote-band — a raised testimonial band pairing a portrait image with
@@ -33,7 +33,7 @@ const imageLeft = (data?.imagePosition ?? "left") === "left";
   data?.quote && (
     <section class:list={["content-quote-band section-wrapper section-py", `theme-${theme}`]}>
       <div class="section-container">
-        <div class="quote-band grid grid-cols-1 md:grid-cols-5 gap-8 lg:gap-12 items-center">
+        <div class="quote-band grid grid-cols-1 md:grid-cols-5 gap-xl lg:gap-12 items-center">
           {data?.image && (
             <div class:list={["quote-band-media md:col-span-2", imageLeft ? "md:order-1" : "md:order-2"]}>
               <SmartImage

@@ -9,10 +9,8 @@ import { z } from "astro/zod";
  * to catch *broken* sections (missing required data, wrong type/theme), not to
  * be pedantic. Types without an entry pass by default — add schemas as needed.
  *
- * This validates required section data. The CMS field shapes (what each section
- * exposes in /admin) live in the field manifest at `src/lib/cms/sectionFields.mjs`,
- * which the generator (`npm run generate:cms`) turns into the Decap `sections`
- * config for all 126 types — kept in sync via a registry parity check. See docs/CMS.md.
+ * This validates required section data at render time. Content is stored/edited
+ * in EmDash (D1); `sections` is a `json` field holding the {type,theme,data} array.
  */
 
 const themeEnum = z.enum([

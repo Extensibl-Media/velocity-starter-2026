@@ -59,10 +59,60 @@
 
   /* ---------------------------------------------------------------
      SHAPE — roundness & border weight. A big part of "feel":
-     0 = sharp/brutalist, 0.5rem = soft, 1rem = pill-ish.
+     0 = sharp/brutalist, soft = rounded, full = pill.
+     Base rung values == Tailwind's defaults, so nothing changes today;
+     they are now token-sourced, so a theme or variant reshapes ALL
+     rounding by overriding these (global.css maps them to Tailwind's
+     rounded-* / border-* utilities).
      --------------------------------------------------------------- */
-  --t-radius: 0.5rem;
+  /* Roundness knob. The whole rounded-* scale (xs…3xl) is computed from this
+     by starwind.css via calc(), so one value reshapes ALL rounding. Base rung
+     0.625rem == the current rendered look. 0 = sharp, 1rem+ = pill-ish. */
+  --t-radius: 0.625rem;
+
   --t-border-width: 1px;
+  --t-border-width-2: 2px;
+
+  /* ---------------------------------------------------------------
+     TYPE SCALE — font sizes. Base rung == Tailwind defaults (line
+     heights stay Tailwind's). Override to rescale type per theme.
+     --------------------------------------------------------------- */
+  --t-text-xs: 0.75rem;
+  --t-text-sm: 0.875rem;
+  --t-text-base: 1rem;
+  --t-text-lg: 1.125rem;
+  --t-text-xl: 1.25rem;
+  --t-text-2xl: 1.5rem;
+  --t-text-3xl: 1.875rem;
+  --t-text-4xl: 2.25rem;
+  --t-text-5xl: 3rem;
+  --t-text-6xl: 3.75rem;
+
+  /* ---------------------------------------------------------------
+     CONTROL SIZES — heights & horizontal padding for Elements
+     (button, input, select…). Base rung == current Tailwind h-9/h-11/h-12.
+     --------------------------------------------------------------- */
+  --t-control-h-sm: 2.25rem; /* h-9  */
+  --t-control-h-md: 2.75rem; /* h-11 */
+  --t-control-h-lg: 3rem; /* h-12 */
+  --t-control-px-sm: 0.75rem;
+  --t-control-px-md: 1rem;
+  --t-control-px-lg: 1.5rem;
+
+  /* Spacing base unit — Tailwind derives its whole spacing scale from this.
+     Nudge for a denser/airier system-wide feel. */
+  --t-space-unit: 0.25rem;
+
+  /* ---------------------------------------------------------------
+     SPACING HIERARCHY — two levels, used by the <Spacer> components:
+       • Element contextual spacing (gaps between atoms in a block)
+       • Section vertical rhythm (--t-section-* above)
+     --------------------------------------------------------------- */
+  --t-gap-xs: 0.5rem;
+  --t-gap-sm: 0.75rem;
+  --t-gap-md: 1rem;
+  --t-gap-lg: 1.5rem;
+  --t-gap-xl: 2rem;
 
   /* ---------------------------------------------------------------
      ELEVATION — shadow style. Soft vs flat vs hard reads as a

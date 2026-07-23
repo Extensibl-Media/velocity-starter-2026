@@ -22,3 +22,8 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+# Cloudflare/EmDash local state (miniflare D1/R2, dev server log).
+# NOTE: .emdash/seed.json and .emdash/media/ ARE committed (they are IaC) — only local artifacts are ignored.
+.wrangler/
+.emdash/data.db*
+dev.log

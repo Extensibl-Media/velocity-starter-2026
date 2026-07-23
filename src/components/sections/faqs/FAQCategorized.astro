@@ -1,19 +1,19 @@
 ---
-import { getCollection } from "astro:content";
+import { getFaqs } from "@/lib/content";
 import type { Eyebrow } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 import {
   Tabs,
   TabsList,
   TabsTrigger,
   TabsContent,
-} from "@/components/starwind/tabs";
+} from "@/components/blocks/tabs";
 import {
   Accordion,
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
-} from "@/components/starwind/accordion";
+} from "@/components/blocks/accordion";
 
 interface Props {
   theme?: string;
@@ -26,7 +26,7 @@ interface Props {
 
 const { theme = "default", data } = Astro.props;
 
-const allFaqs = await getCollection("faqs");
+const allFaqs = await getFaqs();
 
 const faqs = allFaqs.sort((a, b) => a.data.order - b.data.order);
 
@@ -49,7 +49,7 @@ const categories = Array.from(groups.entries()).map(([name, items]) => ({
       <div class="section-container">
         {/* Section header */}
         {(data?.eyebrow || data?.heading || data?.subheading) && (
-          <div class="flex flex-col items-center text-center gap-3 mb-12">
+          <div class="flex flex-col items-center text-center gap-sm mb-12">
             {data?.eyebrow &&
               (data.eyebrow.variant === "badge" ? (
                 <Badge class="uppercase tracking-widest text-xs">

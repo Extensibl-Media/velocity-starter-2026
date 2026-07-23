@@ -1,7 +1,7 @@
 ---
-import { getCollection } from "astro:content";
+import { getReviews } from "@/lib/content";
 import type { Eyebrow } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 interface Props {
   theme?: string;
@@ -16,7 +16,7 @@ interface Props {
 
 const { theme = "default", data } = Astro.props;
 
-const allReviews = await getCollection("reviews");
+const allReviews = await getReviews();
 
 const reviews = allReviews
   .filter((r) => (data?.filter === "featured" ? r.data.featured : true))
@@ -33,7 +33,7 @@ const carouselId = `carousel-${Math.random().toString(36).slice(2, 9)}`;
       <div class="section-container">
         {/* Section header */}
         {(data?.eyebrow || data?.heading || data?.subheading) && (
-          <div class="flex flex-col items-center text-center gap-3 mb-12">
+          <div class="flex flex-col items-center text-center gap-sm mb-12">
             {data?.eyebrow && (
               <div>
                 {data.eyebrow.variant === "badge" ? (

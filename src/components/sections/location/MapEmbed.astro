@@ -1,8 +1,8 @@
 ---
-import { getCollection } from "astro:content";
+import { getHoursSettings } from "@/lib/content";
 import { getBusinessData } from "@/lib/utils";
 import type { Eyebrow } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 interface Props {
   theme?: string;
@@ -18,7 +18,7 @@ const { theme = "default", data } = Astro.props;
 
 const business = await getBusinessData();
 
-const hoursEntries = await getCollection("hoursSettings");
+const hoursEntries = await getHoursSettings();
 const hours = hoursEntries[0]?.data.hours ?? [];
 
 const fullAddress = `${business.address}, ${business.city}, ${business.state} ${business.zip}`;
@@ -31,7 +31,7 @@ const mapEmbedUrl =
 <section class={`section-wrapper section-py theme-${theme}`}>
   <div class="section-container">
     {/* Section header */}
-    <div class="flex flex-col items-center text-center gap-3 mb-12">
+    <div class="flex flex-col items-center text-center gap-sm mb-12">
       {
         data?.eyebrow && (
           <div>
@@ -75,9 +75,9 @@ const mapEmbedUrl =
       </div>
 
       {/* Right — address, phone, hours */}
-      <div class="flex flex-col gap-6">
+      <div class="flex flex-col gap-lg">
         {/* Address */}
-        <div class="flex items-start gap-3">
+        <div class="flex items-start gap-sm">
           <svg
             class="w-5 h-5 shrink-0 mt-0.5 text-color-brand-secondary"
             xmlns="http://www.w3.org/2000/svg"
@@ -104,7 +104,7 @@ const mapEmbedUrl =
         {/* Phone */}
         {
           business.phone && (
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-sm">
               <svg
                 class="w-5 h-5 shrink-0 text-color-brand-secondary"
                 xmlns="http://www.w3.org/2000/svg"

@@ -1,7 +1,7 @@
 ---
 import { getBusinessData } from "@/lib/utils";
 import type { SectionCTA } from "@/types/sections";
-import { Button } from "@/components/starwind/button";
+import { Button } from "@/components/elements/button";
 
 interface Props {
   theme?: string;
@@ -28,14 +28,14 @@ const showPhone = data?.showPhone && !!business.phone;
       class:list={["cta-sticky-bar section-wrapper", `theme-${theme}`]}
     >
       <div class="mx-auto max-w-6xl px-4 py-3">
-        <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center sm:justify-between gap-3 text-center sm:text-left">
+        <div class="flex flex-col sm:flex-row flex-wrap items-center justify-center sm:justify-between gap-sm text-center sm:text-left">
           {data?.text && (
             <span class="theme-text text-sm font-semibold sm:text-base">
               {data.text}
             </span>
           )}
 
-          <div class="flex flex-wrap items-center justify-center gap-3">
+          <div class="flex flex-wrap items-center justify-center gap-sm">
             {data?.cta && (
               <Button variant={data.cta.variant ?? "primary"} href={data.cta.href}>
                 {data.cta.label}
@@ -45,7 +45,7 @@ const showPhone = data?.showPhone && !!business.phone;
             {showPhone && (
               <a
                 href={`tel:${business.phone}`}
-                class="theme-text inline-flex items-center gap-2 font-bold no-underline hover:opacity-80 transition-opacity"
+                class="theme-text inline-flex items-center gap-xs font-bold no-underline hover:opacity-80 transition-opacity"
               >
                 <svg
                   class="w-5 h-5 shrink-0"

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { getResolvedNav, getBusinessData } from "@/lib/utils";
+import { getResolvedNav } from "@/lib/utils";
+import { getAppearance } from "@/lib/content";
 import { resolveHeader, resolveFooter } from "@/lib/layoutRegistry";
 
 interface Props {
@@ -46,9 +47,9 @@ const {
 } = Astro.props;
 
 const navItems = await getResolvedNav();
-const business = await getBusinessData();
-const Header = resolveHeader(business.headerVariant);
-const Footer = resolveFooter(business.footerVariant);
+const appearance = await getAppearance();
+const Header = resolveHeader(appearance.headerVariant);
+const Footer = resolveFooter(appearance.footerVariant);
 ---
 
 <BaseLayout

@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow, StatItem } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 /**
  * stats:icon-grid — one raised card per metric, each led by its own emoji icon
@@ -41,7 +41,7 @@ const gridClass =
     <section class:list={["stats-icon-grid section-wrapper section-py", `theme-${theme}`]}>
       <div class="section-container">
         {(data?.eyebrow || data?.heading || data?.subheading) && (
-          <div class="flex flex-col items-center text-center gap-3 mb-12">
+          <div class="flex flex-col items-center text-center gap-sm mb-12">
             {data?.eyebrow &&
               (data.eyebrow.variant === "badge" ? (
                 <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
@@ -59,9 +59,9 @@ const gridClass =
           </div>
         )}
 
-        <div class:list={["grid gap-6", gridClass]}>
+        <div class:list={["grid gap-lg", gridClass]}>
           {stats.map((stat) => (
-            <div class="stat-card flex flex-col items-start gap-3 p-6 lg:p-7">
+            <div class="stat-card flex flex-col items-start gap-sm p-6 lg:p-7">
               {stat.icon && (
                 <span class="stat-chip flex items-center justify-center w-12 h-12 rounded-full text-2xl leading-none shrink-0">
                   {stat.icon}

@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 interface Props {
   theme?: string;
@@ -30,7 +30,7 @@ const hasOffer = !!(data?.name || data?.price || inclusions.length > 0);
       <div class="section-container">
         {/* Section header */}
         {(data?.eyebrow || data?.heading || data?.subheading) && (
-          <div class="flex flex-col items-center text-center gap-3 mb-12">
+          <div class="flex flex-col items-center text-center gap-sm mb-12">
             {data?.eyebrow &&
               (data.eyebrow.variant === "badge" ? (
                 <Badge class="uppercase tracking-widest text-xs">
@@ -55,7 +55,7 @@ const hasOffer = !!(data?.name || data?.price || inclusions.length > 0);
         )}
 
         {/* Hero offer card */}
-        <div class="pricing-single mx-auto max-w-lg flex flex-col items-center text-center gap-6 p-8 lg:p-10 rounded-xl border theme-border bg-background">
+        <div class="pricing-single mx-auto max-w-lg flex flex-col items-center text-center gap-lg p-8 lg:p-10 rounded-xl border theme-border bg-background">
           {data?.name && (
             <h3 class="theme-heading text-xl font-semibold m-0">
               {data.name}
@@ -82,7 +82,7 @@ const hasOffer = !!(data?.name || data?.price || inclusions.length > 0);
           )}
 
           {inclusions.length > 0 && (
-            <ul class="flex flex-col gap-3 m-0 p-0 list-none w-full max-w-sm text-left">
+            <ul class="flex flex-col gap-sm m-0 p-0 list-none w-full max-w-sm text-left">
               {inclusions.map((item) => (
                 <li class="flex items-start gap-2.5 text-sm theme-text">
                   <svg

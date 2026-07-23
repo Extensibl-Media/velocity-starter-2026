@@ -1,7 +1,7 @@
 ---
-import { getCollection } from "astro:content";
+import { getServices } from "@/lib/content";
 import type { Eyebrow } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 import SmartImage from "@/components/media/SmartImage.astro";
 
 interface Props {
@@ -16,7 +16,7 @@ interface Props {
 
 const { theme = "default", data } = Astro.props;
 
-const services = await getCollection("services");
+const services = await getServices();
 const sorted = services
   .sort((a, b) => a.data.order - b.data.order)
   .slice(0, data?.limit ?? services.length);
@@ -31,7 +31,7 @@ const rest = sorted.slice(1);
       <div class="section-container">
         {/* Section header */}
         {(data?.eyebrow || data?.heading || data?.subheading) && (
-          <div class="flex flex-col items-center text-center gap-3 mb-12">
+          <div class="flex flex-col items-center text-center gap-sm mb-12">
             {data?.eyebrow && (
               <div>
                 {data.eyebrow.variant === "badge" ? (
@@ -59,7 +59,7 @@ const rest = sorted.slice(1);
         )}
 
         {/* Split layout */}
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-xl items-start">
           {/* Featured service */}
           <a
             href={`/services/${featured.data.slug}`}
@@ -74,8 +74,8 @@ const rest = sorted.slice(1);
                 />
               </div>
             )}
-            <div class="flex flex-col gap-3 p-6">
-              <div class="flex items-start justify-between gap-2">
+            <div class="flex flex-col gap-sm p-6">
+              <div class="flex items-start justify-between gap-xs">
                 <h3 class="theme-heading text-2xl font-bold m-0 group-hover:text-primary transition-colors">
                   {featured.data.title}
                 </h3>
@@ -112,14 +112,14 @@ const rest = sorted.slice(1);
 
           {/* Remaining services list */}
           {rest.length > 0 && (
-            <div class="flex flex-col gap-3">
+            <div class="flex flex-col gap-sm">
               {rest.map((service) => (
                 <a
                   href={`/services/${service.data.slug}`}
-                  class="group flex items-start gap-3 p-5 rounded-xl border theme-border bg-background hover:bg-muted transition-all duration-200 no-underline"
+                  class="group flex items-start gap-sm p-5 rounded-xl border theme-border bg-background hover:bg-muted transition-all duration-200 no-underline"
                 >
                   <div class="flex flex-col gap-1 flex-1 min-w-0">
-                    <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center justify-between gap-xs">
                       <h3 class="theme-heading text-base font-semibold m-0 group-hover:text-primary transition-colors">
                         {service.data.title}
                       </h3>

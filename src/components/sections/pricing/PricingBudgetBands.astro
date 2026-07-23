@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, PricingPlan, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 interface Props {
   theme?: string;
@@ -31,7 +31,7 @@ const plans = data?.plans ?? [];
       <div class="section-container">
         {/* Section header */}
         {(data?.eyebrow || data?.heading || data?.subheading) && (
-          <div class="flex flex-col items-center text-center gap-3 mb-12">
+          <div class="flex flex-col items-center text-center gap-sm mb-12">
             {data?.eyebrow &&
               (data.eyebrow.variant === "badge" ? (
                 <Badge class="uppercase tracking-widest text-xs">
@@ -56,17 +56,17 @@ const plans = data?.plans ?? [];
         )}
 
         {/* Good / better / best — stacked full-width bands */}
-        <div class="flex flex-col gap-4 max-w-4xl mx-auto">
+        <div class="flex flex-col gap-md max-w-4xl mx-auto">
           {plans.map((plan) => (
             <div
               class:list={[
-                "band flex flex-col gap-5 p-6 rounded-[var(--t-radius)] lg:flex-row lg:items-center lg:gap-8 lg:p-7",
+                "band flex flex-col gap-5 p-6 rounded-[var(--t-radius)] lg:flex-row lg:items-center lg:gap-xl lg:p-7",
                 plan.highlighted && "is-highlighted",
               ]}
             >
               {/* Price block */}
               <div class="flex flex-col gap-1 lg:w-56 lg:shrink-0">
-                <div class="flex items-center gap-2 flex-wrap">
+                <div class="flex items-center gap-xs flex-wrap">
                   <h3 class="theme-heading text-lg font-semibold m-0">
                     {plan.name}
                   </h3>
@@ -93,9 +93,9 @@ const plans = data?.plans ?? [];
 
               {/* Inclusions */}
               {plan.features && plan.features.length > 0 && (
-                <ul class="grid grid-cols-1 gap-2 m-0 p-0 list-none flex-1 sm:grid-cols-2">
+                <ul class="grid grid-cols-1 gap-xs m-0 p-0 list-none flex-1 sm:grid-cols-2">
                   {plan.features.map((feature) => (
-                    <li class="flex items-start gap-2 text-sm theme-text">
+                    <li class="flex items-start gap-xs text-sm theme-text">
                       <svg
                         class="w-4 h-4 shrink-0 mt-0.5"
                         xmlns="http://www.w3.org/2000/svg"

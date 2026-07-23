@@ -1,8 +1,8 @@
 ---
-import { getCollection } from "astro:content";
+import { getServices } from "@/lib/content";
 import { getBusinessData } from "@/lib/utils";
 import type { Eyebrow, FormConfig } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 import FormRenderer from "@/components/forms/FormRenderer.astro";
 
 /**
@@ -25,7 +25,7 @@ interface Props {
 
 const { theme = "muted", data } = Astro.props;
 const business = await getBusinessData();
-const services = await getCollection("services");
+const services = await getServices();
 const sortedServices = services.sort((a, b) => a.data.order - b.data.order);
 
 const showPhone = data?.showPhone ?? true;
@@ -39,7 +39,7 @@ const telHref =
   <div class="section-container">
     <div class="mx-auto max-w-xl">
       {/* Header */}
-      <div class="flex flex-col items-center text-center gap-3 mb-8">
+      <div class="flex flex-col items-center text-center gap-sm mb-8">
         {
           data?.eyebrow && (
             <div>

@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA, StatItem } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 interface Props {
   theme?: string;
@@ -26,7 +26,7 @@ const hasStats = Boolean(data?.stats && data.stats.length > 0);
       <div class="section-container">
         {/* Brand story */}
         {hasHeader && (
-          <div class="flex flex-col gap-4 max-w-2xl mb-12">
+          <div class="flex flex-col gap-md max-w-2xl mb-12">
             {data?.eyebrow &&
               (data.eyebrow.variant === "badge" ? (
                 <Badge class="uppercase tracking-widest text-xs self-start">
@@ -67,7 +67,7 @@ const hasStats = Boolean(data?.stats && data.stats.length > 0);
         {hasStats && (
           <div class="stats-band">
             <div
-              class={`grid gap-8 ${
+              class={`grid gap-xl ${
                 data!.stats!.length === 2
                   ? "grid-cols-1 sm:grid-cols-2"
                   : data!.stats!.length === 4
@@ -76,7 +76,7 @@ const hasStats = Boolean(data?.stats && data.stats.length > 0);
               }`}
             >
               {data!.stats!.map((stat) => (
-                <div class="flex flex-col items-center text-center gap-2">
+                <div class="flex flex-col items-center text-center gap-xs">
                   <span class="stat-value text-4xl lg:text-5xl font-black leading-none">
                     {stat.value}
                   </span>

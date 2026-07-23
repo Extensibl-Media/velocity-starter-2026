@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow, ProcessStep } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 /**
  * process:zigzag — a connected zig-zag path of steps. Each step alternates
@@ -47,7 +47,7 @@ const steps = data?.steps?.length ? data.steps : defaultSteps;
 >
   <div class="section-container">
     {/* Section header */}
-    <div class="flex flex-col items-center text-center gap-3 mb-16">
+    <div class="flex flex-col items-center text-center gap-sm mb-16">
       {
         data?.eyebrow &&
           (data.eyebrow.variant === "badge" ? (

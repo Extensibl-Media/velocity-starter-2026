@@ -22,7 +22,7 @@ const label = data?.label ?? "Storm Alert";
       data-weather-alert
       class:list={["banner-weather-alert", `theme-${theme}`]}
     >
-      <div class="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 text-sm">
+      <div class="mx-auto flex max-w-6xl items-center gap-sm px-4 py-3 text-sm">
         <svg
           class="h-5 w-5 shrink-0 theme-accent"
           xmlns="http://www.w3.org/2000/svg"
@@ -35,7 +35,7 @@ const label = data?.label ?? "Storm Alert";
           <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
           <path d="M12 9v4M12 17h.01" />
         </svg>
-        <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+        <div class="flex flex-wrap items-baseline gap-x-xs gap-y-0.5">
           <span class="theme-heading font-bold uppercase tracking-wide">
             {label}
           </span>

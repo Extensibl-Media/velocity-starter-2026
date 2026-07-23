@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow, FeatureItem } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 /**
  * feature:strip — a slim horizontal value-prop strip. Features sit in one raised
@@ -44,7 +44,7 @@ const iconPaths: Record<string, string> = {
     >
       <div class="section-container">
         {hasHeader && (
-          <div class="flex flex-col items-center text-center gap-3 mb-10">
+          <div class="flex flex-col items-center text-center gap-sm mb-10">
             {data?.eyebrow &&
               (data.eyebrow.variant === "badge" ? (
                 <Badge class="uppercase tracking-widest text-xs">
@@ -71,7 +71,7 @@ const iconPaths: Record<string, string> = {
         {/* Strip band */}
         <div class="strip-band grid grid-cols-2 md:grid-cols-4">
           {items.map((item) => (
-            <div class="strip-cell flex flex-col items-center text-center gap-3 p-6">
+            <div class="strip-cell flex flex-col items-center text-center gap-sm p-6">
               <span class="strip-icon" aria-hidden="true">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

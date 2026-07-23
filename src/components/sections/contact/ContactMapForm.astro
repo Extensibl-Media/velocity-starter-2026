@@ -1,8 +1,8 @@
 ---
-import { getCollection } from "astro:content";
+import { getServices } from "@/lib/content";
 import { getBusinessData } from "@/lib/utils";
 import type { Eyebrow } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 import {
   Card,
   CardContent,
@@ -10,10 +10,10 @@ import {
   CardTitle,
   CardDescription,
   CardFooter,
-} from "@/components/starwind/card";
-import { Button } from "@/components/starwind/button";
-import { Input } from "@/components/starwind/input";
-import { Label } from "@/components/starwind/label";
+} from "@/components/blocks/card";
+import { Button } from "@/components/elements/button";
+import { Input } from "@/components/elements/input";
+import { Label } from "@/components/elements/label";
 import {
   Select,
   SelectTrigger,
@@ -21,8 +21,8 @@ import {
   SelectContent,
   SelectItem,
   SelectGroup,
-} from "@/components/starwind/select";
-import Textarea from "@/components/starwind/textarea";
+} from "@/components/blocks/select";
+import Textarea from "@/components/elements/textarea";
 
 /**
  * contact:map-form — two-column section with an embedded Google Map of the
@@ -42,7 +42,7 @@ interface Props {
 
 const { theme = "default", data } = Astro.props;
 const business = await getBusinessData();
-const services = await getCollection("services");
+const services = await getServices();
 const sortedServices = services.sort((a, b) => a.data.order - b.data.order);
 
 const fullAddress = [
@@ -60,7 +60,7 @@ const mapSrc = fullAddress
 <section class={`section-wrapper section-py theme-${theme}`}>
   <div class="section-container">
     {/* Header */}
-    <div class="flex flex-col items-center text-center gap-3 mb-12">
+    <div class="flex flex-col items-center text-center gap-sm mb-12">
       {
         data?.eyebrow && (
           <div>
@@ -110,7 +110,7 @@ const mapSrc = fullAddress
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form class="flex flex-col gap-4" name="contact" method="POST">
+          <form class="flex flex-col gap-md" name="contact" method="POST">
             <div class="flex flex-col gap-1.5">
               <Label for="mapform-name" class="text-fg">Full Name</Label>
               <Input type="text" id="mapform-name" name="name" placeholder="John Smith" required class="text-fg-muted placeholder:text-fg-muted border-bg-inverse" />

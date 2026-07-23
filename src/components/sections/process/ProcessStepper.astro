@@ -1,6 +1,6 @@
 ---
 import type { Eyebrow, ProcessStep } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 
 /**
  * process:stepper — a static horizontal stepper with a progress rail. Numbered
@@ -39,7 +39,7 @@ const current = data?.current ?? steps.length;
 >
   <div class="section-container">
     {/* Section header */}
-    <div class="flex flex-col items-center text-center gap-3 mb-16">
+    <div class="flex flex-col items-center text-center gap-sm mb-16">
       {
         data?.eyebrow &&
           (data.eyebrow.variant === "badge" ? (

@@ -1,7 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
-import { Button } from "@/components/starwind/button";
+import Badge from "@/components/elements/badge/Badge.astro";
+import { Button } from "@/components/elements/button";
 
 /**
  * content:sidebar — long-form `body` (HTML string) with a sticky companion
@@ -35,7 +35,7 @@ const hasAside = Boolean(data?.sidebarTitle || links.length > 0 || data?.cta);
     <section class:list={["content-sidebar section-wrapper section-py", `theme-${theme}`]}>
       <div class="section-container">
         {hasHeader && (
-          <div class="flex flex-col gap-3 mb-10 max-w-2xl">
+          <div class="flex flex-col gap-sm mb-10 max-w-2xl">
             {data?.eyebrow &&
               (data.eyebrow.variant === "badge" ? (
                 <div>
@@ -55,7 +55,7 @@ const hasAside = Boolean(data?.sidebarTitle || links.length > 0 || data?.cta);
           </div>
         )}
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-xl lg:gap-12">
           {hasAside && (
             <aside class="lg:col-span-4 lg:order-2">
               <div class="sidebar-card">
@@ -65,7 +65,7 @@ const hasAside = Boolean(data?.sidebarTitle || links.length > 0 || data?.cta);
                   </h3>
                 )}
                 {links.length > 0 && (
-                  <ul class="flex flex-col gap-2 list-none m-0 p-0">
+                  <ul class="flex flex-col gap-xs list-none m-0 p-0">
                     {links.map((link) => (
                       <li>
                         <a

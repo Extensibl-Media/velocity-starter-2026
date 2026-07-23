@@ -1,13 +1,13 @@
 ---
-import { getCollection } from "astro:content";
+import { getServiceAreas } from "@/lib/content";
 import type { Eyebrow, SectionCTA } from "@/types/sections";
-import Badge from "@/components/starwind/badge/Badge.astro";
+import Badge from "@/components/elements/badge/Badge.astro";
 import {
   Accordion,
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
-} from "@/components/starwind/accordion";
+} from "@/components/blocks/accordion";
 
 /**
  * service-areas:accordion — service areas grouped by county and rendered as
@@ -30,7 +30,7 @@ interface Props {
 
 const { theme = "default", data } = Astro.props;
 
-const all = await getCollection("serviceAreas");
+const all = await getServiceAreas();
 let areas = all.sort((a, b) => a.data.order - b.data.order);
 if (data?.featuredOnly) areas = areas.filter((a) => a.data.featured);
 if (data?.limit) areas = areas.slice(0, data.limit);
@@ -53,7 +53,7 @@ const groups = [...groupMap.entries()];
     <section class={`section-wrapper section-py theme-${theme}`}>
       <div class="section-container">
         {/* Header */}
-        <div class="flex flex-col items-center text-center gap-3 mb-12">
+        <div class="flex flex-col items-center text-center gap-sm mb-12">
           {data?.eyebrow &&
             (data.eyebrow.variant === "badge" ? (
               <Badge class="uppercase tracking-widest text-xs">{data.eyebrow.text}</Badge>
@@ -76,13 +76,13 @@ const groups = [...groupMap.entries()];
             {groups.map(([county, cities], i) => (
               <AccordionItem value={`area-${i}`}>
                 <AccordionTrigger class="text-left font-semibold theme-heading">
-                  <span class="flex items-center gap-3">
+                  <span class="flex items-center gap-sm">
                     <span>{county}</span>
                     <span class="theme-text-subtle text-sm font-normal">{cities.length}</span>
                   </span>
                 </AccordionTrigger>
                 <AccordionContent class="theme-text-muted leading-relaxed">
-                  <ul class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-2 list-none p-0 m-0">
+                  <ul class="grid grid-cols-2 sm:grid-cols-3 gap-x-lg gap-y-xs list-none p-0 m-0">
                     {cities.map((area) => {
                       const label = `${area.data.city}, ${area.data.state}`;
                       const inner = (
