@@ -472,12 +472,12 @@
       ],
       "terms": [
         {
-          "slug": "maintenance",
-          "label": "Maintenance"
-        },
-        {
           "slug": "roofing-tips",
           "label": "Roofing Tips"
+        },
+        {
+          "slug": "maintenance",
+          "label": "Maintenance"
         },
         {
           "slug": "company-news",
@@ -495,6 +495,10 @@
       ],
       "terms": [
         {
+          "slug": "replacement",
+          "label": "Replacement"
+        },
+        {
           "slug": "inspection",
           "label": "Inspection"
         },
@@ -507,8 +511,8 @@
           "label": "DIY"
         },
         {
-          "slug": "replacement",
-          "label": "Replacement"
+          "slug": "announcements",
+          "label": "Announcements"
         },
         {
           "slug": "storm-damage",
@@ -521,10 +525,6 @@
         {
           "slug": "emergency",
           "label": "Emergency"
-        },
-        {
-          "slug": "announcements",
-          "label": "Announcements"
         }
       ]
     }

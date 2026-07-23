@@ -16,17 +16,22 @@ first — https://docs.emdashcms.com/deployment/cloudflare/ — EmDash is 0.x an
 
 ```
 Cloudflare Worker (this Astro app, SSR)
-├── D1   binding DB     → content, schema, menus, taxonomies, native SEO, widgets
-├── R2   binding MEDIA  → uploaded media (images/files)
-├── ASSETS binding      → ./dist static assets (built)
+├── D1   binding vws_starter_2026_db     → content, schema, menus, taxonomies, native SEO, widgets
+├── R2   binding vws_starter_2026_media  → uploaded media (images/files)
+├── ASSETS binding                       → static assets (adapter serves dist/client)
 └── (optional) KV CACHE → object cache · EMAIL → magic-link login · cron → scheduling
 ```
 
 Already wired in this repo — you don't need to change code, only provision resources
 and fill in ids/secrets:
 
-- [astro.config.mjs](../astro.config.mjs) — `adapter: cloudflare()`, `emdash({ database: d1({binding:'DB'}), storage: r2({binding:'MEDIA'}), plugins:[sectionBuilder()] })`.
-- [wrangler.jsonc](../wrangler.jsonc) — bindings for `DB`, `MEDIA`, `ASSETS`; `nodejs_compat` + `global_fetch_strictly_public` flags; observability on.
+- [astro.config.mjs](../astro.config.mjs) — `adapter: cloudflare()`, `emdash({ database: d1({binding:'vws_starter_2026_db'}), storage: r2({binding:'vws_starter_2026_media'}), plugins:[sectionBuilder()] })`.
+- [wrangler.jsonc](../wrangler.jsonc) — bindings for `vws_starter_2026_db`, `vws_starter_2026_media`, `ASSETS`; `nodejs_compat` + `global_fetch_strictly_public` flags; observability on.
+- **Binding names are matched in both files** — if you rename a binding, change it in
+  `wrangler.jsonc` *and* `astro.config.mjs`. (`@astrojs/cloudflare` generates a
+  redirected `dist/server/wrangler.json` at build; that's the config `wrangler deploy`
+  actually uses, and it scopes public assets to `dist/client` — so a stray file under
+  `dist/server/` is not served publicly.)
 
 ---
 
@@ -62,18 +67,19 @@ id from step 1:
 ```jsonc
 "d1_databases": [
   {
-    "binding": "DB",
+    "binding": "vws_starter_2026_db",
     "database_name": "vws-starter-2026-db",
     "database_id": "PASTE-REAL-ID-HERE"   // was "local-dev-placeholder"
   }
 ],
 "r2_buckets": [
-  { "binding": "MEDIA", "bucket_name": "vws-starter-2026-media" }
+  { "binding": "vws_starter_2026_media", "bucket_name": "vws-starter-2026-media" }
 ]
 ```
 
-Binding names (`DB`, `MEDIA`) **must** match `astro.config.mjs` exactly — they're how
-the EmDash integration finds the database and bucket.
+Binding names (`vws_starter_2026_db`, `vws_starter_2026_media`) **must** match
+`astro.config.mjs` exactly — they're how the EmDash integration finds the database and
+bucket. Rename in both files together if you change them.
 
 > Optionally regenerate types after editing bindings: `npm run generate-types`.
 
@@ -107,8 +113,26 @@ Set them as Worker vars/secrets (dashboard → Worker → Settings → Variables
 | `PUBLIC_META_PIXEL_ID`, `PUBLIC_GOOGLE_ADS_ID`, `PUBLIC_TIKTOK_PIXEL_ID` | optional | Ad pixels (consent-gated) |
 | `GOOGLE_SITE_VERIFICATION`, `BING_SITE_VERIFICATION` | optional | Search-console verification (also settable via the native Site Settings SEO panel) |
 
-`SITE_URL` is a build-time input — set it in the environment where `wrangler deploy`
-runs (CI or your shell), e.g. `SITE_URL=https://peakroofing.co npm run build`.
+**`SITE_URL` is a *build-time* input read from the shell `process.env`, and it is
+baked into the app's `site` (canonical/sitemap/robots/OG/JSON-LD).** Two consequences
+that trip people up:
+
+- **It is NOT read from `.env`.** The repo's `.env` sets `SITE_URL=http://localhost:4321`
+  for *local dev only* (EmDash admin/login redirects, `wrangler dev`). Astro exposes that
+  to runtime (`import.meta.env`), **not** to `process.env` at config eval — so it does
+  **not** leak into a production build. (Verify: `npm run build` with that `.env` present
+  still warns "SITE_URL is not set" and uses `example.com`.)
+- **`wrangler deploy` does not read `SITE_URL`** — it only uploads the already-built
+  `dist/`. So the value that ships is whatever was in your shell when you ran
+  `npm run build`.
+
+Deploying from your laptop, set it inline for the build (this does not change your `.env`
+or your `npm run dev` setup):
+
+```sh
+SITE_URL=https://vws-starter-2026.extensiblmedia.workers.dev npm run build
+wrangler deploy
+```
 
 ## 5. Build & deploy
 
@@ -162,7 +186,7 @@ Serve uploads straight from R2 instead of proxying through the Worker:
    a custom domain to the bucket).
 2. Add the public URL to `astro.config.mjs`:
    ```js
-   storage: r2({ binding: 'MEDIA', publicUrl: 'https://pub-xxxx.r2.dev' }),
+   storage: r2({ binding: 'vws_starter_2026_media', publicUrl: 'https://pub-xxxx.r2.dev' }),
    ```
 
 ### Scheduled publishing (if you use embargoed/scheduled content)
@@ -186,7 +210,7 @@ production (it silently no-ops; `astro dev` still works locally). Enable it:
 ```
 ```js
 import { kvCache } from "@emdash-cms/cloudflare";
-emdash({ database: d1({binding:'DB'}), storage: r2({binding:'MEDIA'}), objectCache: kvCache({ binding: 'CACHE' }), plugins:[sectionBuilder()] })
+emdash({ database: d1({binding:'vws_starter_2026_db'}), storage: r2({binding:'vws_starter_2026_media'}), objectCache: kvCache({ binding: 'CACHE' }), plugins:[sectionBuilder()] })
 ```
 
 ### Email (magic-link login, invites, notifications)
@@ -204,7 +228,7 @@ Then verify the sender domain (dashboard → **Email**) and activate the plugin 
 ### Preview/staging environment
 
 ```jsonc
-"env": { "preview": { "d1_databases": [{ "binding": "DB", "database_name": "vws-starter-2026-db-preview" }] } }
+"env": { "preview": { "d1_databases": [{ "binding": "vws_starter_2026_db", "database_name": "vws-starter-2026-db-preview" }] } }
 ```
 ```sh
 wrangler deploy --env preview
@@ -221,8 +245,7 @@ wrangler deploy --env preview
    it discards all encrypted plugin secrets.
 3. **Seed is inlined at build time.** Editing `.emdash/seed.json` requires a rebuild +
    redeploy; it does not hot-apply. (Live *content* edits in the admin are unaffected.)
-4. **Binding names must match** across `wrangler.jsonc` and `astro.config.mjs` (`DB`,
-   `MEDIA`).
+4. **Binding names must match** across `wrangler.jsonc` and `astro.config.mjs` (`vws_starter_2026_db`, `vws_starter_2026_media`).
 5. **Edge cache + logged-in editors.** If you enable Cloudflare's edge cache, responses
    without a `Cache-Control` header are still cached heuristically (~2h), so editors may
    see anonymous cached pages without the editing toolbar. Scope caching accordingly.
@@ -247,7 +270,7 @@ per-page SEO (see §7) — re-set those in the target admin.
 - `wrangler tail` — live logs / underlying errors from the deployed Worker.
 - Blank site / 404s on content → the DB was empty and the seed hasn't applied; hit any
   page once, then check `/_emdash/admin`.
-- Media 404s → confirm the R2 bucket exists and `MEDIA` binding matches; check public URL.
+- Media 404s → confirm the R2 bucket exists and `vws_starter_2026_media` binding matches; check public URL.
 - Verify: edit in `/_emdash/admin` → change appears on the live site; `/_emdash/api/mcp`
   reachable.
 

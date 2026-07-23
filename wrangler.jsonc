@@ -1,6 +1,9 @@
 {
 	"compatibility_date": "2026-03-17",
-	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+	"compatibility_flags": [
+		"nodejs_compat",
+		"global_fetch_strictly_public"
+	],
 	"name": "vws-starter-2026",
 	"main": "@astrojs/cloudflare/entrypoints/server",
 	"assets": {
@@ -10,20 +13,21 @@
 	"observability": {
 		"enabled": true
 	},
-	// EmDash content DB. `database_id` is a placeholder for local (miniflare) dev;
-	// replace with the real id from `wrangler d1 create` before deploying (Phase 6).
 	"d1_databases": [
 		{
-			"binding": "DB",
+			"binding": "vws_starter_2026_db",
 			"database_name": "vws-starter-2026-db",
-			"database_id": "local-dev-placeholder"
+			"database_id": "51b4a7ea-be86-4ec6-842a-8510ce976511",
+			"remote": true,
+			"migrations_dir": "../../migrations"
 		}
 	],
-	// EmDash media storage.
 	"r2_buckets": [
 		{
-			"binding": "MEDIA",
-			"bucket_name": "vws-starter-2026-media"
+			"bucket_name": "vws-starter-2026-media",
+			"binding": "vws_starter_2026_media",
+			"remote": true
 		}
-	]
+	],
+	"triggers": { "crons": ["* * * * *"] }
 }
