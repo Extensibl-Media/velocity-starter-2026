@@ -641,29 +641,120 @@
       "items": [
         {
           "type": "custom",
-          "url": "/",
-          "label": "Home"
+          "url": "#",
+          "label": "Our Services",
+          "children": [
+            {
+              "type": "custom",
+              "url": "/services/roof-repair",
+              "label": "Roof Repair"
+            },
+            {
+              "type": "custom",
+              "url": "/services/roof-replacement",
+              "label": "Roof Replacement"
+            },
+            {
+              "type": "custom",
+              "url": "/services/storm-damage-restoration",
+              "label": "Storm Damage Restoration"
+            },
+            {
+              "type": "custom",
+              "url": "/services/roof-inspection",
+              "label": "Roof Inspection"
+            },
+            {
+              "type": "custom",
+              "url": "/services/gutter-installation",
+              "label": "Gutter Installation"
+            },
+            {
+              "type": "custom",
+              "url": "/services/gutter-guards",
+              "label": "Gutter Guards"
+            },
+            {
+              "type": "custom",
+              "url": "/services/siding-and-trim",
+              "label": "Siding & Trim"
+            },
+            {
+              "type": "custom",
+              "url": "/services/commercial-flat-roofing",
+              "label": "Commercial Flat Roofing"
+            },
+            {
+              "type": "custom",
+              "url": "/services/commercial-roof-maintenance",
+              "label": "Commercial Roof Maintenance"
+            }
+          ]
         },
         {
           "type": "custom",
-          "url": "/services",
-          "label": "Services"
-        },
-        {
-          "type": "page",
-          "collection": "pages",
-          "ref": "about",
-          "label": "About"
+          "url": "#",
+          "label": "Service Areas",
+          "children": [
+            {
+              "type": "custom",
+              "url": "#",
+              "label": "Boise, ID"
+            },
+            {
+              "type": "custom",
+              "url": "#",
+              "label": "Meridian, ID"
+            },
+            {
+              "type": "custom",
+              "url": "#",
+              "label": "Nampa, ID"
+            },
+            {
+              "type": "custom",
+              "url": "#",
+              "label": "Caldwell, ID"
+            },
+            {
+              "type": "custom",
+              "url": "#",
+              "label": "Eagle, ID"
+            },
+            {
+              "type": "custom",
+              "url": "#",
+              "label": "Kuna, ID"
+            }
+          ]
         },
         {
           "type": "custom",
-          "url": "/blog",
-          "label": "Blog"
-        },
-        {
-          "type": "custom",
-          "url": "/contact",
-          "label": "Contact"
+          "url": "#",
+          "label": "Company",
+          "children": [
+            {
+              "type": "custom",
+              "url": "/",
+              "label": "Home"
+            },
+            {
+              "type": "page",
+              "collection": "pages",
+              "ref": "about",
+              "label": "About"
+            },
+            {
+              "type": "custom",
+              "url": "/blog",
+              "label": "Blog"
+            },
+            {
+              "type": "custom",
+              "url": "/contact",
+              "label": "Contact"
+            }
+          ]
         }
       ]
     },

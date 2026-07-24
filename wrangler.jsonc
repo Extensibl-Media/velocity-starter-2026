@@ -28,6 +28,5 @@
 			"binding": "vws_starter_2026_media",
 			"remote": true
 		}
-	],
-	"triggers": { "crons": ["* * * * *"] }
+	]
 }

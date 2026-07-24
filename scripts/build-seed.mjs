@@ -465,6 +465,11 @@ const areasChildren = [...content.service_areas]
   })
   .filter(Boolean);
 
+// Flat city list for the footer's Service Areas column (featured-first).
+const footerAreasFlat = [...content.service_areas]
+  .sort((a, b) => (b.data.featured ? 1 : 0) - (a.data.featured ? 1 : 0) || (a.data.order ?? 0) - (b.data.order ?? 0))
+  .map((area) => link("#", `${area.data.city}, ${area.data.state}`));
+
 const primaryMenu = {
   name: "primary",
   label: "Primary Navigation",
@@ -478,15 +483,26 @@ const primaryMenu = {
   ],
 };
 
+// Footer menu is GROUPED: each top-level item is a footer column, its children
+// are that column's links. Column footers render one column per group; minimal
+// footers flatten the children into a row. Fully editable in the CMS — add a
+// top-level item for a new column, nest links under it.
 const footerNavMenu = {
   name: "footer",
   label: "Footer Navigation",
   items: [
-    link("/", "Home"),
-    link("/services", "Services"),
-    pageLink("about", "About"),
-    link("/blog", "Blog"),
-    link("/contact", "Contact"),
+    link("#", "Our Services", { children: servicesChildren }),
+    // Footer areas = flat city entries (no per-area page yet, so no href), NOT the
+    // nested area→service tree the header dropdown uses.
+    ...(footerAreasFlat.length ? [link("#", "Service Areas", { children: footerAreasFlat })] : []),
+    link("#", "Company", {
+      children: [
+        link("/", "Home"),
+        pageLink("about", "About"),
+        link("/blog", "Blog"),
+        link("/contact", "Contact"),
+      ],
+    }),
   ],
 };
 

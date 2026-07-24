@@ -1,15 +1,11 @@
 ---
-import { getBusinessData, getResolvedNav } from "@/lib/utils";
+import { getBusinessData, getFooterNav } from "@/lib/utils";
 
 const business = await getBusinessData();
 const year = new Date().getFullYear();
-const navItems = await getResolvedNav();
 
-// Services list from the native `primary` menu (Services children) — not derived.
-const servicesNode = navItems.find((n) => n.children?.length && /service/i.test(n.label) && !/area/i.test(n.label));
-const sortedServices = (servicesNode?.children ?? []).slice(0, 6);
-
-const quickLinks = navItems.filter((item) => item.href);
+// Footer columns = groups of the native `footer` menu; legal from `footer-legal`.
+const { groups, legal } = await getFooterNav();
 ---
 
 <footer>
@@ -61,7 +57,7 @@ const quickLinks = navItems.filter((item) => item.href);
   <!-- Lower area -->
   <div class="bg-bg-inverse text-fg-inverse">
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-12">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[repeat(auto-fit,minmax(11rem,1fr))] gap-10">
         <!-- Brand / contact column -->
         <div>
           <a
@@ -146,51 +142,32 @@ const quickLinks = navItems.filter((item) => item.href);
           </div>
         </div>
 
-        <!-- Services column -->
+        <!-- Nav columns — one per group in the native `footer` menu -->
         {
-          sortedServices.length > 0 && (
+          groups.map((group) => (
             <div>
               <h3 class="text-sm font-semibold text-fg-inverse uppercase tracking-wider mb-4">
-                Our Services
+                {group.label}
               </h3>
               <ul class="flex flex-col gap-2.5 list-none m-0 p-0">
-                {sortedServices.map((service) => (
+                {(group.children ?? []).map((item) => (
                   <li>
-                    <a
-                      href={service.href}
-                      class="text-sm text-fg-inverse/60 hover:text-fg-inverse transition-colors"
-                    >
-                      {service.label}
-                    </a>
+                    {item.href ? (
+                      <a
+                        href={item.href}
+                        class="text-sm text-fg-inverse/60 hover:text-fg-inverse transition-colors"
+                      >
+                        {item.label}
+                      </a>
+                    ) : (
+                      <span class="text-sm text-fg-inverse/60">{item.label}</span>
+                    )}
                   </li>
                 ))}
               </ul>
             </div>
-          )
+          ))
         }
-
-        <!-- Quick links column -->
-        <div>
-          <h3
-            class="text-sm font-semibold text-fg-inverse uppercase tracking-wider mb-4"
-          >
-            Quick Links
-          </h3>
-          <ul class="flex flex-col gap-2.5 list-none m-0 p-0">
-            {
-              quickLinks.map((item) => (
-                <li>
-                  <a
-                    href={item.href}
-                    class="text-sm text-fg-inverse/60 hover:text-fg-inverse transition-colors"
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
-        </div>
       </div>
     </div>
 
@@ -203,6 +180,22 @@ const quickLinks = navItems.filter((item) => item.href);
           &copy; {year}
           {business.businessName}. All rights reserved.
         </p>
+        {
+          legal.length > 0 && (
+            <nav class="flex flex-wrap items-center gap-x-4 gap-y-1">
+              {legal
+                .filter((l) => l.href)
+                .map((l) => (
+                  <a
+                    href={l.href}
+                    class="text-xs text-fg-inverse/40 hover:text-fg-inverse transition-colors"
+                  >
+                    {l.label}
+                  </a>
+                ))}
+            </nav>
+          )
+        }
         <p class="text-xs text-fg-inverse/40">
           Built by{" "}
           <a

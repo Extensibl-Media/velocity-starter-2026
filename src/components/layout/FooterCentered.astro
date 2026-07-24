@@ -1,9 +1,12 @@
 ---
-import { getBusinessData, getResolvedNav } from "@/lib/utils";
+import { getBusinessData, getFooterNav } from "@/lib/utils";
 
 const business = await getBusinessData();
 const year = new Date().getFullYear();
-const navItems = await getResolvedNav();
+
+// Minimal footer: flatten the native `footer` menu into one row; legal below.
+const { flat, legal } = await getFooterNav();
+const links = flat.filter((l) => l.href).slice(0, 6);
 ---
 
 <footer class="bg-bg-inverse text-fg-inverse">
@@ -32,18 +35,16 @@ const navItems = await getResolvedNav();
         class="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 list-none m-0 p-0"
       >
         {
-          navItems
-            .filter((item) => item.href)
-            .map((item) => (
-              <li>
-                <a
-                  href={item.href}
-                  class="text-sm font-medium text-fg-inverse/70 hover:text-fg-inverse transition-colors"
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))
+          links.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class="text-sm font-medium text-fg-inverse/70 hover:text-fg-inverse transition-colors"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
         }
       </ul>
     </nav>
@@ -130,6 +131,22 @@ const navItems = await getResolvedNav();
         &copy; {year}
         {business.businessName}. All rights reserved.
       </p>
+      {
+        legal.length > 0 && (
+          <nav class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+            {legal
+              .filter((l) => l.href)
+              .map((l) => (
+                <a
+                  href={l.href}
+                  class="text-xs text-fg-inverse/40 hover:text-fg-inverse transition-colors"
+                >
+                  {l.label}
+                </a>
+              ))}
+          </nav>
+        )
+      }
       <p class="text-xs text-fg-inverse/40">
         Built by{" "}
         <a

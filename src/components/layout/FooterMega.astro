@@ -1,19 +1,14 @@
 ---
-import { getBusinessData, getResolvedNav, getMenuLinks } from "@/lib/utils";
+import { getBusinessData, getFooterNav } from "@/lib/utils";
 import { getWidgetArea } from "emdash";
 import { WidgetArea } from "emdash/ui";
 
 const business = await getBusinessData();
 const year = new Date().getFullYear();
 
-// All footer nav comes from native, CMS-editable menus — nothing derived.
-const nav = await getResolvedNav(); // native `primary` menu
-const footerLinks = await getMenuLinks("footer"); // native `footer` menu
-const legalLinks = await getMenuLinks("footer-legal"); // native `footer-legal` menu
-const servicesNode = nav.find((n) => n.children?.length && /service/i.test(n.label) && !/area/i.test(n.label));
-const areasNode = nav.find((n) => n.children?.length && /area/i.test(n.label));
-const footerServices = (servicesNode?.children ?? []).slice(0, 6);
-const footerAreas = (areasNode?.children ?? []).slice(0, 6);
+// Footer columns come from the native, CMS-editable `footer` menu: each top-level
+// group is a column, its children are the links. Legal from `footer-legal`.
+const { groups, legal } = await getFooterNav();
 
 // Native editable slot — rendered only when an editor has added widgets to it.
 const footerExtra = await getWidgetArea("footer-extra");
@@ -159,70 +154,31 @@ const footerExtra = await getWidgetArea("footer-extra");
         </div>
       </div>
 
-      <!-- Services column (native `primary` menu → Services children) -->
+      <!-- Nav columns — one per group in the native `footer` menu -->
       {
-        footerServices.length > 0 && (
+        groups.map((group) => (
           <div>
             <h3 class="text-sm font-semibold text-fg-inverse uppercase tracking-wider mb-4">
-              Our Services
+              {group.label}
             </h3>
             <ul class="flex flex-col gap-2.5 list-none m-0 p-0">
-              {footerServices.map((s) => (
+              {(group.children ?? []).map((item) => (
                 <li>
-                  <a
-                    href={s.href}
-                    class="text-sm text-fg-inverse/60 hover:text-fg-inverse transition-colors"
-                  >
-                    {s.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )
-      }
-
-      <!-- Service areas column (native `primary` menu → Service Areas children) -->
-      {
-        footerAreas.length > 0 && (
-          <div>
-            <h3 class="text-sm font-semibold text-fg-inverse uppercase tracking-wider mb-4">
-              Service Areas
-            </h3>
-            <ul class="flex flex-col gap-2.5 list-none m-0 p-0">
-              {footerAreas.map((a) => (
-                <li>
-                  <span class="text-sm text-fg-inverse/60">{a.label}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )
-      }
-
-      <!-- Quick links column (native `footer` menu) -->
-      {
-        footerLinks.length > 0 && (
-          <div>
-            <h3 class="text-sm font-semibold text-fg-inverse uppercase tracking-wider mb-4">
-              Quick Links
-            </h3>
-            <ul class="flex flex-col gap-2.5 list-none m-0 p-0">
-              {footerLinks
-                .filter((item) => item.href)
-                .map((item) => (
-                  <li>
+                  {item.href ? (
                     <a
                       href={item.href}
                       class="text-sm text-fg-inverse/60 hover:text-fg-inverse transition-colors"
                     >
                       {item.label}
                     </a>
-                  </li>
-                ))}
+                  ) : (
+                    <span class="text-sm text-fg-inverse/60">{item.label}</span>
+                  )}
+                </li>
+              ))}
             </ul>
           </div>
-        )
+        ))
       }
     </div>
 
@@ -321,9 +277,9 @@ const footerExtra = await getWidgetArea("footer-extra");
         {business.businessName}. All rights reserved.
       </p>
       {
-        legalLinks.length > 0 && (
+        legal.length > 0 && (
           <nav class="flex flex-wrap items-center gap-x-4 gap-y-1">
-            {legalLinks
+            {legal
               .filter((l) => l.href)
               .map((l) => (
                 <a

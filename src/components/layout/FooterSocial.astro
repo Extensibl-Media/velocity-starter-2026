@@ -1,13 +1,14 @@
 ---
-import { getBusinessData, getResolvedNav } from "@/lib/utils";
+import { getBusinessData, getFooterNav } from "@/lib/utils";
 import { Input } from "@/components/starwind/input";
 import { Button } from "@/components/starwind/button";
 
 const business = await getBusinessData();
 const year = new Date().getFullYear();
-const navItems = await getResolvedNav();
 
-const quickLinks = navItems.filter((item) => item.href);
+// Minimal footer: flatten the native `footer` menu into one row; legal below.
+const { flat, legal } = await getFooterNav();
+const links = flat.filter((l) => l.href).slice(0, 6);
 ---
 
 <footer class="bg-bg-inverse text-fg-inverse">
@@ -127,7 +128,7 @@ const quickLinks = navItems.filter((item) => item.href);
         class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 list-none m-0 p-0"
       >
         {
-          quickLinks.map((item) => (
+          links.map((item) => (
             <li>
               <a
                 href={item.href}
@@ -151,6 +152,22 @@ const quickLinks = navItems.filter((item) => item.href);
         &copy; {year}
         {business.businessName}. All rights reserved.
       </p>
+      {
+        legal.length > 0 && (
+          <nav class="flex flex-wrap items-center gap-x-4 gap-y-1">
+            {legal
+              .filter((l) => l.href)
+              .map((l) => (
+                <a
+                  href={l.href}
+                  class="text-xs text-fg-inverse/40 hover:text-fg-inverse transition-colors"
+                >
+                  {l.label}
+                </a>
+              ))}
+          </nav>
+        )
+      }
       <p class="text-xs text-fg-inverse/40">
         Built by{" "}
         <a

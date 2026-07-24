@@ -80,3 +80,14 @@ export async function getMenuLinks(name: string): Promise<NavNode[]> {
 
 /** The site's primary navigation — the native `primary` menu, verbatim. */
 export const getResolvedNav = (): Promise<NavNode[]> => getMenuLinks("primary");
+
+/** Footer navigation from native menus, shaped for every footer design:
+ * - `groups`: the `footer` menu's top-level items (= columns), each with its `children` (= links)
+ * - `flat`:   those children flattened into one list (for row/minimal footers)
+ * - `legal`:  the `footer-legal` menu (rendered in every footer's bottom bar)
+ * All CMS-editable; nothing is derived from the `primary` (header) menu. */
+export async function getFooterNav(): Promise<{ groups: NavNode[]; flat: NavNode[]; legal: NavNode[] }> {
+  const [groups, legal] = await Promise.all([getMenuLinks("footer"), getMenuLinks("footer-legal")]);
+  const flat = groups.flatMap((g) => (g.children?.length ? g.children : g.href ? [g] : []));
+  return { groups, flat, legal };
+}
