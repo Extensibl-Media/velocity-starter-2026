@@ -1,6 +1,7 @@
 ---
 import { getBusinessData } from "@/lib/utils";
 import type { Eyebrow, SectionCTA } from "@/types/sections";
+import { highlight } from "@/lib/highlight";
 import Badge from "@/components/elements/badge/Badge.astro";
 import { Button } from "@/components/elements/button";
 
@@ -45,7 +46,7 @@ const subheading = data?.subheading;
           )
         )
       }
-      {heading && <h1 class="theme-heading text-4xl sm:text-5xl lg:text-6xl font-bold m-0 leading-tight">{heading}</h1>}
+      {heading && <h1 class="theme-heading text-4xl sm:text-5xl lg:text-6xl font-bold m-0 leading-tight" set:html={highlight(heading)}></h1>}
       {subheading && <p class="theme-text-muted text-lg lg:text-xl max-w-2xl m-0">{subheading}</p>}
       {
         (data?.ctas?.length || data?.showPhone) && (

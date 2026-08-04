@@ -1,6 +1,7 @@
 ---
 import { getBusinessData } from "@/lib/utils";
 import { getBackgroundImage } from "@/lib/images";
+import { highlight } from "@/lib/highlight";
 import type { Eyebrow, SectionCTA } from "@/types/sections";
 import Badge from "@/components/elements/badge/Badge.astro";
 import { Button } from "@/components/elements/button";
@@ -54,7 +55,7 @@ const overlayOpacity = (data?.backgroundImage?.overlayOpacity ?? 60) / 100;
             ))}
 
           {data?.heading && (
-            <h1 class="theme-heading text-4xl sm:text-5xl font-bold m-0 leading-tight">{data.heading}</h1>
+            <h1 class="theme-heading text-4xl sm:text-5xl font-bold m-0 leading-tight" set:html={highlight(data?.heading)}></h1>
           )}
 
           {data?.subheading && (

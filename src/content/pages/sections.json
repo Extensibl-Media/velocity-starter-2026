@@ -6,6 +6,27 @@
   "draft": false,
   "sections": [
     {
+      "type": "hero:centered-card",
+      "theme": "default",
+      "data": {
+        "eyebrow": {
+          "text": "Heading Emphasis Demo",
+          "variant": "text"
+        },
+        "heading": "Trusted Roofing ==You Can Count On==",
+        "subheading": "Wrap words in ==double equals== inside any hero or CTA heading and they render in the theme accent color. Use **double asterisks** for bold."
+      }
+    },
+    {
+      "type": "cta:banner",
+      "theme": "primary",
+      "data": {
+        "heading": "Ready for a ==Free Estimate==?",
+        "subheading": "On this primary (colored) surface the accent shifts automatically so the emphasis stays legible.",
+        "showPhone": true
+      }
+    },
+    {
       "type": "content:rich-text",
       "theme": "default",
       "data": {

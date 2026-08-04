@@ -540,6 +540,13 @@
     color: var(--theme-accent);
   }
 
+  /* Inline heading emphasis: `==text==` tokens (via highlight()) render as this
+     span. Uses the same surface-adaptive accent as eyebrows, so the emphasized
+     part of a heading stays legible on any section theme. Weight/size inherit. */
+  .heading-em {
+    color: var(--theme-accent);
+  }
+
   /* Force a light-on-dark surface context (dark headers/footers/bands) so
      theme-* utilities + nav links go light without a full theme class. */
   .on-dark {

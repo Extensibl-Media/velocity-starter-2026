@@ -1,6 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA, ImageRef } from "@/types/sections";
 import Badge from "@/components/elements/badge/Badge.astro";
+import { highlight } from "@/lib/highlight";
 import { Button } from "@/components/elements/button";
 import SmartImage from "@/components/media/SmartImage.astro";
 
@@ -69,9 +70,7 @@ const hasImage = !!data?.image?.src;
               )}
 
               {data?.heading && (
-                <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0 leading-tight">
-                  {data.heading}
-                </h2>
+                <h2 class="theme-heading text-3xl lg:text-4xl font-bold m-0 leading-tight" set:html={highlight(data?.heading)}></h2>
               )}
 
               {data?.body && (

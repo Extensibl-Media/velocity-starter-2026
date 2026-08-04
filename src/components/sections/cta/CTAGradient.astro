@@ -1,6 +1,7 @@
 ---
 import { getBusinessData } from "@/lib/utils";
 import type { Eyebrow, SectionCTA } from "@/types/sections";
+import { highlight } from "@/lib/highlight";
 import Badge from "@/components/elements/badge/Badge.astro";
 import { Button } from "@/components/elements/button";
 
@@ -36,9 +37,7 @@ const hasContent = !!(data?.heading || data?.subheading || data?.ctas?.length ||
             ))}
 
           {data?.heading && (
-            <h2 class="cta-heading text-3xl lg:text-5xl font-black m-0 leading-tight">
-              {data.heading}
-            </h2>
+            <h2 class="cta-heading text-3xl lg:text-5xl font-black m-0 leading-tight" set:html={highlight(data?.heading)}></h2>
           )}
 
           {data?.subheading && (

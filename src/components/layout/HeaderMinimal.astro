@@ -13,7 +13,7 @@ const business = await getBusinessData();
 
 <header
   id="site-header"
-  class="fixed top-0 left-0 right-0 z-50 bg-bg border-b border-border transition-shadow duration-300"
+  class="sticky top-0 z-50 bg-bg border-b border-border transition-shadow duration-300"
   data-header
 >
   <!-- Main nav (single row, no top bar) -->
@@ -97,8 +97,5 @@ const business = await getBusinessData();
     </div>
   </div>
 </header>
-
-<!-- Spacer to prevent content jumping under fixed header (single row) -->
-<div class="h-16 lg:h-20" aria-hidden="true" id="header-spacer"></div>
 
 <script>import "@/lib/nav.js";</script>

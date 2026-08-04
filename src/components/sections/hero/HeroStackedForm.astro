@@ -1,6 +1,7 @@
 ---
 import { getServices } from "@/lib/content";
 import type { Eyebrow, FormConfig } from "@/types/sections";
+import { highlight } from "@/lib/highlight";
 import Badge from "@/components/elements/badge/Badge.astro";
 import FormRenderer from "@/components/forms/FormRenderer.astro";
 
@@ -42,7 +43,7 @@ const sortedServices = services.sort((a, b) => a.data.order - b.data.order);
           )
         )
       }
-      {headline && <h1 class="theme-heading text-4xl lg:text-5xl font-bold m-0">{headline}</h1>}
+      {headline && <h1 class="theme-heading text-4xl lg:text-5xl font-bold m-0" set:html={highlight(headline)}></h1>}
       {subheadline && <p class="theme-text-muted text-lg m-0">{subheadline}</p>}
     </div>
 

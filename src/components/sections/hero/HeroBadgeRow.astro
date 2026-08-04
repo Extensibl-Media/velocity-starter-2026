@@ -1,6 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA } from "@/types/sections";
 import Badge from "@/components/elements/badge/Badge.astro";
+import { highlight } from "@/lib/highlight";
 import { Button } from "@/components/elements/button";
 
 /**
@@ -42,7 +43,7 @@ const badges = data?.badges ?? [];
         ))}
 
       {data?.heading && (
-        <h1 class="hero-heading theme-heading font-extrabold m-0">{data.heading}</h1>
+        <h1 class="hero-heading theme-heading font-extrabold m-0" set:html={highlight(data?.heading)}></h1>
       )}
 
       {data?.subheading && (

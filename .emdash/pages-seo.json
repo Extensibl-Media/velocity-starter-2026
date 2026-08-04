@@ -13,13 +13,6 @@
     "canonical": null,
     "noIndex": false
   },
-  "services/gutter-guards": {
-    "title": "Gutter Guard Installation | Peak Roofing Co",
-    "description": "Gutter guard installation in Boise, ID. Keep leaves and debris out and water flowing — end seasonal cleaning.",
-    "image": null,
-    "canonical": null,
-    "noIndex": false
-  },
   "services/commercial-roof-maintenance": {
     "title": "Commercial Roof Maintenance | Peak Roofing Co",
     "description": "Preventive commercial roof maintenance plans in Boise, ID. Scheduled inspections that extend roof life.",
@@ -27,51 +20,16 @@
     "canonical": null,
     "noIndex": false
   },
+  "services/gutter-guards": {
+    "title": "Gutter Guard Installation | Peak Roofing Co",
+    "description": "Gutter guard installation in Boise, ID. Keep leaves and debris out and water flowing — end seasonal cleaning.",
+    "image": null,
+    "canonical": null,
+    "noIndex": false
+  },
   "services/gutter-installation": {
     "title": "Gutter Installation & Repair | Peak Roofing Co",
     "description": "Seamless gutter installation and repair in Boise, ID. Protect your roof and foundation with properly routed drainage. Free estimates.",
-    "image": null,
-    "canonical": null,
-    "noIndex": false
-  },
-  "cookie-policy": {
-    "title": "Cookie Policy | Peak Roofing Co",
-    "description": "How Peak Roofing Co uses cookies and how you can manage them.",
-    "image": null,
-    "canonical": null,
-    "noIndex": false
-  },
-  "privacy-policy": {
-    "title": "Privacy Policy | Peak Roofing Co",
-    "description": "How Peak Roofing Co collects, uses, and protects your personal information.",
-    "image": null,
-    "canonical": null,
-    "noIndex": false
-  },
-  "contact": {
-    "title": "Contact Peak Roofing Co | Free Estimates in Boise, ID",
-    "description": "Get in touch with Peak Roofing Co for a free roofing estimate in Boise, Meridian, and Nampa. Call or request a quote online.",
-    "image": null,
-    "canonical": null,
-    "noIndex": false
-  },
-  "services/roof-inspection": {
-    "title": "Free Roof Inspection | Peak Roofing Co",
-    "description": "Free 27-point roof inspection in Boise, ID with a photo report and honest recommendations. No pressure.",
-    "image": null,
-    "canonical": null,
-    "noIndex": false
-  },
-  "services/roof-repair": {
-    "title": "Roof Repair Services | Peak Roofing Co",
-    "description": "Fast, reliable roof repair in Boise, ID. Licensed and insured with same-day response on emergency leaks. Free estimates.",
-    "image": "/src/assets/images/landing.jpg",
-    "canonical": null,
-    "noIndex": false
-  },
-  "services/roof-replacement": {
-    "title": "Roof Replacement Services | Peak Roofing Co",
-    "description": "Full roof replacement in Boise, ID. Licensed and insured, with durable materials and a workmanship warranty. Free estimates.",
     "image": null,
     "canonical": null,
     "noIndex": false
@@ -90,9 +48,37 @@
     "canonical": null,
     "noIndex": false
   },
-  "services/storm-damage-restoration": {
-    "title": "Storm Damage Roof Repair | Peak Roofing Co",
-    "description": "Emergency storm, hail, and wind roof damage restoration in Boise, ID. Fast tarping, insurance claim help, and full repairs.",
+  "services/roof-inspection": {
+    "title": "Free Roof Inspection | Peak Roofing Co",
+    "description": "Free 27-point roof inspection in Boise, ID with a photo report and honest recommendations. No pressure.",
+    "image": null,
+    "canonical": null,
+    "noIndex": false
+  },
+  "cookie-policy": {
+    "title": "Cookie Policy | Peak Roofing Co",
+    "description": "How Peak Roofing Co uses cookies and how you can manage them.",
+    "image": null,
+    "canonical": null,
+    "noIndex": false
+  },
+  "services/roof-repair": {
+    "title": "Roof Repair Services | Peak Roofing Co",
+    "description": "Fast, reliable roof repair in Boise, ID. Licensed and insured with same-day response on emergency leaks. Free estimates.",
+    "image": "/src/assets/images/landing.jpg",
+    "canonical": null,
+    "noIndex": false
+  },
+  "privacy-policy": {
+    "title": "Privacy Policy | Peak Roofing Co",
+    "description": "How Peak Roofing Co collects, uses, and protects your personal information.",
+    "image": null,
+    "canonical": null,
+    "noIndex": false
+  },
+  "services/roof-replacement": {
+    "title": "Roof Replacement Services | Peak Roofing Co",
+    "description": "Full roof replacement in Boise, ID. Licensed and insured, with durable materials and a workmanship warranty. Free estimates.",
     "image": null,
     "canonical": null,
     "noIndex": false
@@ -104,16 +90,23 @@
     "canonical": null,
     "noIndex": false
   },
-  "terms-of-service": {
-    "title": "Terms of Service | Peak Roofing Co",
-    "description": "The terms and conditions for using the Peak Roofing Co website and services.",
+  "services/storm-damage-restoration": {
+    "title": "Storm Damage Roof Repair | Peak Roofing Co",
+    "description": "Emergency storm, hail, and wind roof damage restoration in Boise, ID. Fast tarping, insurance claim help, and full repairs.",
     "image": null,
     "canonical": null,
     "noIndex": false
   },
-  "services": {
-    "title": "Roofing Services | Peak Roofing Co",
-    "description": "Professional roofing services in Boise ID.",
+  "contact": {
+    "title": "Contact Peak Roofing Co | Free Estimates in Boise, ID",
+    "description": "Get in touch with Peak Roofing Co for a free roofing estimate in Boise, Meridian, and Nampa. Call or request a quote online.",
+    "image": null,
+    "canonical": null,
+    "noIndex": false
+  },
+  "terms-of-service": {
+    "title": "Terms of Service | Peak Roofing Co",
+    "description": "The terms and conditions for using the Peak Roofing Co website and services.",
     "image": null,
     "canonical": null,
     "noIndex": false
@@ -131,5 +124,12 @@
     "image": null,
     "canonical": null,
     "noIndex": true
+  },
+  "services": {
+    "title": "Roofing Services | Peak Roofing Co",
+    "description": "Professional roofing services in Boise ID.",
+    "image": null,
+    "canonical": null,
+    "noIndex": false
   }
 }

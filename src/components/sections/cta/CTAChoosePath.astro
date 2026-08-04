@@ -1,6 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA } from "@/types/sections";
 import Badge from "@/components/elements/badge/Badge.astro";
+import { highlight } from "@/lib/highlight";
 import { Button } from "@/components/elements/button";
 
 /**
@@ -35,9 +36,7 @@ const paths = data?.paths ?? [];
         ))}
 
       {data?.heading && (
-        <h2 class="theme-heading text-3xl lg:text-4xl font-black m-0 leading-tight">
-          {data.heading}
-        </h2>
+        <h2 class="theme-heading text-3xl lg:text-4xl font-black m-0 leading-tight" set:html={highlight(data?.heading)}></h2>
       )}
 
       {data?.subheading && (

@@ -1,6 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA } from "@/types/sections";
 import Badge from "@/components/elements/badge/Badge.astro";
+import { highlight } from "@/lib/highlight";
 import { Button } from "@/components/elements/button";
 
 /**
@@ -40,7 +41,7 @@ const ctas = [data?.cta, data?.secondaryCta].filter(Boolean) as SectionCTA[];
           )
         )
       }
-      {headline && <h1 class="theme-heading text-4xl lg:text-5xl font-bold m-0">{headline}</h1>}
+      {headline && <h1 class="theme-heading text-4xl lg:text-5xl font-bold m-0" set:html={highlight(headline)}></h1>}
       {subheadline && <p class="theme-text-muted text-lg m-0">{subheadline}</p>}
       {
         ctas.length > 0 && (

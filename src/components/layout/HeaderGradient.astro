@@ -13,7 +13,7 @@ const business = await getBusinessData();
 
 <header
   id="site-header"
-  class="on-dark fixed top-0 left-0 right-0 z-50 header-gradient text-fg-on-primary transition-shadow duration-300"
+  class="on-dark sticky top-0 z-50 header-gradient text-fg-on-primary transition-shadow duration-300"
   data-header
 >
   <!-- Main nav (single gradient row, light text) -->
@@ -97,9 +97,6 @@ const business = await getBusinessData();
     </div>
   </div>
 </header>
-
-<!-- Spacer to prevent content jumping under fixed header (single row) -->
-<div class="h-16 lg:h-20" aria-hidden="true" id="header-spacer"></div>
 
 <style>
   .header-gradient {

@@ -1,6 +1,7 @@
 ---
 import type { Eyebrow, SectionCTA } from "@/types/sections";
 import { getBackgroundImage } from "@/lib/images";
+import { highlight } from "@/lib/highlight";
 import Badge from "@/components/elements/badge/Badge.astro";
 import { Button } from "@/components/elements/button";
 
@@ -49,7 +50,7 @@ const overlayOpacity = (data?.backgroundImage?.overlayOpacity ?? 60) / 100;
           )
         )
       }
-      {headline && <h1 class="theme-heading text-4xl sm:text-5xl lg:text-6xl font-bold m-0">{headline}</h1>}
+      {headline && <h1 class="theme-heading text-4xl sm:text-5xl lg:text-6xl font-bold m-0" set:html={highlight(headline)}></h1>}
       {subheadline && <p class="theme-text-muted text-lg lg:text-xl max-w-2xl m-0">{subheadline}</p>}
       {
         data?.ctas && data.ctas.length > 0 && (
